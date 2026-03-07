@@ -694,9 +694,9 @@ function SplitButtonDemo() {
       <ButtonGroup variant="contained" ref={anchorRef}>
         <Button>{options[selectedIndex]}</Button>
         <Button
-          size="small"
           onClick={() => setOpen(prev => !prev)}
-          sx={{ px: '6px !important', minWidth: '0 !important' }}
+          aria-label="select action"
+          sx={{ px: '10px !important', minWidth: '0 !important' }}
         >
           <Icon name={open ? 'expand_less' : 'expand_more'} size={20} />
         </Button>
@@ -737,9 +737,9 @@ function SplitButtonSecondaryDemo() {
       <ButtonGroup variant="outlined" ref={anchorRef}>
         <Button>{options[selectedIndex]}</Button>
         <Button
-          size="small"
           onClick={() => setOpen(prev => !prev)}
-          sx={{ px: '6px !important', minWidth: '0 !important' }}
+          aria-label="select export format"
+          sx={{ px: '10px !important', minWidth: '0 !important' }}
         >
           <Icon name={open ? 'expand_less' : 'expand_more'} size={20} />
         </Button>
@@ -777,21 +777,6 @@ registerComponent({
   importStatement: `import { Button, ButtonGroup } from '@mui/material';`,
   examples: [
     {
-      name: 'Primary Group',
-      code: `<ButtonGroup variant="contained">
-  <Button>One</Button>
-  <Button>Two</Button>
-  <Button>Three</Button>
-</ButtonGroup>`,
-      render: () => (
-        <ButtonGroup variant="contained">
-          <Button>One</Button>
-          <Button>Two</Button>
-          <Button>Three</Button>
-        </ButtonGroup>
-      ),
-    },
-    {
       name: 'Secondary Group',
       code: `<ButtonGroup variant="outlined">
   <Button>One</Button>
@@ -810,7 +795,7 @@ registerComponent({
       name: 'Split Button (Primary)',
       code: `<ButtonGroup variant="contained">
   <Button>Create order</Button>
-  <Button size="small" onClick={handleToggle}>
+  <Button onClick={handleToggle} sx={{ px: '10px', minWidth: 0 }}>
     <Icon name="expand_more" />
   </Button>
 </ButtonGroup>
@@ -821,7 +806,7 @@ registerComponent({
       name: 'Split Button (Secondary)',
       code: `<ButtonGroup variant="outlined">
   <Button>Export as PDF</Button>
-  <Button size="small" onClick={handleToggle}>
+  <Button onClick={handleToggle} sx={{ px: '10px', minWidth: 0 }}>
     <Icon name="expand_more" />
   </Button>
 </ButtonGroup>`,

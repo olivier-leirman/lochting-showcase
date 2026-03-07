@@ -12,46 +12,55 @@ export function buttonGroupOverrides(brand: BrandTokens, fx: Effects): Component
     MuiButtonGroup: {
       styleOverrides: {
         root: {
-          borderRadius: PRIMITIVES.radius.md,
           boxShadow: 'none',
-          // Remove the default separator between grouped buttons
-          '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-            borderRight: 'none',
+          '& .MuiButtonGroup-grouped': {
+            minWidth: 0,
           },
         },
-        containedPrimary: {
+
+        // ── Contained (primary gradient) ──
+        contained: {
+          borderRadius: PRIMITIVES.radius.md,
+          overflow: 'hidden',
+          boxShadow: fx.shadows.primaryButton,
           '& .MuiButton-root': {
             background: fx.gradients.primary,
             color: c.contentStayLight,
-            boxShadow: fx.shadows.primaryButton,
             border: 'none',
+            boxShadow: 'none',            // shadow lives on the group wrapper
+            borderRadius: '0 !important', // let the group clip corners
             '&:hover': {
               background: fx.gradients.primary,
               filter: 'brightness(1.1)',
-              boxShadow: fx.shadows.primaryButtonHover,
             },
           },
-          // Subtle divider between primary grouped buttons
+          // Visible white divider between grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-            borderRight: `1px solid rgba(255, 255, 255, 0.20) !important`,
+            borderRight: '1px solid rgba(255, 255, 255, 0.35) !important',
           },
         },
+
+        // ── Outlined (secondary gradient) ──
         outlined: {
+          borderRadius: PRIMITIVES.radius.md,
+          overflow: 'hidden',
+          border: `1px solid ${c.borderWeak}`,
+          boxShadow: fx.shadows.secondaryButton,
           '& .MuiButton-root': {
             background: fx.gradients.secondary,
             color: c.contentSecondary,
-            borderColor: c.borderWeak,
-            boxShadow: fx.shadows.secondaryButton,
+            border: 'none',               // no per-button border, group owns it
+            boxShadow: 'none',
+            borderRadius: '0 !important',
             '&:hover': {
               background: fx.gradients.secondary,
-              borderColor: c.borderDefault,
+              border: 'none',
               filter: secondaryHoverFilter,
-              boxShadow: fx.shadows.secondaryButtonHover,
             },
           },
-          // Re-add the right border as a subtle separator
+          // Subtle inner divider between outlined grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-            borderRight: `1px solid ${c.borderStrong} !important`,
+            borderRight: `1px solid ${c.borderDefault} !important`,
           },
         },
       },
