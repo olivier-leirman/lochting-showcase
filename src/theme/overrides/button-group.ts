@@ -60,7 +60,7 @@ export function buttonGroupOverrides(brand: BrandTokens, fx: Effects): Component
           },
           // Inner divider between outlined grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-            borderRight: `1px solid ${c.borderStrong} !important`,
+            borderRight: `1px solid ${c.borderWeak} !important`,
           },
         },
       },
