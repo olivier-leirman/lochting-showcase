@@ -13,39 +13,43 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
       styleOverrides: {
         root: {
           background: fx.gradients.inactive,
-          border: `1px solid ${c.borderDefault}`,
+          border: `1px solid ${c.borderWeak}`,
           boxShadow: fx.shadows.inactive,
-          borderRadius: PRIMITIVES.radius.md + 4,
+          // Default = medium
+          borderRadius: 12,
           padding: 4,
-          gap: 0,
-        },
-        sizeSmall: {
-          borderRadius: PRIMITIVES.radius.sm + 4,
-          padding: 3,
-        },
-        sizeLarge: {
-          borderRadius: PRIMITIVES.radius.md + 6,
-          padding: 5,
+          gap: 2,
+          // Size-specific group styling via :has() (MUI doesn't add size classes to the group)
+          '&:has(.MuiToggleButton-sizeSmall)': {
+            borderRadius: 8,
+            padding: 2,
+          },
+          '&:has(.MuiToggleButton-sizeLarge)': {
+            borderRadius: 14,
+            padding: 4,
+          },
         },
       },
     },
     MuiToggleButton: {
       styleOverrides: {
         root: {
-          borderRadius: `${PRIMITIVES.radius.md}px !important`,
+          // Default = medium
+          borderRadius: '8px !important',
           border: 'none !important',
           textTransform: 'none' as const,
           fontFamily: brand.typography.bodyFont,
           fontWeight: PRIMITIVES.fontWeight.medium,
-          fontSize: PRIMITIVES.fontSize.md,
+          fontSize: PRIMITIVES.fontSize.sm,       // 14px
           letterSpacing: '0.46px',
           color: c.contentSecondary,
-          padding: '10px 20px',
+          height: 32,
+          padding: '0 12px',
           lineHeight: 1,
           '&.Mui-selected': {
             background: fx.gradients.secondary,
-            color: c.contentSecondary,
-            border: `1px solid ${c.borderWeak} !important`,
+            color: c.contentPrimary,
+            border: `1px solid ${c.borderDefault} !important`,
             boxShadow: fx.shadows.secondaryButton,
             '&:hover': {
               background: fx.gradients.secondary,
@@ -59,14 +63,16 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           },
         },
         sizeSmall: {
-          borderRadius: `${PRIMITIVES.radius.sm}px !important`,
-          padding: '6px 14px',
-          fontSize: PRIMITIVES.fontSize.sm,
+          borderRadius: '6px !important',
+          height: 24,
+          padding: '0 12px',
+          fontSize: PRIMITIVES.fontSize.xs,        // 12px
         },
         sizeLarge: {
-          borderRadius: `${PRIMITIVES.radius.md}px !important`,
-          padding: '12px 24px',
-          fontSize: PRIMITIVES.fontSize.lg,
+          borderRadius: '10px !important',
+          height: 40,
+          padding: '0 16px',
+          fontSize: PRIMITIVES.fontSize.md,        // 16px
         },
       },
     },

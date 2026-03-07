@@ -687,7 +687,7 @@ function SplitButtonDemo() {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const options = ['Create order', 'Create draft', 'Create template'];
+  const options = ['Export as PDF', 'Export as CSV', 'Export as XLSX'];
 
   return (
     <>
@@ -794,7 +794,7 @@ registerComponent({
     {
       name: 'Split Button (Primary)',
       code: `<ButtonGroup variant="contained">
-  <Button>Create order</Button>
+  <Button>Export as PDF</Button>
   <Button onClick={handleToggle} sx={{ px: '10px', minWidth: 0 }}>
     <Icon name="expand_more" />
   </Button>
