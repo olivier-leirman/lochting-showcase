@@ -19,6 +19,14 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           padding: 4,
           gap: 0,
         },
+        sizeSmall: {
+          borderRadius: PRIMITIVES.radius.sm + 4,
+          padding: 3,
+        },
+        sizeLarge: {
+          borderRadius: PRIMITIVES.radius.md + 6,
+          padding: 5,
+        },
       },
     },
     MuiToggleButton: {
@@ -29,10 +37,10 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           textTransform: 'none' as const,
           fontFamily: brand.typography.bodyFont,
           fontWeight: PRIMITIVES.fontWeight.medium,
-          fontSize: PRIMITIVES.fontSize.lg,
+          fontSize: PRIMITIVES.fontSize.md,
           letterSpacing: '0.46px',
           color: c.contentSecondary,
-          padding: '12px 24px',
+          padding: '10px 20px',
           lineHeight: 1,
           '&.Mui-selected': {
             background: fx.gradients.secondary,
@@ -49,6 +57,16 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           '&:hover': {
             backgroundColor: `color-mix(in srgb, ${c.brand400} ${isDark ? '8' : '4'}%, transparent)`,
           },
+        },
+        sizeSmall: {
+          borderRadius: `${PRIMITIVES.radius.sm}px !important`,
+          padding: '6px 14px',
+          fontSize: PRIMITIVES.fontSize.sm,
+        },
+        sizeLarge: {
+          borderRadius: `${PRIMITIVES.radius.md}px !important`,
+          padding: '12px 24px',
+          fontSize: PRIMITIVES.fontSize.lg,
         },
       },
     },

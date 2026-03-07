@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography } from '@mui/material';
+import { useState, useRef } from 'react';
+import { Button, ButtonGroup, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography, Popper, Grow, Paper, ClickAwayListener, MenuList } from '@mui/material';
 import { Icon } from '../components/Icon';
 import { ToggleChip, ToggleChipGroup } from '../components/ToggleChip';
 import { useBrand } from '../theme/brand-context';
@@ -582,7 +582,7 @@ registerComponent({
 registerComponent({
   id: 'toggle-button',
   name: 'Toggle Button',
-  description: 'A segmented control with a sunken container. The active segment elevates with a secondary gradient and shadow.',
+  description: 'A segmented control with a sunken container. The active segment elevates with a secondary gradient and shadow. Available in small, medium, and large sizes.',
   category: 'inputs',
   importStatement: `import { ToggleButton, ToggleButtonGroup } from '@mui/material';`,
   examples: [
@@ -607,11 +607,257 @@ registerComponent({
         );
       },
     },
+    {
+      name: 'Sizes',
+      code: `<ToggleButtonGroup size="small" value="a" exclusive>
+  <ToggleButton value="a">Small</ToggleButton>
+  <ToggleButton value="b">Option</ToggleButton>
+</ToggleButtonGroup>
+
+<ToggleButtonGroup size="medium" value="a" exclusive>
+  <ToggleButton value="a">Medium</ToggleButton>
+  <ToggleButton value="b">Option</ToggleButton>
+</ToggleButtonGroup>
+
+<ToggleButtonGroup size="large" value="a" exclusive>
+  <ToggleButton value="a">Large</ToggleButton>
+  <ToggleButton value="b">Option</ToggleButton>
+</ToggleButtonGroup>`,
+      render: () => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-start' }}>
+          <ToggleButtonGroup size="small" value="a" exclusive>
+            <ToggleButton value="a">Small</ToggleButton>
+            <ToggleButton value="b">Option</ToggleButton>
+          </ToggleButtonGroup>
+          <ToggleButtonGroup size="medium" value="a" exclusive>
+            <ToggleButton value="a">Medium</ToggleButton>
+            <ToggleButton value="b">Option</ToggleButton>
+          </ToggleButtonGroup>
+          <ToggleButtonGroup size="large" value="a" exclusive>
+            <ToggleButton value="a">Large</ToggleButton>
+            <ToggleButton value="b">Option</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      ),
+    },
+    {
+      name: 'With Icons',
+      code: `<ToggleButtonGroup size="small" value="list" exclusive>
+  <ToggleButton value="list"><Icon name="view_list" size={18} /></ToggleButton>
+  <ToggleButton value="grid"><Icon name="grid_view" size={18} /></ToggleButton>
+</ToggleButtonGroup>
+
+<ToggleButtonGroup value="left" exclusive>
+  <ToggleButton value="left"><Icon name="format_align_left" size={20} /></ToggleButton>
+  <ToggleButton value="center"><Icon name="format_align_center" size={20} /></ToggleButton>
+  <ToggleButton value="right"><Icon name="format_align_right" size={20} /></ToggleButton>
+</ToggleButtonGroup>`,
+      render: () => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [view, setView] = useState('list');
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [align, setAlign] = useState('left');
+        return (
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <ToggleButtonGroup size="small" value={view} exclusive onChange={(_, v) => v && setView(v)}>
+              <ToggleButton value="list"><Icon name="view_list" size={18} /></ToggleButton>
+              <ToggleButton value="grid"><Icon name="grid_view" size={18} /></ToggleButton>
+            </ToggleButtonGroup>
+            <ToggleButtonGroup value={align} exclusive onChange={(_, v) => v && setAlign(v)}>
+              <ToggleButton value="left"><Icon name="format_align_left" size={20} /></ToggleButton>
+              <ToggleButton value="center"><Icon name="format_align_center" size={20} /></ToggleButton>
+              <ToggleButton value="right"><Icon name="format_align_right" size={20} /></ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+        );
+      },
+    },
   ],
   props: [
     { name: 'value', type: 'string | string[]', description: 'The selected value(s)' },
     { name: 'exclusive', type: 'boolean', default: 'false', description: 'If true, only one button can be selected' },
+    { name: 'size', type: '"small" | "medium" | "large"', default: '"medium"', description: 'The size of the toggle buttons' },
     { name: 'onChange', type: '(event, value) => void', description: 'Callback when selection changes' },
+  ],
+});
+
+// ─── Button Group ───
+
+function SplitButtonDemo() {
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const options = ['Create order', 'Create draft', 'Create template'];
+
+  return (
+    <>
+      <ButtonGroup variant="contained" ref={anchorRef}>
+        <Button>{options[selectedIndex]}</Button>
+        <Button
+          size="small"
+          onClick={() => setOpen(prev => !prev)}
+          sx={{ px: '6px !important', minWidth: '0 !important' }}
+        >
+          <Icon name={open ? 'expand_less' : 'expand_more'} size={20} />
+        </Button>
+      </ButtonGroup>
+      <Popper open={open} anchorEl={anchorRef.current} transition disablePortal sx={{ zIndex: 1 }}>
+        {({ TransitionProps, placement }) => (
+          <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
+            <Paper sx={{ mt: 0.5 }}>
+              <ClickAwayListener onClickAway={() => setOpen(false)}>
+                <MenuList>
+                  {options.map((option, index) => (
+                    <MenuItem
+                      key={option}
+                      selected={index === selectedIndex}
+                      onClick={() => { setSelectedIndex(index); setOpen(false); }}
+                    >
+                      {option}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </>
+  );
+}
+
+function SplitButtonSecondaryDemo() {
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const options = ['Export as PDF', 'Export as CSV', 'Export as Excel'];
+
+  return (
+    <>
+      <ButtonGroup variant="outlined" ref={anchorRef}>
+        <Button>{options[selectedIndex]}</Button>
+        <Button
+          size="small"
+          onClick={() => setOpen(prev => !prev)}
+          sx={{ px: '6px !important', minWidth: '0 !important' }}
+        >
+          <Icon name={open ? 'expand_less' : 'expand_more'} size={20} />
+        </Button>
+      </ButtonGroup>
+      <Popper open={open} anchorEl={anchorRef.current} transition disablePortal sx={{ zIndex: 1 }}>
+        {({ TransitionProps, placement }) => (
+          <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
+            <Paper sx={{ mt: 0.5 }}>
+              <ClickAwayListener onClickAway={() => setOpen(false)}>
+                <MenuList>
+                  {options.map((option, index) => (
+                    <MenuItem
+                      key={option}
+                      selected={index === selectedIndex}
+                      onClick={() => { setSelectedIndex(index); setOpen(false); }}
+                    >
+                      {option}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </>
+  );
+}
+
+registerComponent({
+  id: 'button-group',
+  name: 'Button Group',
+  description: 'Groups related buttons together. The split button pattern combines a main action with a chevron dropdown for secondary options.',
+  category: 'inputs',
+  importStatement: `import { Button, ButtonGroup } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Primary Group',
+      code: `<ButtonGroup variant="contained">
+  <Button>One</Button>
+  <Button>Two</Button>
+  <Button>Three</Button>
+</ButtonGroup>`,
+      render: () => (
+        <ButtonGroup variant="contained">
+          <Button>One</Button>
+          <Button>Two</Button>
+          <Button>Three</Button>
+        </ButtonGroup>
+      ),
+    },
+    {
+      name: 'Secondary Group',
+      code: `<ButtonGroup variant="outlined">
+  <Button>One</Button>
+  <Button>Two</Button>
+  <Button>Three</Button>
+</ButtonGroup>`,
+      render: () => (
+        <ButtonGroup variant="outlined">
+          <Button>One</Button>
+          <Button>Two</Button>
+          <Button>Three</Button>
+        </ButtonGroup>
+      ),
+    },
+    {
+      name: 'Split Button (Primary)',
+      code: `<ButtonGroup variant="contained">
+  <Button>Create order</Button>
+  <Button size="small" onClick={handleToggle}>
+    <Icon name="expand_more" />
+  </Button>
+</ButtonGroup>
+{/* Popper with MenuList for dropdown options */}`,
+      render: () => <SplitButtonDemo />,
+    },
+    {
+      name: 'Split Button (Secondary)',
+      code: `<ButtonGroup variant="outlined">
+  <Button>Export as PDF</Button>
+  <Button size="small" onClick={handleToggle}>
+    <Icon name="expand_more" />
+  </Button>
+</ButtonGroup>`,
+      render: () => <SplitButtonSecondaryDemo />,
+    },
+    {
+      name: 'With Icons',
+      code: `<ButtonGroup variant="contained">
+  <Button startIcon={<Icon name="save" size={20} />}>Save</Button>
+  <Button startIcon={<Icon name="send" size={20} />}>Send</Button>
+</ButtonGroup>
+
+<ButtonGroup variant="outlined">
+  <Button startIcon={<Icon name="edit" size={20} />}>Edit</Button>
+  <Button startIcon={<Icon name="delete" size={20} />}>Delete</Button>
+</ButtonGroup>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <ButtonGroup variant="contained">
+            <Button startIcon={<Icon name="save" size={20} />}>Save</Button>
+            <Button startIcon={<Icon name="send" size={20} />}>Send</Button>
+          </ButtonGroup>
+          <ButtonGroup variant="outlined">
+            <Button startIcon={<Icon name="edit" size={20} />}>Edit</Button>
+            <Button startIcon={<Icon name="delete" size={20} />}>Delete</Button>
+          </ButtonGroup>
+        </Box>
+      ),
+    },
+  ],
+  props: [
+    { name: 'variant', type: '"contained" | "outlined" | "text"', default: '"outlined"', description: 'The button group style variant' },
+    { name: 'color', type: '"primary" | "secondary" | "error" | ...', default: '"primary"', description: 'The color of the button group' },
+    { name: 'size', type: '"small" | "medium" | "large"', default: '"medium"', description: 'The size of the buttons' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, all buttons are disabled' },
+    { name: 'orientation', type: '"horizontal" | "vertical"', default: '"horizontal"', description: 'The orientation of the group' },
   ],
 });
 

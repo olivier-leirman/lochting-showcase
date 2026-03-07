@@ -11,12 +11,14 @@ import { selectOverrides } from './select';
 import { chipOverrides } from './chip';
 import { toggleButtonOverrides } from './toggle-button';
 import { badgeOverrides } from './badge';
+import { buttonGroupOverrides } from './button-group';
 import { globalOverrides } from './global';
 
 export function buildAllOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
   return {
     ...globalOverrides(brand),
     ...buttonOverrides(brand, fx),
+    ...buttonGroupOverrides(brand, fx),
     ...checkboxOverrides(brand, fx),
     ...radioOverrides(brand, fx),
     ...switchOverrides(brand, fx),
