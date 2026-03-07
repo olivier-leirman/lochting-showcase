@@ -1,12 +1,20 @@
 import { createTheme, type Theme } from '@mui/material/styles';
 import type { BrandTokens } from './types';
 import { PRIMITIVES } from './tokens/primitives';
-import { createEffects, type Effects } from './tokens/effects';
+import { createEffects, type Effects, type ColorMode } from './tokens/effects';
 import { buildAllOverrides } from './overrides';
+import { deriveDarkColors } from './dark-colors';
 
-export function createBrandTheme(brand: BrandTokens): { theme: Theme; effects: Effects } {
-  const effects = createEffects(brand);
-  const c = brand.colors;
+export function createBrandTheme(
+  brand: BrandTokens,
+  mode: ColorMode = 'light',
+): { theme: Theme; effects: Effects } {
+  // Derive dark colors when in dark mode
+  const colors = mode === 'dark' ? deriveDarkColors(brand) : brand.colors;
+  const effectiveBrand: BrandTokens = { ...brand, colors };
+
+  const effects = createEffects(effectiveBrand, mode);
+  const c = colors;
   const p = PRIMITIVES;
   const t = brand.typography;
   const hw = t.headingWeight ?? p.fontWeight.semibold;
@@ -14,6 +22,7 @@ export function createBrandTheme(brand: BrandTokens): { theme: Theme; effects: E
 
   const theme = createTheme({
     palette: {
+      mode,
       primary: { main: c.brand400, dark: c.brand450, light: c.brand300 },
       secondary: { main: c.brand450 },
       error: { main: c.error.bgDefault, dark: c.error.contentStrong, light: c.error.bgWeakest },
@@ -41,7 +50,7 @@ export function createBrandTheme(brand: BrandTokens): { theme: Theme; effects: E
       borderRadius: p.radius.sm,
     },
     spacing: p.spacing.base,
-    components: buildAllOverrides(brand, effects),
+    components: buildAllOverrides(effectiveBrand, effects),
   });
 
   return { theme, effects };

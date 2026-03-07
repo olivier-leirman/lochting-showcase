@@ -7,8 +7,19 @@ import { CodeBlock } from '../blocks/CodeBlock';
 
 type ColorFormat = 'hex' | 'rgb' | 'oklch' | 'hsl' | 'hsv' | 'hsb';
 
-function parseHex(hex: string): { r: number; g: number; b: number; a: number } {
-  const h = hex.replace('#', '');
+function parseColor(value: string): { r: number; g: number; b: number; a: number } {
+  // Handle rgba(...) format
+  const rgbaMatch = value.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/);
+  if (rgbaMatch) {
+    return {
+      r: parseInt(rgbaMatch[1]),
+      g: parseInt(rgbaMatch[2]),
+      b: parseInt(rgbaMatch[3]),
+      a: rgbaMatch[4] !== undefined ? parseFloat(rgbaMatch[4]) : 1,
+    };
+  }
+  // Handle hex format
+  const h = value.replace('#', '');
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
@@ -77,7 +88,7 @@ function rgbToOklch(r: number, g: number, b: number) {
 function formatColor(hex: string, format: ColorFormat): string {
   if (format === 'hex') return hex;
 
-  const { r, g, b, a } = parseHex(hex);
+  const { r, g, b, a } = parseColor(hex);
   const alpha = a < 1 ? `, ${Math.round(a * 100) / 100}` : '';
 
   switch (format) {
@@ -121,7 +132,7 @@ interface SwatchProps {
 function Swatch({ name, token, value, format }: SwatchProps) {
   const { brand } = useBrand();
   const sw = brand.typography.strongWeight ?? 600;
-  const isTransparent = parseHex(value).a < 1;
+  const isTransparent = parseColor(value).a < 1;
   const display = formatColor(value, format);
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}>
@@ -190,6 +201,9 @@ export function ColorsPage() {
         { name: 'Surface', token: 'bgSurface', value: c.bgSurface },
         { name: 'Surface Secondary', token: 'bgSurfaceSecondary', value: c.bgSurfaceSecondary },
         { name: 'Subtle', token: 'bgSubtle', value: c.bgSubtle },
+        { name: 'Base Inverse', token: 'bgBaseInverse', value: c.bgBaseInverse },
+        { name: 'Inverse Secondary', token: 'bgInverseSecondary', value: c.bgInverseSecondary },
+        { name: 'Overlay', token: 'bgOverlay', value: c.bgOverlay },
       ],
     },
     {
@@ -200,6 +214,10 @@ export function ColorsPage() {
         { name: 'Tertiary', token: 'contentTertiary', value: c.contentTertiary },
         { name: 'Spot', token: 'contentSpot', value: c.contentSpot },
         { name: 'Stay Light', token: 'contentStayLight', value: c.contentStayLight },
+        { name: 'Stay Dark', token: 'contentStayDark', value: c.contentStayDark },
+        { name: 'Inverse Primary', token: 'contentInversePrimary', value: c.contentInversePrimary },
+        { name: 'Inverse Secondary', token: 'contentInverseSecondary', value: c.contentInverseSecondary },
+        { name: 'Inverse Spot', token: 'contentInverseSpot', value: c.contentInverseSpot },
       ],
     },
     {

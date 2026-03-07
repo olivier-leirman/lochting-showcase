@@ -5,6 +5,8 @@ import { PRIMITIVES } from '../tokens/primitives';
 
 export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
   const c = brand.colors;
+  const isDark = fx.mode === 'dark';
+  const secondaryHoverFilter = isDark ? 'brightness(1.12)' : 'brightness(0.98)';
 
   return {
     MuiToggleButtonGroup: {
@@ -35,13 +37,17 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           '&.Mui-selected': {
             background: fx.gradients.secondary,
             color: c.contentSecondary,
+            border: `1px solid ${c.borderWeak} !important`,
             boxShadow: fx.shadows.secondaryButton,
             '&:hover': {
               background: fx.gradients.secondary,
+              filter: secondaryHoverFilter,
+              borderColor: `${c.borderDefault} !important`,
+              boxShadow: fx.shadows.secondaryButtonHover,
             },
           },
           '&:hover': {
-            backgroundColor: `color-mix(in srgb, ${c.brand400} 4%, transparent)`,
+            backgroundColor: `color-mix(in srgb, ${c.brand400} ${isDark ? '8' : '4'}%, transparent)`,
           },
         },
       },

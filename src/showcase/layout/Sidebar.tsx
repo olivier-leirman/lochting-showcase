@@ -1,7 +1,8 @@
-import { Box, List, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { Box, List, ListItemButton, ListItemText, Typography, IconButton, Tooltip } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { COMPONENT_REGISTRY } from '../registry';
 import { BrandSwitcher } from '../blocks/BrandSwitcher';
+import { Icon } from '../../components/Icon';
 import { useBrand } from '../../theme/brand-context';
 
 const NAV_SECTIONS = [
@@ -12,7 +13,7 @@ const NAV_SECTIONS = [
 export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { brand } = useBrand();
+  const { brand, colorMode, toggleColorMode } = useBrand();
   const sw = brand.typography.strongWeight ?? 600;
 
   const inputComponents = COMPONENT_REGISTRY.filter(c => c.category === 'inputs');
@@ -39,7 +40,24 @@ export function Sidebar() {
         <Typography variant="h3" sx={{ fontSize: '1.5rem', mb: 4 }}>
           Design System
         </Typography>
-        <BrandSwitcher />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <BrandSwitcher />
+          <Tooltip title={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
+            <IconButton
+              onClick={toggleColorMode}
+              size="small"
+              sx={{
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+                width: 36,
+                height: 36,
+              }}
+            >
+              <Icon name={colorMode === 'light' ? 'dark_mode' : 'light_mode'} size={18} />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
 
       {NAV_SECTIONS.map(section => (
