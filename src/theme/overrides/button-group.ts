@@ -58,9 +58,13 @@ export function buttonGroupOverrides(brand: BrandTokens, fx: Effects): Component
               filter: secondaryHoverFilter,
             },
           },
+          // Reset MUI's default -1px margin that hides the divider
+          '& .MuiButtonGroup-grouped': {
+            marginLeft: '0 !important',
+          },
           // Inner divider between outlined grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-            borderRight: `1px solid ${c.borderWeak} !important`,
+            borderRight: `1px solid ${c.borderStrong} !important`,
           },
         },
       },
