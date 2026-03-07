@@ -34,9 +34,9 @@ export function buttonGroupOverrides(brand: BrandTokens, fx: Effects): Component
               filter: 'brightness(1.1)',
             },
           },
-          // Visible white divider between grouped buttons
+          // Dark brand divider between grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-            borderRight: '1px solid rgba(255, 255, 255, 0.35) !important',
+            borderRight: `1px solid ${c.brand450} !important`,
           },
         },
 
@@ -58,9 +58,9 @@ export function buttonGroupOverrides(brand: BrandTokens, fx: Effects): Component
               filter: secondaryHoverFilter,
             },
           },
-          // Subtle inner divider between outlined grouped buttons
+          // Inner divider between outlined grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
-            borderRight: `1px solid ${c.borderDefault} !important`,
+            borderRight: `1px solid ${c.borderStrong} !important`,
           },
         },
       },
