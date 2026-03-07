@@ -1,0 +1,58 @@
+import type { BrandTokens } from '../types';
+
+export const LOCHTING: BrandTokens = {
+  id: 'lochting',
+  name: 'Lochting',
+  colors: {
+    brand100: '#efe7fb',
+    brand200: '#d8c4f6',
+    brand300: '#be9cf1',
+    brand400: '#8a54dd',
+    brand450: '#6029b2',
+    brand500: '#41197d',
+    bgBase: '#f7f7fc',
+    bgElevated: '#fcfcff',
+    bgSunken: '#f0f0f7',
+    bgSunkenDeep: '#d5d3db',
+    bgSunkenDeeper: '#b7b4bc',
+    bgSurface: '#1f1a4508',
+    bgSurfaceSecondary: '#1f1a450f',
+    bgSubtle: '#e5e5ff',
+    contentPrimary: '#200845',
+    contentSecondary: '#080524bf',
+    contentTertiary: '#08052473',
+    contentSpot: '#08052459',
+    contentStayLight: '#fffffff2',
+    borderDefault: '#ebebf1',
+    borderWeak: '#f0f0f6',
+    borderStrongest: '#d3d3dc',
+    error: {
+      contentStrong: '#881337',
+      bgWeakest: '#fff1f2',
+      bgDefault: '#f43f5e',
+      borderWeak: '#fda4af',
+    },
+    warning: {
+      contentStrong: '#78350f',
+      bgWeakest: '#fffbeb',
+      bgDefault: '#f59e0b',
+      borderWeak: '#fcd34d',
+    },
+    info: {
+      contentStrong: '#1e3a8a',
+      bgWeakest: '#eff6ff',
+      bgDefault: '#3b82f6',
+      borderWeak: '#93c5fd',
+    },
+    success: {
+      contentStrong: '#064e3b',
+      bgWeakest: '#ecfdf5',
+      bgDefault: '#10b981',
+      borderWeak: '#6ee7b7',
+    },
+  },
+  typography: {
+    displayFont: '"Playwrite HU", cursive',
+    bodyFont: '"Nunito", sans-serif',
+  },
+};
