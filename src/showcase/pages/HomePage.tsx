@@ -220,7 +220,7 @@ function TypographyPreview({ brand }: { brand: BrandTokens }) {
 
 /* ─── Main Home Page ─── */
 export function HomePage() {
-  const { brand, effects } = useBrand();
+  const { brand } = useBrand();
   const c = brand.colors;
   const [toggleVal, setToggleVal] = useState('active');
   const strongWeight = sw(brand);
