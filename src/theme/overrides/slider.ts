@@ -46,7 +46,7 @@ export function sliderOverrides(brand: BrandTokens, fx: Effects): Components<The
           },
           '&:hover, &.Mui-focusVisible': {
             boxShadow: [
-              '0px 0px 0px 8px rgba(138, 84, 221, 0.16)',
+              `0px 0px 0px 8px color-mix(in srgb, ${c.brand400} 16%, transparent)`,
               fx.shadows.primaryButton,
             ].join(', '),
           },

@@ -11,6 +11,13 @@ export function switchOverrides(brand: BrandTokens, fx: Effects): Components<The
   const pad = (sh - thumb) / 2;
 
   return {
+    MuiFormControlLabel: {
+      styleOverrides: {
+        root: {
+          gap: 8,
+        },
+      },
+    },
     MuiSwitch: {
       styleOverrides: {
         root: {

@@ -27,9 +27,8 @@ export function radioOverrides(brand: BrandTokens, fx: Effects): Components<Them
       width: size,
       height: size,
       borderRadius: '50%',
-      background: fx.gradients.inactive,
-      border: `1px solid ${c.borderDefault}`,
-      boxShadow: fx.shadows.inactive,
+      background: fx.gradients.primary,
+      boxShadow: fx.shadows.primaryButton,
       boxSizing: 'border-box' as const,
       display: 'flex',
       alignItems: 'center',
@@ -40,8 +39,9 @@ export function radioOverrides(brand: BrandTokens, fx: Effects): Components<Them
       width: dotSize,
       height: dotSize,
       borderRadius: '50%',
-      background: fx.gradients.primary,
-      boxShadow: fx.shadows.primaryButton,
+      background: c.contentStayLight,
+      border: `0.2px solid ${c.borderWeak}`,
+      boxShadow: fx.shadows.innerElement,
     },
   }));
 
@@ -56,7 +56,7 @@ export function radioOverrides(brand: BrandTokens, fx: Effects): Components<Them
         root: {
           padding: 8,
           '&:hover': {
-            backgroundColor: 'rgba(138, 84, 221, 0.04)',
+            backgroundColor: `color-mix(in srgb, ${c.brand400} 4%, transparent)`,
           },
         },
       },

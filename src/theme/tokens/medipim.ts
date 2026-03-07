@@ -25,6 +25,7 @@ export const MEDIPIM: BrandTokens = {
     contentStayLight: 'rgba(255, 255, 255, 0.95)',
     borderDefault: '#e0e4ea',
     borderWeak: '#eef1f6',
+    borderStrong: '#d4d8e0',
     borderStrongest: '#c8cdd4',
     error: {
       contentStrong: '#881337',

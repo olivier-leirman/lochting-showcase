@@ -25,6 +25,7 @@ export const LOCHTING: BrandTokens = {
     contentStayLight: '#fffffff2',
     borderDefault: '#ebebf1',
     borderWeak: '#f0f0f6',
+    borderStrong: '#dfdfe6',
     borderStrongest: '#d3d3dc',
     error: {
       contentStrong: '#881337',

@@ -47,11 +47,11 @@ export function buttonOverrides(brand: BrandTokens, fx: Effects): Components<The
         outlined: {
           background: fx.gradients.secondary,
           color: c.contentSecondary,
-          borderColor: c.borderDefault,
+          borderColor: c.borderStrong,
           boxShadow: fx.shadows.secondaryButton,
           '&:hover': {
             background: fx.gradients.secondary,
-            borderColor: c.brand300,
+            borderColor: c.borderStrong,
             filter: 'brightness(0.98)',
             boxShadow: [
               '2px 2px 10px 0px rgba(233, 230, 237, 0.2)',
@@ -66,12 +66,10 @@ export function buttonOverrides(brand: BrandTokens, fx: Effects): Components<The
         },
         text: {
           color: c.contentSecondary,
-          boxShadow: [
-            'inset 2px 2px 4px 0px rgba(252, 252, 255, 0.12)',
-            'inset 2px -2px 4px 0px rgba(158, 157, 160, 0.08)',
-          ].join(', '),
+          background: 'none',
+          boxShadow: 'none',
           '&:hover': {
-            backgroundColor: 'rgba(138, 84, 221, 0.04)',
+            backgroundColor: `color-mix(in srgb, ${c.brand400} 4%, transparent)`,
           },
         },
         sizeSmall: {
@@ -86,6 +84,10 @@ export function buttonOverrides(brand: BrandTokens, fx: Effects): Components<The
         root: {
           borderRadius: r.md,
           fontFamily: brand.typography.bodyFont,
+          color: c.contentTertiary,
+          '&:hover': {
+            backgroundColor: `color-mix(in srgb, ${c.brand400} 6%, transparent)`,
+          },
         },
         colorPrimary: {
           background: fx.gradients.primary,
@@ -94,6 +96,17 @@ export function buttonOverrides(brand: BrandTokens, fx: Effects): Components<The
           '&:hover': {
             background: fx.gradients.primary,
             filter: 'brightness(1.1)',
+          },
+        },
+        colorSecondary: {
+          background: fx.gradients.secondary,
+          color: c.contentSecondary,
+          border: `1px solid ${c.borderStrong}`,
+          boxShadow: fx.shadows.secondaryButton,
+          '&:hover': {
+            background: fx.gradients.secondary,
+            borderColor: c.borderStrong,
+            filter: 'brightness(0.98)',
           },
         },
       },

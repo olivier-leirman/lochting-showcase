@@ -47,6 +47,12 @@ export function textFieldOverrides(brand: BrandTokens, fx: Effects): Components<
             color: c.brand400,
           },
         },
+        outlined: {
+          // Align un-shrunk label with input padding (14px top)
+          '&:not(.MuiInputLabel-shrink)': {
+            transform: 'translate(12px, 14px) scale(1)',
+          },
+        },
       },
     },
     MuiTextField: {

@@ -1,17 +1,128 @@
-import { Box, Typography, Divider } from '@mui/material';
+import { useState } from 'react';
+import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
 import { CodeBlock } from '../blocks/CodeBlock';
+
+/* ─── Color format conversion ─── */
+
+type ColorFormat = 'hex' | 'rgb' | 'oklch' | 'hsl' | 'hsv' | 'hsb';
+
+function parseHex(hex: string): { r: number; g: number; b: number; a: number } {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const a = h.length === 8 ? parseInt(h.slice(6, 8), 16) / 255 : 1;
+  return { r, g, b, a };
+}
+
+function rgbToHsl(r: number, g: number, b: number) {
+  const r1 = r / 255, g1 = g / 255, b1 = b / 255;
+  const max = Math.max(r1, g1, b1), min = Math.min(r1, g1, b1);
+  const l = (max + min) / 2;
+  if (max === min) return { h: 0, s: 0, l };
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h = 0;
+  if (max === r1) h = ((g1 - b1) / d + (g1 < b1 ? 6 : 0)) / 6;
+  else if (max === g1) h = ((b1 - r1) / d + 2) / 6;
+  else h = ((r1 - g1) / d + 4) / 6;
+  return { h: h * 360, s, l };
+}
+
+function rgbToHsv(r: number, g: number, b: number) {
+  const r1 = r / 255, g1 = g / 255, b1 = b / 255;
+  const max = Math.max(r1, g1, b1), min = Math.min(r1, g1, b1);
+  const v = max;
+  if (max === 0) return { h: 0, s: 0, v: 0 };
+  const d = max - min;
+  const s = d / max;
+  if (max === min) return { h: 0, s: 0, v };
+  let h = 0;
+  if (max === r1) h = ((g1 - b1) / d + (g1 < b1 ? 6 : 0)) / 6;
+  else if (max === g1) h = ((b1 - r1) / d + 2) / 6;
+  else h = ((r1 - g1) / d + 4) / 6;
+  return { h: h * 360, s, v };
+}
+
+function rgbToOklch(r: number, g: number, b: number) {
+  // sRGB → linear sRGB
+  const toLinear = (c: number) => {
+    const s = c / 255;
+    return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  };
+  const lr = toLinear(r), lg = toLinear(g), lb = toLinear(b);
+
+  // linear sRGB → LMS (via OKLab matrix)
+  const l = 0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb;
+  const m = 0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb;
+  const s = 0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb;
+
+  // cube root
+  const l_ = Math.cbrt(l), m_ = Math.cbrt(m), s_ = Math.cbrt(s);
+
+  // LMS → OKLab
+  const L = 0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * s_;
+  const a = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_;
+  const b2 = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_;
+
+  // OKLab → OKLCH
+  const C = Math.sqrt(a * a + b2 * b2);
+  let H = Math.atan2(b2, a) * 180 / Math.PI;
+  if (H < 0) H += 360;
+
+  return { L, C, H };
+}
+
+function formatColor(hex: string, format: ColorFormat): string {
+  if (format === 'hex') return hex;
+
+  const { r, g, b, a } = parseHex(hex);
+  const alpha = a < 1 ? `, ${Math.round(a * 100) / 100}` : '';
+
+  switch (format) {
+    case 'rgb':
+      return a < 1 ? `rgba(${r}, ${g}, ${b}${alpha})` : `rgb(${r}, ${g}, ${b})`;
+    case 'hsl': {
+      const { h, s, l } = rgbToHsl(r, g, b);
+      return a < 1
+        ? `hsla(${Math.round(h)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%${alpha})`
+        : `hsl(${Math.round(h)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+    }
+    case 'hsv':
+    case 'hsb': {
+      const { h, s, v } = rgbToHsv(r, g, b);
+      const label = format;
+      return a < 1
+        ? `${label}a(${Math.round(h)}, ${Math.round(s * 100)}%, ${Math.round(v * 100)}%${alpha})`
+        : `${label}(${Math.round(h)}, ${Math.round(s * 100)}%, ${Math.round(v * 100)}%)`;
+    }
+    case 'oklch': {
+      const { L, C, H } = rgbToOklch(r, g, b);
+      const lStr = (Math.round(L * 1000) / 1000).toFixed(3);
+      const cStr = (Math.round(C * 1000) / 1000).toFixed(3);
+      const hStr = Math.round(H * 10) / 10;
+      return a < 1
+        ? `oklch(${lStr} ${cStr} ${hStr} / ${Math.round(a * 100) / 100})`
+        : `oklch(${lStr} ${cStr} ${hStr})`;
+    }
+  }
+}
+
+/* ─── Swatch ─── */
 
 interface SwatchProps {
   name: string;
   token: string;
   value: string;
+  format: ColorFormat;
 }
 
-function Swatch({ name, token, value }: SwatchProps) {
+function Swatch({ name, token, value, format }: SwatchProps) {
   const { brand } = useBrand();
   const sw = brand.typography.strongWeight ?? 600;
-  const isTransparent = value.includes('rgba') || value.includes('hsla');
+  const isTransparent = parseHex(value).a < 1;
+  const display = formatColor(value, format);
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}>
       <Box
@@ -45,7 +156,7 @@ function Swatch({ name, token, value }: SwatchProps) {
         </Typography>
       </Box>
       <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary', flexShrink: 0 }}>
-        {value}
+        {display}
       </Typography>
     </Box>
   );
@@ -54,6 +165,7 @@ function Swatch({ name, token, value }: SwatchProps) {
 export function ColorsPage() {
   const { brand } = useBrand();
   const c = brand.colors;
+  const [format, setFormat] = useState<ColorFormat>('hex');
 
   const sections = [
     {
@@ -95,6 +207,7 @@ export function ColorsPage() {
       swatches: [
         { name: 'Default', token: 'borderDefault', value: c.borderDefault },
         { name: 'Weak', token: 'borderWeak', value: c.borderWeak },
+        { name: 'Strong', token: 'borderStrong', value: c.borderStrong },
         { name: 'Strongest', token: 'borderStrongest', value: c.borderStrongest },
       ],
     },
@@ -125,13 +238,32 @@ export function ColorsPage() {
         language="tsx"
       />
 
-      <Divider sx={{ my: 4 }} />
+      <Box sx={{ my: 3 }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>
+          Color format
+        </Typography>
+        <ToggleButtonGroup
+          value={format}
+          exclusive
+          onChange={(_, v) => v && setFormat(v)}
+          size="small"
+        >
+          <ToggleButton value="hex">HEX</ToggleButton>
+          <ToggleButton value="rgb">RGB</ToggleButton>
+          <ToggleButton value="hsl">HSL</ToggleButton>
+          <ToggleButton value="hsv">HSV</ToggleButton>
+          <ToggleButton value="hsb">HSB</ToggleButton>
+          <ToggleButton value="oklch">OKLCH</ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
 
       {sections.map((section, i) => (
         <Box key={section.title} sx={{ mb: i < sections.length - 1 ? 4 : 0 }}>
           <Typography variant="h5" sx={{ mb: 1, fontFamily: 'inherit' }}>{section.title}</Typography>
           {section.swatches.map(s => (
-            <Swatch key={s.token} name={s.name} token={`colors.${s.token}`} value={s.value} />
+            <Swatch key={s.token} name={s.name} token={`colors.${s.token}`} value={s.value} format={format} />
           ))}
         </Box>
       ))}

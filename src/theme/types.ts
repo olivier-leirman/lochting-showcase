@@ -27,6 +27,7 @@ export interface BrandColors {
   contentStayLight: string;
   borderDefault: string;
   borderWeak: string;
+  borderStrong: string;
   borderStrongest: string;
   error: SystemColorSet;
   warning: SystemColorSet;

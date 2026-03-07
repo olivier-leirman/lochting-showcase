@@ -33,17 +33,19 @@ export function checkboxOverrides(brand: BrandTokens, fx: Effects): Components<T
       alignItems: 'center',
       justifyContent: 'center',
       boxSizing: 'border-box' as const,
+      overflow: 'hidden',
     },
   }, createElement('span', {
+    className: 'material-symbols-rounded',
     style: {
-      width: size * 0.28,
-      height: size * 0.48,
-      borderRight: `2px solid ${c.contentStayLight}`,
-      borderBottom: `2px solid ${c.contentStayLight}`,
-      transform: 'rotate(45deg)',
-      marginTop: -size * 0.06,
+      fontFamily: '"Material Symbols Rounded"',
+      fontVariationSettings: `'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' ${size}`,
+      fontSize: size,
+      lineHeight: 1,
+      color: c.contentStayLight,
+      WebkitFontSmoothing: 'antialiased',
     },
-  }));
+  }, 'check_small'));
 
   return {
     MuiCheckbox: {
@@ -56,7 +58,7 @@ export function checkboxOverrides(brand: BrandTokens, fx: Effects): Components<T
         root: {
           padding: 8,
           '&:hover': {
-            backgroundColor: 'rgba(138, 84, 221, 0.04)',
+            backgroundColor: `color-mix(in srgb, ${c.brand400} 4%, transparent)`,
           },
         },
       },

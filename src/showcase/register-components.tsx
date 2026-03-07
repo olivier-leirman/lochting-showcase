@@ -1,7 +1,88 @@
 import { useState } from 'react';
-import { Button, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box } from '@mui/material';
+import { Button, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography } from '@mui/material';
 import { Icon } from '../components/Icon';
+import { ToggleChip, ToggleChipGroup } from '../components/ToggleChip';
+import { useBrand } from '../theme/brand-context';
 import { registerComponent } from './registry';
+
+/* ─── Icon with Background helper ─── */
+function IconBg({ icon, iconColor, bg, size = 36 }: { icon: string; iconColor: string; bg: string; size?: number }) {
+  return (
+    <Box sx={{
+      width: size, height: size, borderRadius: 1.5,
+      bgcolor: bg,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <Icon name={icon} size={size * 0.5} color={iconColor} />
+    </Box>
+  );
+}
+
+function IconBgSoftDemo() {
+  const { brand } = useBrand();
+  const c = brand.colors;
+  return (
+    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="star" iconColor={c.brand400} bg={c.brand100} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Brand</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="error" iconColor={c.error.contentStrong} bg={c.error.bgWeakest} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Error</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="warning" iconColor={c.warning.contentStrong} bg={c.warning.bgWeakest} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Warning</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="check_circle" iconColor={c.success.contentStrong} bg={c.success.bgWeakest} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Success</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="info" iconColor={c.info.contentStrong} bg={c.info.bgWeakest} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Info</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="settings" iconColor={c.contentSecondary} bg={c.bgSunken} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Neutral</Typography>
+      </Box>
+    </Box>
+  );
+}
+
+function IconBgBrightDemo() {
+  const { brand } = useBrand();
+  const c = brand.colors;
+  return (
+    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="star" iconColor={c.contentStayLight} bg={c.brand400} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Brand</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="error" iconColor={c.contentStayLight} bg={c.error.bgDefault} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Error</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="warning" iconColor={c.contentStayLight} bg={c.warning.bgDefault} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Warning</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="check_circle" iconColor={c.contentStayLight} bg={c.success.bgDefault} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Success</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="info" iconColor={c.contentStayLight} bg={c.info.bgDefault} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Info</Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center' }}>
+        <IconBg icon="settings" iconColor={c.contentStayLight} bg={c.contentSecondary} />
+        <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Neutral</Typography>
+      </Box>
+    </Box>
+  );
+}
 
 // ─── Button ───
 registerComponent({
@@ -9,44 +90,69 @@ registerComponent({
   name: 'Button',
   description: 'Buttons trigger actions. The primary button uses a brand gradient with layered shadows for a premium tactile feel.',
   category: 'inputs',
-  importStatement: `import { Button } from '@mui/material';`,
+  importStatement: `import { Button, IconButton } from '@mui/material';`,
   examples: [
     {
       name: 'Primary',
-      code: `<Button variant="contained" color="primary">Primary</Button>`,
-      render: () => <Button variant="contained" color="primary">Primary</Button>,
-    },
-    {
-      name: 'Secondary (Outlined)',
-      code: `<Button variant="outlined">Secondary</Button>`,
-      render: () => <Button variant="outlined">Secondary</Button>,
-    },
-    {
-      name: 'Tertiary (Text)',
-      code: `<Button variant="text">Tertiary</Button>`,
-      render: () => <Button variant="text">Tertiary</Button>,
-    },
-    {
-      name: 'All Variants',
       code: `<Button variant="contained" color="primary">Primary</Button>
-<Button variant="outlined">Secondary</Button>
-<Button variant="text">Tertiary</Button>`,
+<Button variant="contained" color="primary" startIcon={<Icon name="add" />}>Create</Button>
+<Button variant="contained" color="primary" endIcon={<Icon name="chevron_right" />}>Next</Button>
+<IconButton color="primary"><Icon name="add" /></IconButton>`,
       render: () => (
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <Button variant="contained" color="primary">Primary</Button>
-          <Button variant="outlined">Secondary</Button>
-          <Button variant="text">Tertiary</Button>
+          <Button variant="contained" color="primary" startIcon={<Icon name="add" size={20} />}>Create</Button>
+          <Button variant="contained" color="primary" endIcon={<Icon name="chevron_right" size={20} />}>Next</Button>
+          <IconButton color="primary"><Icon name="add" /></IconButton>
         </Box>
       ),
     },
     {
-      name: 'Icon Buttons',
-      code: `<IconButton color="primary"><Icon name="add" /></IconButton>
-<IconButton><Icon name="search" /></IconButton>`,
+      name: 'Secondary',
+      code: `<Button variant="outlined">Secondary</Button>
+<Button variant="outlined" startIcon={<Icon name="edit" />}>Edit</Button>
+<Button variant="outlined" endIcon={<Icon name="stat_minus_1" />}>Options</Button>
+<IconButton color="secondary"><Icon name="edit" /></IconButton>`,
       render: () => (
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <IconButton color="primary"><Icon name="add" /></IconButton>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Button variant="outlined">Secondary</Button>
+          <Button variant="outlined" startIcon={<Icon name="edit" size={20} />}>Edit</Button>
+          <Button variant="outlined" endIcon={<Icon name="stat_minus_1" size={20} />}>Options</Button>
+          <IconButton color="secondary"><Icon name="edit" /></IconButton>
+        </Box>
+      ),
+    },
+    {
+      name: 'Tertiary',
+      code: `<Button variant="text">Tertiary</Button>
+<Button variant="text" startIcon={<Icon name="visibility" />}>View</Button>
+<Button variant="text" endIcon={<Icon name="open_in_new" />}>Link</Button>
+<IconButton><Icon name="visibility" /></IconButton>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Button variant="text">Tertiary</Button>
+          <Button variant="text" startIcon={<Icon name="visibility" size={20} />}>View</Button>
+          <Button variant="text" endIcon={<Icon name="open_in_new" size={20} />}>Link</Button>
+          <IconButton><Icon name="visibility" /></IconButton>
+        </Box>
+      ),
+    },
+    {
+      name: 'Utility Buttons',
+      code: `<IconButton><Icon name="close" /></IconButton>
+<IconButton><Icon name="content_copy" /></IconButton>
+<IconButton><Icon name="visibility" /></IconButton>
+<IconButton><Icon name="search" /></IconButton>
+<IconButton><Icon name="chevron_right" /></IconButton>
+<IconButton><Icon name="more_vert" /></IconButton>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <IconButton><Icon name="close" /></IconButton>
+          <IconButton><Icon name="content_copy" /></IconButton>
+          <IconButton><Icon name="visibility" /></IconButton>
           <IconButton><Icon name="search" /></IconButton>
+          <IconButton><Icon name="chevron_right" /></IconButton>
+          <IconButton><Icon name="more_vert" /></IconButton>
         </Box>
       ),
     },
@@ -323,7 +429,7 @@ registerComponent({
 registerComponent({
   id: 'chip',
   name: 'Chip',
-  description: 'Chips use a brand-tinted background with subtle inner shadows. Available in multiple color variants.',
+  description: 'Chips use a brand-tinted background with subtle inner shadows. Available in multiple color variants with optional icons, delete buttons, and count badges.',
   category: 'data-display',
   importStatement: `import { Chip } from '@mui/material';`,
   examples: [
@@ -347,13 +453,69 @@ registerComponent({
       ),
     },
     {
-      name: 'With Icon & Delete',
-      code: `<Chip label="Tag" color="primary" icon={<Icon name="add" size={16} />} />
-<Chip label="Removable" color="primary" onDelete={() => {}} />`,
+      name: 'With Icon',
+      code: `<Chip label="Add" color="primary" icon={<Icon name="add" size={16} />} />
+<Chip label="Star" color="warning" icon={<Icon name="star" size={16} />} />
+<Chip label="Info" color="info" icon={<Icon name="info" size={16} />} />`,
       render: () => (
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Chip label="Tag" color="primary" size="small" icon={<Icon name="add" size={16} />} />
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Chip label="Add" color="primary" size="small" icon={<Icon name="add" size={16} />} />
+          <Chip label="Star" color="warning" size="small" icon={<Icon name="star" size={16} />} />
+          <Chip label="Info" color="info" size="small" icon={<Icon name="info" size={16} />} />
+        </Box>
+      ),
+    },
+    {
+      name: 'With Delete',
+      code: `<Chip label="Removable" color="primary" onDelete={() => {}} />
+<Chip label="Tag" color="secondary" onDelete={() => {}} />
+<Chip label="Filter" color="error" onDelete={() => {}} />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
           <Chip label="Removable" color="primary" size="small" onDelete={() => {}} />
+          <Chip label="Tag" color="secondary" size="small" onDelete={() => {}} />
+          <Chip label="Filter" color="error" size="small" onDelete={() => {}} />
+        </Box>
+      ),
+    },
+    {
+      name: 'With Icon & Delete',
+      code: `<Chip label="Category" color="primary" icon={<Icon name="label" size={16} />} onDelete={() => {}} />
+<Chip label="Location" color="secondary" icon={<Icon name="location_on" size={16} />} onDelete={() => {}} />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Chip label="Category" color="primary" size="small" icon={<Icon name="label" size={16} />} onDelete={() => {}} />
+          <Chip label="Location" color="secondary" size="small" icon={<Icon name="location_on" size={16} />} onDelete={() => {}} />
+        </Box>
+      ),
+    },
+    {
+      name: 'Number Badge',
+      code: `<Chip label="4" color="error" size="small" />
+<Chip label="12" color="primary" size="small" />
+<Chip label="1" color="warning" size="small" />
+<Chip label="3" color="success" size="small" />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Chip label="4" color="error" size="small" />
+          <Chip label="12" color="primary" size="small" />
+          <Chip label="1" color="warning" size="small" />
+          <Chip label="3" color="success" size="small" />
+        </Box>
+      ),
+    },
+    {
+      name: 'Status Badges',
+      code: `<Chip label="Open" color="primary" size="small" />
+<Chip label="Overdue" color="error" size="small" />
+<Chip label="Control" color="warning" size="small" />
+<Chip label="Done" color="success" size="small" />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Chip label="Open" color="primary" size="small" />
+          <Chip label="Overdue" color="error" size="small" />
+          <Chip label="Control" color="warning" size="small" />
+          <Chip label="Done" color="success" size="small" />
         </Box>
       ),
     },
@@ -362,8 +524,8 @@ registerComponent({
     { name: 'label', type: 'string', description: 'The chip label' },
     { name: 'color', type: '"primary" | "secondary" | "error" | ...', default: '"default"', description: 'The color variant' },
     { name: 'size', type: '"small" | "medium"', default: '"medium"', description: 'The chip size' },
-    { name: 'icon', type: 'ReactNode', description: 'Icon element' },
-    { name: 'onDelete', type: '() => void', description: 'If set, shows a delete icon' },
+    { name: 'icon', type: 'ReactNode', description: 'Icon element shown before the label' },
+    { name: 'onDelete', type: '() => void', description: 'If set, shows a delete icon after the label' },
   ],
 });
 
@@ -371,15 +533,33 @@ registerComponent({
 registerComponent({
   id: 'badge',
   name: 'Badge',
-  description: 'Badges use the primary brand gradient for a pill-shaped notification indicator.',
+  description: 'Badges are styled like small chips — pill-shaped with a tinted background and subtle inner shadows. They share the same visual treatment as chips.',
   category: 'data-display',
   importStatement: `import { Badge } from '@mui/material';`,
   examples: [
     {
-      name: 'Basic',
-      code: `<Badge badgeContent={4} color="primary">
-  <Icon name="notifications" />
-</Badge>`,
+      name: 'Color Variants',
+      code: `<Badge badgeContent={4} color="primary"><Icon name="notifications" /></Badge>
+<Badge badgeContent={2} color="error"><Icon name="mail" /></Badge>
+<Badge badgeContent={1} color="warning"><Icon name="warning" /></Badge>
+<Badge badgeContent={3} color="success"><Icon name="check_circle" /></Badge>
+<Badge badgeContent={5} color="info"><Icon name="info" /></Badge>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 4 }}>
+          <Badge badgeContent={4} color="primary"><Icon name="notifications" /></Badge>
+          <Badge badgeContent={2} color="error"><Icon name="mail" /></Badge>
+          <Badge badgeContent={1} color="warning"><Icon name="warning" /></Badge>
+          <Badge badgeContent={3} color="success"><Icon name="check_circle" /></Badge>
+          <Badge badgeContent={5} color="info"><Icon name="info" /></Badge>
+        </Box>
+      ),
+    },
+    {
+      name: 'Counts',
+      code: `<Badge badgeContent={1} color="primary"><Icon name="notifications" /></Badge>
+<Badge badgeContent={4} color="primary"><Icon name="notifications" /></Badge>
+<Badge badgeContent={12} color="primary"><Icon name="notifications" /></Badge>
+<Badge badgeContent={99} color="primary"><Icon name="notifications" /></Badge>`,
       render: () => (
         <Box sx={{ display: 'flex', gap: 4 }}>
           <Badge badgeContent={1} color="primary"><Icon name="notifications" /></Badge>
@@ -435,6 +615,91 @@ registerComponent({
   ],
 });
 
+// ─── Toggle Chip ───
+registerComponent({
+  id: 'toggle-chip',
+  name: 'Toggle Chip',
+  description: 'A filter chip with active/inactive toggle states. Active chips use the brand background with inner shadows, inactive chips use the secondary gradient. Supports exclusive (single) and multiple selection.',
+  category: 'inputs',
+  importStatement: `import { ToggleChip, ToggleChipGroup } from './components/ToggleChip';`,
+  examples: [
+    {
+      name: 'Exclusive Selection',
+      code: `const [value, setValue] = useState('all');
+
+<ToggleChipGroup value={value} exclusive onChange={(v) => setValue(v as string)}>
+  <ToggleChip value="all" label="All" count={9} />
+  <ToggleChip value="webshop" label="Webshop" icon="shopping_cart" count={4} />
+  <ToggleChip value="prescriptions" label="Prescriptions" icon="prescriptions" count={1} />
+  <ToggleChip value="reservations" label="Reservations" icon="inventory_2" count={4} />
+</ToggleChipGroup>`,
+      render: () => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [val, setVal] = useState<string | string[]>('all');
+        return (
+          <ToggleChipGroup value={val} exclusive onChange={setVal}>
+            <ToggleChip value="all" label="All" count={9} />
+            <ToggleChip value="webshop" label="Webshop" icon="shopping_cart" count={4} />
+            <ToggleChip value="prescriptions" label="Prescriptions" icon="prescriptions" count={1} />
+            <ToggleChip value="reservations" label="Reservations" icon="inventory_2" count={4} />
+          </ToggleChipGroup>
+        );
+      },
+    },
+    {
+      name: 'Multiple Selection',
+      code: `const [value, setValue] = useState(['webshop', 'prescriptions']);
+
+<ToggleChipGroup value={value} onChange={(v) => setValue(v as string[])}>
+  <ToggleChip value="webshop" label="Webshop" icon="shopping_cart" />
+  <ToggleChip value="prescriptions" label="Prescriptions" icon="prescriptions" />
+  <ToggleChip value="reservations" label="Reservations" icon="inventory_2" />
+  <ToggleChip value="kiosk" label="Kiosk" icon="point_of_sale" />
+</ToggleChipGroup>`,
+      render: () => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [val, setVal] = useState<string | string[]>(['webshop', 'prescriptions']);
+        return (
+          <ToggleChipGroup value={val} onChange={setVal}>
+            <ToggleChip value="webshop" label="Webshop" icon="shopping_cart" />
+            <ToggleChip value="prescriptions" label="Prescriptions" icon="prescriptions" />
+            <ToggleChip value="reservations" label="Reservations" icon="inventory_2" />
+            <ToggleChip value="kiosk" label="Kiosk" icon="point_of_sale" />
+          </ToggleChipGroup>
+        );
+      },
+    },
+    {
+      name: 'Without Icons',
+      code: `const [value, setValue] = useState('today');
+
+<ToggleChipGroup value={value} exclusive onChange={(v) => setValue(v as string)}>
+  <ToggleChip value="today" label="Today" count={3} />
+  <ToggleChip value="week" label="This Week" count={12} />
+  <ToggleChip value="month" label="This Month" count={48} />
+</ToggleChipGroup>`,
+      render: () => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [val, setVal] = useState<string | string[]>('today');
+        return (
+          <ToggleChipGroup value={val} exclusive onChange={setVal}>
+            <ToggleChip value="today" label="Today" count={3} />
+            <ToggleChip value="week" label="This Week" count={12} />
+            <ToggleChip value="month" label="This Month" count={48} />
+          </ToggleChipGroup>
+        );
+      },
+    },
+  ],
+  props: [
+    { name: 'label', type: 'string', description: 'The chip label text' },
+    { name: 'value', type: 'string', description: 'Unique value for selection tracking' },
+    { name: 'count', type: 'number', description: 'Optional count badge shown after the label' },
+    { name: 'icon', type: 'string', description: 'Material Symbols icon name shown before the label' },
+    { name: 'selected', type: 'boolean', description: 'Whether the chip is selected (managed by ToggleChipGroup)' },
+  ],
+});
+
 // ─── Icon ───
 registerComponent({
   id: 'icon',
@@ -479,16 +744,39 @@ registerComponent({
     },
     {
       name: 'Filled vs Outline',
-      code: `<Icon name="favorite" />          {/* outline */}
-<Icon name="favorite" filled />   {/* filled */}
+      code: `{/* Outline (default) */}
+<Icon name="favorite" />
 <Icon name="star" />
-<Icon name="star" filled />`,
+<Icon name="visibility" />
+<Icon name="check_circle" />
+<Icon name="notifications" />
+<Icon name="home" />
+
+{/* Filled */}
+<Icon name="favorite" filled />
+<Icon name="star" filled />
+<Icon name="visibility" filled />
+<Icon name="check_circle" filled />
+<Icon name="notifications" filled />
+<Icon name="home" filled />`,
       render: () => (
-        <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-          <Icon name="favorite" />
-          <Icon name="favorite" filled />
-          <Icon name="star" />
-          <Icon name="star" filled />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+            <Icon name="favorite" />
+            <Icon name="star" />
+            <Icon name="visibility" />
+            <Icon name="check_circle" />
+            <Icon name="notifications" />
+            <Icon name="home" />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+            <Icon name="favorite" filled />
+            <Icon name="star" filled />
+            <Icon name="visibility" filled />
+            <Icon name="check_circle" filled />
+            <Icon name="notifications" filled />
+            <Icon name="home" filled />
+          </Box>
         </Box>
       ),
     },
@@ -506,6 +794,20 @@ registerComponent({
           <Icon name="warning" color="#ed6c02" />
         </Box>
       ),
+    },
+    {
+      name: 'With Background (Soft)',
+      code: `<Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: 'brand100', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <Icon name="star" size={18} color="brand400" />
+</Box>`,
+      render: () => <IconBgSoftDemo />,
+    },
+    {
+      name: 'With Background (Bright)',
+      code: `<Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: 'brand400', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <Icon name="star" size={18} color="white" />
+</Box>`,
+      render: () => <IconBgBrightDemo />,
     },
   ],
   props: [

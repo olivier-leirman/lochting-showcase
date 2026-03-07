@@ -29,7 +29,7 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.lg,
           letterSpacing: '0.46px',
-          color: c.contentSpot,
+          color: c.contentSecondary,
           padding: '12px 24px',
           lineHeight: 1,
           '&.Mui-selected': {
@@ -41,7 +41,7 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
             },
           },
           '&:hover': {
-            backgroundColor: 'rgba(138, 84, 221, 0.04)',
+            backgroundColor: `color-mix(in srgb, ${c.brand400} 4%, transparent)`,
           },
         },
       },
