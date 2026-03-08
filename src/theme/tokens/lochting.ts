@@ -30,6 +30,7 @@ export const LOCHTING: BrandTokens = {
     contentSecondary: '#464170',   // neutral/dark/400
     contentTertiary:  '#7e7699',   // neutral/dark/200
     contentSpot:      '#9189a3',   // neutral/dark/150
+    contentSpotWeak:  '#20084526', // contentPrimary at ~15% — transparent overlay
     contentStayLight: '#fcfcff',   // neutral/light/50 — always light
     contentStayDark:  '#200845',   // brand/900 — always dark
     contentInversePrimary:   '#fcfcff',   // neutral/light/50
@@ -84,6 +85,7 @@ export const LOCHTING: BrandTokens = {
     contentSecondary: '#d5d5db',   // neutral/light/275
     contentTertiary:  '#a098b2',   // neutral/dark/100
     contentSpot:      '#9189a3',   // neutral/dark/150
+    contentSpotWeak:  '#fcfcff33', // contentStayLight at ~20% — transparent overlay
     contentStayLight: '#fcfcff',   // stays light
     contentStayDark:  '#200845',   // stays dark
     contentInversePrimary:   '#200845',   // brand/900 (swap)
@@ -97,27 +99,26 @@ export const LOCHTING: BrandTokens = {
     borderStrongest: '#736e99',
 
     // System feedback — from Figma custom/theme System/* DM
-    // Most stay the same! Only bgWeakest darkens
     error: {
-      contentStrong: '#881337',
+      contentStrong: '#fda4af',  // borderWeak — bright for dark bg
       bgWeakest: '#540c22',
       bgDefault: '#f43f5e',
       borderWeak: '#fda4af',
     },
     warning: {
-      contentStrong: '#78350f',
+      contentStrong: '#fcd34d',  // borderWeak — bright for dark bg
       bgWeakest: '#451e09',
       bgDefault: '#fbbf24',
       borderWeak: '#fcd34d',
     },
     info: {
-      contentStrong: '#1e3a8a',
+      contentStrong: '#93c5fd',  // borderWeak — bright for dark bg
       bgWeakest: '#132457',
       bgDefault: '#3b82f6',
       borderWeak: '#93c5fd',
     },
     success: {
-      contentStrong: '#064e3b',
+      contentStrong: '#6ee7b7',  // borderWeak — bright for dark bg
       bgWeakest: '#043629',
       bgDefault: '#10b981',
       borderWeak: '#6ee7b7',

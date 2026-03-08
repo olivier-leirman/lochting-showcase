@@ -1,7 +1,16 @@
 import { useState, useRef } from 'react';
-import { Button, ButtonGroup, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography, Popper, Grow, Paper, ClickAwayListener, MenuList } from '@mui/material';
+import { Button, ButtonGroup, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography, Popper, Grow, Paper, ClickAwayListener, MenuList, Autocomplete, InputAdornment, Tab, Tabs, Stepper, Step, StepLabel, StepContent, LinearProgress, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Accordion, AccordionSummary, AccordionDetails, Card, CardContent, CardActions, CardHeader, Alert, Stack, Drawer, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText, AppBar, Toolbar, Breadcrumbs, Link, Divider, Avatar } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import dayjs from 'dayjs';
 import { Icon } from '../components/Icon';
 import { ToggleChip, ToggleChipGroup } from '../components/ToggleChip';
+import { SearchField } from '../components/SearchField';
+import { AppSidebar } from '../components/AppSidebar';
+import { AppTopBar, TopBarActions } from '../components/AppTopBar';
 import { useBrand } from '../theme/brand-context';
 import { registerComponent } from './registry';
 
@@ -203,6 +212,17 @@ registerComponent({
       render: () => <FormControlLabel control={<Checkbox defaultChecked />} label="Accept terms" />,
     },
     {
+      name: 'Sizes',
+      code: `<Checkbox defaultChecked size="small" />
+<Checkbox defaultChecked />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Small" />
+          <FormControlLabel control={<Checkbox defaultChecked />} label="Medium" />
+        </Box>
+      ),
+    },
+    {
       name: 'Disabled',
       code: `<Checkbox disabled />
 <Checkbox disabled checked />`,
@@ -217,6 +237,7 @@ registerComponent({
   props: [
     { name: 'checked', type: 'boolean', description: 'If true, the checkbox is checked' },
     { name: 'defaultChecked', type: 'boolean', description: 'The default checked state' },
+    { name: 'size', type: "'small' | 'medium'", default: "'medium'", description: 'The size of the checkbox' },
     { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the checkbox is disabled' },
     { name: 'onChange', type: '(event, checked) => void', description: 'Callback fired when the state changes' },
   ],
@@ -376,6 +397,60 @@ registerComponent({
         </Box>
       ),
     },
+    {
+      name: 'Multiline / Textarea',
+      code: `<TextField label="Message" multiline rows={3} />
+<TextField label="Auto-grow" multiline minRows={2} maxRows={6} />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField label="Message" multiline rows={3} size="small" sx={{ width: 280 }} />
+          <TextField label="Auto-grow" multiline minRows={2} maxRows={6} size="small" placeholder="Type to see auto-grow..." sx={{ width: 280 }} />
+        </Box>
+      ),
+    },
+    {
+      name: 'With Adornments',
+      code: `import { InputAdornment } from '@mui/material';
+
+<TextField
+  label="Amount"
+  slotProps={{
+    input: {
+      startAdornment: <InputAdornment position="start">€</InputAdornment>,
+    },
+  }}
+/>
+<TextField
+  label="Weight"
+  slotProps={{
+    input: {
+      endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+    },
+  }}
+/>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <TextField
+            label="Amount"
+            size="small"
+            slotProps={{
+              input: {
+                startAdornment: <InputAdornment position="start">€</InputAdornment>,
+              },
+            }}
+          />
+          <TextField
+            label="Weight"
+            size="small"
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+              },
+            }}
+          />
+        </Box>
+      ),
+    },
   ],
   props: [
     { name: 'label', type: 'string', description: 'The label text' },
@@ -385,6 +460,10 @@ registerComponent({
     { name: 'helperText', type: 'string', description: 'Helper text below the input' },
     { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the input is disabled' },
     { name: 'size', type: '"small" | "medium"', default: '"medium"', description: 'The size of the input' },
+    { name: 'multiline', type: 'boolean', default: 'false', description: 'If true, renders as a textarea' },
+    { name: 'rows', type: 'number', description: 'Fixed number of rows for multiline' },
+    { name: 'minRows', type: 'number', description: 'Minimum rows for auto-growing textarea' },
+    { name: 'maxRows', type: 'number', description: 'Maximum rows for auto-growing textarea' },
   ],
 });
 
@@ -519,11 +598,37 @@ registerComponent({
         </Box>
       ),
     },
+    {
+      name: 'Sizes',
+      code: `<Chip label="Small" color="primary" size="small" />
+<Chip label="Medium" color="primary" size="medium" />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+          <Chip label="Small" color="primary" size="small" />
+          <Chip label="Medium" color="primary" size="medium" />
+          <Chip label="Small" color="secondary" size="small" />
+          <Chip label="Medium" color="secondary" size="medium" />
+        </Box>
+      ),
+    },
+    {
+      name: 'Clickable',
+      code: `<Chip label="Active" color="primary" size="medium" clickable />
+<Chip label="Inactive" color="secondary" size="medium" clickable />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+          <Chip label="Active" color="primary" size="medium" clickable />
+          <Chip label="Inactive" color="secondary" size="medium" clickable />
+          <Chip label="With Icon" color="primary" size="medium" clickable icon={<Icon name="shopping_cart" size={18} />} />
+        </Box>
+      ),
+    },
   ],
   props: [
     { name: 'label', type: 'string', description: 'The chip label' },
     { name: 'color', type: '"primary" | "secondary" | "error" | ...', default: '"default"', description: 'The color variant' },
-    { name: 'size', type: '"small" | "medium"', default: '"medium"', description: 'The chip size' },
+    { name: 'size', type: '"small" | "medium"', default: '"small"', description: 'The chip size (small: 24px, medium: 40px)' },
+    { name: 'clickable', type: 'boolean', default: 'false', description: 'If true, the chip has hover/active states for interactive use' },
     { name: 'icon', type: 'ReactNode', description: 'Icon element shown before the label' },
     { name: 'onDelete', type: '() => void', description: 'If set, shows a delete icon after the label' },
   ],
@@ -1047,5 +1152,2047 @@ registerComponent({
     { name: 'color', type: 'string', default: '"inherit"', description: 'CSS color or theme color' },
     { name: 'filled', type: 'boolean', default: 'false', description: 'If true, uses the filled variant' },
     { name: 'sx', type: 'SxProps', description: 'Additional MUI sx styles' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   SearchField
+   ───────────────────────────────────── */
+registerComponent({
+  id: 'search-field',
+  name: 'SearchField',
+  description: 'A search-oriented text field with a leading search icon and optional keyboard shortcut badge. Built on top of MUI TextField.',
+  category: 'inputs',
+  importStatement: `import { SearchField } from '@/components/SearchField';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `<SearchField />`,
+      render: () => <SearchField />,
+    },
+    {
+      name: 'With Keyboard Shortcut',
+      code: `<SearchField shortcut="⌘ S" />`,
+      render: () => <SearchField shortcut="⌘ S" />,
+    },
+    {
+      name: 'Custom Placeholder',
+      code: `<SearchField placeholder="Find components…" shortcut="⌘ K" />`,
+      render: () => <SearchField placeholder="Find components…" shortcut="⌘ K" />,
+    },
+    {
+      name: 'Medium Size',
+      code: `<SearchField size="medium" shortcut="⌘ S" />`,
+      render: () => <SearchField size="medium" shortcut="⌘ S" />,
+    },
+    {
+      name: 'Full Width',
+      code: `<SearchField fullWidth shortcut="/" />`,
+      render: () => <SearchField fullWidth shortcut="/" />,
+    },
+  ],
+  props: [
+    { name: 'placeholder', type: 'string', default: '"Search..."', description: 'Input placeholder text' },
+    { name: 'shortcut', type: 'string', description: 'Keyboard shortcut label to display (e.g. "⌘ S")' },
+    { name: 'size', type: '"small" | "medium"', default: '"small"', description: 'Field size' },
+    { name: 'fullWidth', type: 'boolean', default: 'false', description: 'If true, takes full container width' },
+    { name: '...rest', type: 'TextFieldProps', description: 'All other MUI TextField props are forwarded' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Autocomplete (single + multi-select)
+   ───────────────────────────────────── */
+const demoOptions = [
+  { label: 'Apple' },
+  { label: 'Banana' },
+  { label: 'Cherry' },
+  { label: 'Date' },
+  { label: 'Elderberry' },
+  { label: 'Fig' },
+  { label: 'Grape' },
+];
+
+const demoStringOptions = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry', 'Fig', 'Grape'];
+
+registerComponent({
+  id: 'autocomplete',
+  name: 'Autocomplete',
+  description: 'MUI Autocomplete with single-select, multi-select (chips), and free-text search modes. Inherits TextField styling from the theme.',
+  category: 'inputs',
+  importStatement: `import { Autocomplete, TextField } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Single Select',
+      code: `<Autocomplete
+  options={['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']}
+  renderInput={(params) => <TextField {...params} label="Fruit" />}
+  sx={{ width: 300 }}
+/>`,
+      render: () => (
+        <Autocomplete
+          options={demoStringOptions}
+          renderInput={(params) => <TextField {...params} label="Fruit" />}
+          sx={{ width: 300 }}
+        />
+      ),
+    },
+    {
+      name: 'Multi Select (Chips)',
+      code: `<Autocomplete
+  multiple
+  options={['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry']}
+  defaultValue={['Apple', 'Cherry']}
+  renderInput={(params) => <TextField {...params} label="Fruits" />}
+  sx={{ width: 400 }}
+/>`,
+      render: () => (
+        <Autocomplete
+          multiple
+          options={demoStringOptions}
+          defaultValue={['Apple', 'Cherry']}
+          renderInput={(params) => <TextField {...params} label="Fruits" />}
+          sx={{ width: 400 }}
+        />
+      ),
+    },
+    {
+      name: 'With Placeholder (no label)',
+      code: `<Autocomplete
+  options={['Apple', 'Banana', 'Cherry', 'Date']}
+  renderInput={(params) => <TextField {...params} placeholder="Search fruits…" />}
+  sx={{ width: 300 }}
+/>`,
+      render: () => (
+        <Autocomplete
+          options={demoStringOptions}
+          renderInput={(params) => <TextField {...params} placeholder="Search fruits…" />}
+          sx={{ width: 300 }}
+        />
+      ),
+    },
+    {
+      name: 'Free Solo (search / custom input)',
+      code: `<Autocomplete
+  freeSolo
+  options={['Apple', 'Banana', 'Cherry', 'Date']}
+  renderInput={(params) => <TextField {...params} label="Search or type…" />}
+  sx={{ width: 300 }}
+/>`,
+      render: () => (
+        <Autocomplete
+          freeSolo
+          options={demoStringOptions}
+          renderInput={(params) => <TextField {...params} label="Search or type…" />}
+          sx={{ width: 300 }}
+        />
+      ),
+    },
+    {
+      name: 'Disabled',
+      code: `<Autocomplete
+  disabled
+  options={['Apple', 'Banana', 'Cherry']}
+  defaultValue="Apple"
+  renderInput={(params) => <TextField {...params} label="Disabled" />}
+  sx={{ width: 300 }}
+/>`,
+      render: () => (
+        <Autocomplete
+          disabled
+          options={demoStringOptions}
+          defaultValue="Apple"
+          renderInput={(params) => <TextField {...params} label="Disabled" />}
+          sx={{ width: 300 }}
+        />
+      ),
+    },
+    {
+      name: 'Multi Select with Limit Tags',
+      code: `<Autocomplete
+  multiple
+  limitTags={2}
+  options={['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry', 'Fig', 'Grape']}
+  defaultValue={['Apple', 'Cherry', 'Fig', 'Grape']}
+  renderInput={(params) => <TextField {...params} label="Max 2 visible" />}
+  sx={{ width: 400 }}
+/>`,
+      render: () => (
+        <Autocomplete
+          multiple
+          limitTags={2}
+          options={demoStringOptions}
+          defaultValue={['Apple', 'Cherry', 'Fig', 'Grape']}
+          renderInput={(params) => <TextField {...params} label="Max 2 visible" />}
+          sx={{ width: 400 }}
+        />
+      ),
+    },
+  ],
+  props: [
+    { name: 'options', type: 'T[]', description: 'Array of options to display in the dropdown' },
+    { name: 'multiple', type: 'boolean', default: 'false', description: 'If true, allows selecting multiple values (rendered as chips)' },
+    { name: 'freeSolo', type: 'boolean', default: 'false', description: 'If true, allows arbitrary text input (not just from options)' },
+    { name: 'limitTags', type: 'number', description: 'Max number of tags/chips visible before "+N" overflow label' },
+    { name: 'defaultValue', type: 'T | T[]', description: 'Default selected value(s)' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the input is disabled' },
+    { name: 'renderInput', type: '(params) => ReactNode', description: 'Render function for the text field — required' },
+    { name: 'onChange', type: '(event, value) => void', description: 'Callback when value changes' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Tabs
+   ───────────────────────────────────── */
+function TabsDemo() {
+  const [value, setValue] = useState(0);
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Tabs value={value} onChange={(_, v) => setValue(v)}>
+        <Tab label="Overview" />
+        <Tab label="Features" />
+        <Tab label="Pricing" />
+      </Tabs>
+    </Box>
+  );
+}
+
+function TabsWithIconsDemo() {
+  const [value, setValue] = useState(0);
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Tabs value={value} onChange={(_, v) => setValue(v)}>
+        <Tab icon={<Icon name="home" size={18} />} iconPosition="start" label="Home" />
+        <Tab icon={<Icon name="star" size={18} />} iconPosition="start" label="Favorites" />
+        <Tab icon={<Icon name="settings" size={18} />} iconPosition="start" label="Settings" />
+      </Tabs>
+    </Box>
+  );
+}
+
+function TabsScrollableDemo() {
+  const [value, setValue] = useState(0);
+  return (
+    <Box sx={{ maxWidth: 400 }}>
+      <Tabs value={value} onChange={(_, v) => setValue(v)} variant="scrollable" scrollButtons="auto">
+        <Tab label="Dashboard" />
+        <Tab label="Analytics" />
+        <Tab label="Reports" />
+        <Tab label="Settings" />
+        <Tab label="Integrations" />
+        <Tab label="Billing" />
+      </Tabs>
+    </Box>
+  );
+}
+
+function TabsDisabledDemo() {
+  const [value, setValue] = useState(0);
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Tabs value={value} onChange={(_, v) => setValue(v)}>
+        <Tab label="Active" />
+        <Tab label="Also active" />
+        <Tab label="Disabled" disabled />
+      </Tabs>
+    </Box>
+  );
+}
+
+function TabsCenteredDemo() {
+  const [value, setValue] = useState(0);
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Tabs value={value} onChange={(_, v) => setValue(v)} centered>
+        <Tab label="First" />
+        <Tab label="Second" />
+        <Tab label="Third" />
+      </Tabs>
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'tabs',
+  name: 'Tabs',
+  description: 'Navigation tabs for switching between views. Features a gradient indicator, brand-styled active/hover states, and supports icons, scrollable, and centered variants.',
+  category: 'navigation',
+  importStatement: `import { Tabs, Tab } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `const [value, setValue] = useState(0);
+
+<Tabs value={value} onChange={(_, v) => setValue(v)}>
+  <Tab label="Overview" />
+  <Tab label="Features" />
+  <Tab label="Pricing" />
+</Tabs>`,
+      render: () => <TabsDemo />,
+    },
+    {
+      name: 'With Icons',
+      code: `<Tabs value={value} onChange={(_, v) => setValue(v)}>
+  <Tab icon={<Icon name="home" size={18} />} iconPosition="start" label="Home" />
+  <Tab icon={<Icon name="star" size={18} />} iconPosition="start" label="Favorites" />
+  <Tab icon={<Icon name="settings" size={18} />} iconPosition="start" label="Settings" />
+</Tabs>`,
+      render: () => <TabsWithIconsDemo />,
+    },
+    {
+      name: 'Scrollable',
+      code: `<Tabs value={value} onChange={(_, v) => setValue(v)} variant="scrollable" scrollButtons="auto">
+  <Tab label="Dashboard" />
+  <Tab label="Analytics" />
+  <Tab label="Reports" />
+  <Tab label="Settings" />
+  <Tab label="Integrations" />
+  <Tab label="Billing" />
+</Tabs>`,
+      render: () => <TabsScrollableDemo />,
+    },
+    {
+      name: 'Centered',
+      code: `<Tabs value={value} onChange={(_, v) => setValue(v)} centered>
+  <Tab label="First" />
+  <Tab label="Second" />
+  <Tab label="Third" />
+</Tabs>`,
+      render: () => <TabsCenteredDemo />,
+    },
+    {
+      name: 'With Disabled Tab',
+      code: `<Tabs value={value} onChange={(_, v) => setValue(v)}>
+  <Tab label="Active" />
+  <Tab label="Also active" />
+  <Tab label="Disabled" disabled />
+</Tabs>`,
+      render: () => <TabsDisabledDemo />,
+    },
+  ],
+  props: [
+    { name: 'value', type: 'number | string', description: 'The currently selected tab index or value' },
+    { name: 'onChange', type: '(event, value) => void', description: 'Callback fired when a tab is selected' },
+    { name: 'variant', type: '"standard" | "scrollable" | "fullWidth"', default: '"standard"', description: 'Layout variant' },
+    { name: 'centered', type: 'boolean', default: 'false', description: 'If true, tabs are centered' },
+    { name: 'scrollButtons', type: '"auto" | true | false', default: '"auto"', description: 'Show scroll buttons when tabs overflow' },
+    { name: 'label', type: 'string', description: 'Tab label text (on Tab component)' },
+    { name: 'icon', type: 'ReactNode', description: 'Icon element (on Tab component)' },
+    { name: 'iconPosition', type: '"start" | "end" | "top" | "bottom"', default: '"top"', description: 'Icon position relative to label' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the tab is disabled' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Stepper
+   ───────────────────────────────────── */
+const stepperSteps = ['Account details', 'Personal info', 'Confirmation'];
+
+function HorizontalStepperDemo() {
+  const [active, setActive] = useState(1);
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Stepper activeStep={active}>
+        {stepperSteps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      <Box sx={{ display: 'flex', gap: 1, mt: 3, justifyContent: 'center' }}>
+        <Button size="small" variant="outlined" disabled={active === 0} onClick={() => setActive(a => a - 1)}>Back</Button>
+        <Button size="small" variant="contained" onClick={() => setActive(a => Math.min(a + 1, stepperSteps.length))}>
+          {active === stepperSteps.length - 1 ? 'Finish' : 'Next'}
+        </Button>
+      </Box>
+    </Box>
+  );
+}
+
+function VerticalStepperDemo() {
+  const [active, setActive] = useState(1);
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Stepper activeStep={active} orientation="vertical">
+        {stepperSteps.map((label, i) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+            <StepContent>
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                {i === 0 ? 'Enter your email and password.' : i === 1 ? 'Fill in your name and address.' : 'Review and confirm your details.'}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button size="small" variant="contained" onClick={() => setActive(a => Math.min(a + 1, stepperSteps.length))}>
+                  {i === stepperSteps.length - 1 ? 'Finish' : 'Continue'}
+                </Button>
+                {i > 0 && <Button size="small" variant="outlined" onClick={() => setActive(a => a - 1)}>Back</Button>}
+              </Box>
+            </StepContent>
+          </Step>
+        ))}
+      </Stepper>
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'stepper',
+  name: 'Stepper',
+  description: 'A step-based navigation component for multi-step workflows. Supports horizontal and vertical orientations with brand-colored step icons.',
+  category: 'navigation',
+  importStatement: `import { Stepper, Step, StepLabel, StepContent } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Horizontal',
+      code: `const [activeStep, setActiveStep] = useState(1);
+
+<Stepper activeStep={activeStep}>
+  <Step><StepLabel>Account details</StepLabel></Step>
+  <Step><StepLabel>Personal info</StepLabel></Step>
+  <Step><StepLabel>Confirmation</StepLabel></Step>
+</Stepper>`,
+      render: () => <HorizontalStepperDemo />,
+    },
+    {
+      name: 'Vertical with Content',
+      code: `<Stepper activeStep={activeStep} orientation="vertical">
+  <Step>
+    <StepLabel>Account details</StepLabel>
+    <StepContent>
+      <Typography variant="body2">Enter your email and password.</Typography>
+      <Button size="small" variant="contained">Continue</Button>
+    </StepContent>
+  </Step>
+  {/* more steps… */}
+</Stepper>`,
+      render: () => <VerticalStepperDemo />,
+    },
+    {
+      name: 'All Completed',
+      code: `<Stepper activeStep={3}>
+  <Step><StepLabel>Account</StepLabel></Step>
+  <Step><StepLabel>Details</StepLabel></Step>
+  <Step><StepLabel>Done</StepLabel></Step>
+</Stepper>`,
+      render: () => (
+        <Box sx={{ width: '100%' }}>
+          <Stepper activeStep={3}>
+            {['Account', 'Details', 'Done'].map((label) => (
+              <Step key={label}><StepLabel>{label}</StepLabel></Step>
+            ))}
+          </Stepper>
+        </Box>
+      ),
+    },
+  ],
+  props: [
+    { name: 'activeStep', type: 'number', default: '0', description: 'Index of the currently active step' },
+    { name: 'orientation', type: '"horizontal" | "vertical"', default: '"horizontal"', description: 'Layout orientation' },
+    { name: 'alternativeLabel', type: 'boolean', default: 'false', description: 'If true, labels appear below the step icons' },
+    { name: 'nonLinear', type: 'boolean', default: 'false', description: 'If true, allows clicking any step regardless of order' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Progress (Linear + Circular)
+   ───────────────────────────────────── */
+function LinearProgressDemo() {
+  const [progress, setProgress] = useState(60);
+  return (
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box>
+        <Typography variant="body2" sx={{ mb: 1 }}>Determinate ({progress}%)</Typography>
+        <LinearProgress variant="determinate" value={progress} />
+      </Box>
+      <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+        <Button size="small" variant="outlined" onClick={() => setProgress(p => Math.max(0, p - 20))}>−20</Button>
+        <Button size="small" variant="outlined" onClick={() => setProgress(p => Math.min(100, p + 20))}>+20</Button>
+      </Box>
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'progress',
+  name: 'Progress',
+  description: 'Linear and circular progress indicators with brand gradient fill and sunken track. Use for loading states, upload progress, or completion tracking.',
+  category: 'data-display',
+  importStatement: `import { LinearProgress, CircularProgress } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Linear — Determinate',
+      code: `<LinearProgress variant="determinate" value={60} />`,
+      render: () => <LinearProgressDemo />,
+    },
+    {
+      name: 'Linear — Indeterminate',
+      code: `<LinearProgress />`,
+      render: () => (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      ),
+    },
+    {
+      name: 'Circular — Indeterminate',
+      code: `<CircularProgress />
+<CircularProgress size={24} />
+<CircularProgress size={48} />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+          <CircularProgress size={24} />
+          <CircularProgress />
+          <CircularProgress size={48} />
+        </Box>
+      ),
+    },
+    {
+      name: 'Circular — Determinate',
+      code: `<CircularProgress variant="determinate" value={25} />
+<CircularProgress variant="determinate" value={50} />
+<CircularProgress variant="determinate" value={75} />
+<CircularProgress variant="determinate" value={100} />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+          <CircularProgress variant="determinate" value={25} />
+          <CircularProgress variant="determinate" value={50} />
+          <CircularProgress variant="determinate" value={75} />
+          <CircularProgress variant="determinate" value={100} />
+        </Box>
+      ),
+    },
+  ],
+  props: [
+    { name: 'variant', type: '"determinate" | "indeterminate" | "buffer" | "query"', default: '"indeterminate"', description: 'Progress variant' },
+    { name: 'value', type: 'number', description: 'Progress value (0–100) for determinate variant' },
+    { name: 'color', type: '"primary" | "secondary" | "inherit"', default: '"primary"', description: 'Color theme' },
+    { name: 'size', type: 'number | string', default: '40', description: 'Size of circular progress (in px)' },
+    { name: 'thickness', type: 'number', default: '3.6', description: 'Stroke thickness of circular progress' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Dialog
+   ───────────────────────────────────── */
+function BasicDialogDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="contained" onClick={() => setOpen(true)}>Open Dialog</Button>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Confirm Action</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to proceed? This action cannot be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={() => setOpen(false)}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+function FormDialogDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outlined" onClick={() => setOpen(true)}>Edit Profile</Button>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Profile</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>Update your display name and email address.</DialogContentText>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField label="Display Name" defaultValue="Olivier" fullWidth size="small" />
+            <TextField label="Email" defaultValue="olivier@lochting.com" fullWidth size="small" />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={() => setOpen(false)}>Save</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+function DeleteDialogDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outlined" color="error" onClick={() => setOpen(true)}>Delete Item</Button>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>Delete Item?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>This will permanently delete the item and all associated data. This cannot be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button variant="contained" color="error" onClick={() => setOpen(false)}>Delete</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+registerComponent({
+  id: 'dialog',
+  name: 'Dialog',
+  description: 'Modal dialogs with brand-styled backdrop blur, rounded corners, and layered shadows. Use for confirmations, forms, and destructive actions.',
+  category: 'data-display',
+  importStatement: `import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Confirmation Dialog',
+      code: `const [open, setOpen] = useState(false);
+
+<Button onClick={() => setOpen(true)}>Open Dialog</Button>
+<Dialog open={open} onClose={() => setOpen(false)}>
+  <DialogTitle>Confirm Action</DialogTitle>
+  <DialogContent>
+    <DialogContentText>Are you sure you want to proceed?</DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <Button variant="outlined" onClick={() => setOpen(false)}>Cancel</Button>
+    <Button variant="contained" onClick={() => setOpen(false)}>Confirm</Button>
+  </DialogActions>
+</Dialog>`,
+      render: () => <BasicDialogDemo />,
+    },
+    {
+      name: 'Form Dialog',
+      code: `<Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+  <DialogTitle>Edit Profile</DialogTitle>
+  <DialogContent>
+    <TextField label="Display Name" fullWidth size="small" />
+    <TextField label="Email" fullWidth size="small" />
+  </DialogContent>
+  <DialogActions>
+    <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+    <Button variant="contained" onClick={handleClose}>Save</Button>
+  </DialogActions>
+</Dialog>`,
+      render: () => <FormDialogDemo />,
+    },
+    {
+      name: 'Destructive / Delete',
+      code: `<Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+  <DialogTitle>Delete Item?</DialogTitle>
+  <DialogContent>
+    <DialogContentText>This will permanently delete the item.</DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+    <Button variant="contained" color="error" onClick={handleClose}>Delete</Button>
+  </DialogActions>
+</Dialog>`,
+      render: () => <DeleteDialogDemo />,
+    },
+  ],
+  props: [
+    { name: 'open', type: 'boolean', description: 'If true, the dialog is open' },
+    { name: 'onClose', type: '(event, reason) => void', description: 'Callback fired when the dialog requests to close' },
+    { name: 'maxWidth', type: '"xs" | "sm" | "md" | "lg" | "xl" | false', default: '"sm"', description: 'Maximum width of the dialog' },
+    { name: 'fullWidth', type: 'boolean', default: 'false', description: 'If true, dialog stretches to maxWidth' },
+    { name: 'fullScreen', type: 'boolean', default: 'false', description: 'If true, dialog takes up the full screen' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Table
+   ───────────────────────────────────── */
+const tableRows = [
+  { id: 1, name: 'Paracetamol 500mg', sku: 'MED-001', stock: 142, status: 'In Stock' },
+  { id: 2, name: 'Ibuprofen 400mg', sku: 'MED-002', stock: 87, status: 'In Stock' },
+  { id: 3, name: 'Amoxicillin 250mg', sku: 'MED-003', stock: 0, status: 'Out of Stock' },
+  { id: 4, name: 'Vitamin D3 1000IU', sku: 'SUP-010', stock: 234, status: 'In Stock' },
+  { id: 5, name: 'Zinc 25mg', sku: 'SUP-011', stock: 12, status: 'Low Stock' },
+];
+
+registerComponent({
+  id: 'table',
+  name: 'Table',
+  description: 'Data tables with themed header, hover rows, and bordered container. Integrates with the design system tokens for consistent spacing and typography.',
+  category: 'data-display',
+  importStatement: `import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Basic Table',
+      code: `<TableContainer component={Paper} variant="outlined">
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell>Product</TableCell>
+        <TableCell>SKU</TableCell>
+        <TableCell align="right">Stock</TableCell>
+        <TableCell>Status</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {rows.map((row) => (
+        <TableRow key={row.id}>
+          <TableCell>{row.name}</TableCell>
+          <TableCell>{row.sku}</TableCell>
+          <TableCell align="right">{row.stock}</TableCell>
+          <TableCell>
+            <Chip label={row.status} size="small" color="secondary" />
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer>`,
+      render: () => (
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Product</TableCell>
+                <TableCell>SKU</TableCell>
+                <TableCell align="right">Stock</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tableRows.map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.sku}</TableCell>
+                  <TableCell align="right">{row.stock}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={row.status}
+                      size="small"
+                      color={row.status === 'Out of Stock' ? 'error' : row.status === 'Low Stock' ? 'warning' : 'secondary'}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ),
+    },
+    {
+      name: 'Dense Table',
+      code: `<Table size="small">
+  {/* same structure as above */}
+</Table>`,
+      render: () => (
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell align="right">Stock</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tableRows.slice(0, 3).map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell>{row.id}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell align="right">{row.stock}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ),
+    },
+  ],
+  props: [
+    { name: 'size', type: '"small" | "medium"', default: '"medium"', description: 'Table density' },
+    { name: 'stickyHeader', type: 'boolean', default: 'false', description: 'If true, header sticks on scroll' },
+    { name: 'padding', type: '"normal" | "checkbox" | "none"', default: '"normal"', description: 'Cell padding' },
+    { name: 'align', type: '"left" | "center" | "right"', default: '"left"', description: 'Cell text alignment (on TableCell)' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Pagination
+   ───────────────────────────────────── */
+function PaginationDemo() {
+  const [page, setPage] = useState(1);
+  return <Pagination count={10} page={page} onChange={(_, p) => setPage(p)} />;
+}
+
+function PaginationOutlinedDemo() {
+  const [page, setPage] = useState(1);
+  return <Pagination count={10} page={page} onChange={(_, p) => setPage(p)} variant="outlined" />;
+}
+
+registerComponent({
+  id: 'pagination',
+  name: 'Pagination',
+  description: 'Page navigation with brand gradient on the active page. Supports outlined and text variants, different sizes and shapes.',
+  category: 'navigation',
+  importStatement: `import { Pagination } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `<Pagination count={10} page={page} onChange={(_, p) => setPage(p)} />`,
+      render: () => <PaginationDemo />,
+    },
+    {
+      name: 'Outlined',
+      code: `<Pagination count={10} variant="outlined" />`,
+      render: () => <PaginationOutlinedDemo />,
+    },
+    {
+      name: 'Sizes',
+      code: `<Pagination count={5} size="small" />
+<Pagination count={5} size="medium" />
+<Pagination count={5} size="large" />`,
+      render: () => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+          <Pagination count={5} size="small" defaultPage={2} />
+          <Pagination count={5} size="medium" defaultPage={2} />
+          <Pagination count={5} size="large" defaultPage={2} />
+        </Box>
+      ),
+    },
+    {
+      name: 'Rounded',
+      code: `<Pagination count={10} shape="rounded" variant="outlined" />`,
+      render: () => <Pagination count={10} shape="rounded" variant="outlined" defaultPage={3} />,
+    },
+  ],
+  props: [
+    { name: 'count', type: 'number', description: 'Total number of pages' },
+    { name: 'page', type: 'number', description: 'Current page (controlled)' },
+    { name: 'defaultPage', type: 'number', default: '1', description: 'Default page (uncontrolled)' },
+    { name: 'onChange', type: '(event, page) => void', description: 'Callback when page changes' },
+    { name: 'variant', type: '"text" | "outlined"', default: '"text"', description: 'Visual variant' },
+    { name: 'shape', type: '"circular" | "rounded"', default: '"circular"', description: 'Item shape' },
+    { name: 'size', type: '"small" | "medium" | "large"', default: '"medium"', description: 'Pagination size' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, all items are disabled' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Accordion
+   ───────────────────────────────────── */
+registerComponent({
+  id: 'accordion',
+  name: 'Accordion',
+  description: 'Expandable content panels with rounded borders, themed header and expand icon. Great for FAQs, settings, and collapsible sections.',
+  category: 'data-display',
+  importStatement: `import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `<Accordion>
+  <AccordionSummary expandIcon={<Icon name="expand_more" />}>
+    <Typography>What is the Design System?</Typography>
+  </AccordionSummary>
+  <AccordionDetails>
+    A collection of reusable components, tokens, and guidelines…
+  </AccordionDetails>
+</Accordion>`,
+      render: () => (
+        <Box sx={{ width: '100%' }}>
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<Icon name="expand_more" />}>
+              <Typography variant="body2" fontWeight={600}>What is the Design System?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              A collection of reusable components, design tokens, and guidelines that ensure visual consistency across all Lochting and Medipim products.
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<Icon name="expand_more" />}>
+              <Typography variant="body2" fontWeight={600}>How do I install it?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              Import the theme provider and wrap your application. All standard MUI components will automatically inherit the design system styling.
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<Icon name="expand_more" />}>
+              <Typography variant="body2" fontWeight={600}>Can I customize the brand colors?</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              Yes! The design system supports multiple brands. Switch between Lochting and Medipim using the brand switcher, or create your own brand tokens.
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      ),
+    },
+    {
+      name: 'Disabled',
+      code: `<Accordion disabled>
+  <AccordionSummary expandIcon={<Icon name="expand_more" />}>
+    <Typography>Disabled Section</Typography>
+  </AccordionSummary>
+  <AccordionDetails>This content is hidden.</AccordionDetails>
+</Accordion>`,
+      render: () => (
+        <Box sx={{ width: '100%' }}>
+          <Accordion>
+            <AccordionSummary expandIcon={<Icon name="expand_more" />}>
+              <Typography variant="body2" fontWeight={600}>Enabled Section</Typography>
+            </AccordionSummary>
+            <AccordionDetails>This section is interactive.</AccordionDetails>
+          </Accordion>
+          <Accordion disabled>
+            <AccordionSummary expandIcon={<Icon name="expand_more" />}>
+              <Typography variant="body2" fontWeight={600}>Disabled Section</Typography>
+            </AccordionSummary>
+            <AccordionDetails>This content is hidden.</AccordionDetails>
+          </Accordion>
+        </Box>
+      ),
+    },
+  ],
+  props: [
+    { name: 'defaultExpanded', type: 'boolean', default: 'false', description: 'If true, starts expanded' },
+    { name: 'expanded', type: 'boolean', description: 'Controlled expanded state' },
+    { name: 'onChange', type: '(event, expanded) => void', description: 'Callback when expand/collapse' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the accordion is disabled' },
+    { name: 'disableGutters', type: 'boolean', default: 'false', description: 'Removes extra padding when expanded' },
+  ],
+});
+
+/* ─────────────────────────────────────
+   Card (Elevated, Sunken, Base/Border, Feedback)
+   ───────────────────────────────────── */
+function ElevatedCardDemo() {
+  const { brand } = useBrand();
+  const c = brand.colors;
+  return (
+    <Card sx={{
+      bgcolor: c.bgElevated,
+      borderRadius: 3,
+      boxShadow: `0 2px 12px 0 rgba(0,0,0,0.08), 0 1px 4px 0 rgba(0,0,0,0.04)`,
+      p: 0, maxWidth: 320,
+    }}>
+      <CardHeader
+        title="Elevated Card"
+        subheader="Floating surface with shadow"
+        titleTypographyProps={{ variant: 'body1', fontWeight: 600 }}
+        subheaderTypographyProps={{ variant: 'caption' }}
+      />
+      <CardContent sx={{ pt: 0 }}>
+        <Typography variant="body2" color="text.secondary">
+          Use for content that should appear lifted above the page, like modals, popovers, and elevated sections.
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ px: 2, pb: 2 }}>
+        <Button size="small" variant="outlined">Learn More</Button>
+      </CardActions>
+    </Card>
+  );
+}
+
+function SunkenCardDemo() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  return (
+    <Card sx={{
+      bgcolor: c.bgSunken,
+      borderRadius: 3,
+      boxShadow: effects.shadows.inactive,
+      border: `1px solid ${c.borderWeak}`,
+      p: 0, maxWidth: 320,
+    }}>
+      <CardHeader
+        title="Sunken Card"
+        subheader="Inset surface with inner shadows"
+        titleTypographyProps={{ variant: 'body1', fontWeight: 600 }}
+        subheaderTypographyProps={{ variant: 'caption' }}
+      />
+      <CardContent sx={{ pt: 0 }}>
+        <Typography variant="body2" color="text.secondary">
+          Use for content wells, input containers, or background sections that feel recessed into the page.
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+}
+
+function BorderCardDemo() {
+  const { brand } = useBrand();
+  const c = brand.colors;
+  return (
+    <Card sx={{
+      bgcolor: c.bgBase,
+      borderRadius: 3,
+      border: `1px solid ${c.borderDefault}`,
+      boxShadow: 'none',
+      p: 0, maxWidth: 320,
+    }}>
+      <CardHeader
+        title="Base / Border Card"
+        subheader="Flat surface with border"
+        titleTypographyProps={{ variant: 'body1', fontWeight: 600 }}
+        subheaderTypographyProps={{ variant: 'caption' }}
+      />
+      <CardContent sx={{ pt: 0 }}>
+        <Typography variant="body2" color="text.secondary">
+          Use for standard content containers, list items, and neutral sections that need clear boundaries.
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ px: 2, pb: 2 }}>
+        <Button size="small" variant="contained">Action</Button>
+        <Button size="small" variant="text">Cancel</Button>
+      </CardActions>
+    </Card>
+  );
+}
+
+function FeedbackCardDemo() {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+      <Alert severity="success" variant="outlined">
+        Your changes have been saved successfully.
+      </Alert>
+      <Alert severity="info" variant="outlined">
+        A new version is available. Refresh to update.
+      </Alert>
+      <Alert severity="warning" variant="outlined">
+        Your subscription will expire in 3 days.
+      </Alert>
+      <Alert severity="error" variant="outlined">
+        Failed to save changes. Please try again.
+      </Alert>
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'card',
+  name: 'Card',
+  description: 'Surface containers in four variants: Elevated (shadow), Sunken (inner shadow), Base/Border (flat with border), and Feedback (Alert). Built with Box/Card + design system tokens.',
+  category: 'data-display',
+  importStatement: `import { Card, CardContent, CardActions, CardHeader, Alert } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Elevated',
+      code: `<Card sx={{ bgcolor: 'bgElevated', borderRadius: 3, boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+  <CardHeader title="Elevated Card" subheader="Floating surface with shadow" />
+  <CardContent>
+    <Typography variant="body2">Lifted above the page…</Typography>
+  </CardContent>
+  <CardActions>
+    <Button size="small" variant="outlined">Learn More</Button>
+  </CardActions>
+</Card>`,
+      render: () => <ElevatedCardDemo />,
+    },
+    {
+      name: 'Sunken',
+      code: `<Card sx={{ bgcolor: 'bgSunken', borderRadius: 3, boxShadow: effects.shadows.inactive, border: '1px solid borderWeak' }}>
+  <CardHeader title="Sunken Card" subheader="Inset surface" />
+  <CardContent>
+    <Typography variant="body2">Recessed into the page…</Typography>
+  </CardContent>
+</Card>`,
+      render: () => <SunkenCardDemo />,
+    },
+    {
+      name: 'Base / Border',
+      code: `<Card sx={{ bgcolor: 'bgBase', borderRadius: 3, border: '1px solid borderDefault', boxShadow: 'none' }}>
+  <CardHeader title="Base Card" subheader="Flat with border" />
+  <CardContent>
+    <Typography variant="body2">Standard container…</Typography>
+  </CardContent>
+  <CardActions>
+    <Button size="small" variant="contained">Action</Button>
+  </CardActions>
+</Card>`,
+      render: () => <BorderCardDemo />,
+    },
+    {
+      name: 'Feedback (Alert)',
+      code: `<Alert severity="success" variant="outlined">Changes saved.</Alert>
+<Alert severity="info" variant="outlined">New version available.</Alert>
+<Alert severity="warning" variant="outlined">Subscription expiring.</Alert>
+<Alert severity="error" variant="outlined">Save failed.</Alert>`,
+      render: () => <FeedbackCardDemo />,
+    },
+  ],
+  props: [
+    { name: 'sx', type: 'SxProps', description: 'Style overrides — use design tokens (bgElevated, bgSunken, etc.)' },
+    { name: 'variant', type: '"elevation" | "outlined"', default: '"elevation"', description: 'Card variant' },
+    { name: 'elevation', type: 'number', default: '1', description: 'Shadow depth (0–24)' },
+    { name: 'severity', type: '"success" | "info" | "warning" | "error"', description: 'Alert severity level (for feedback cards)' },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   Date & Time Pickers
+   ═══════════════════════════════════════════════════════════════════ */
+
+function DatePickerDemo() {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(dayjs());
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, maxWidth: 360 }}>
+      <DatePicker
+        label="Select a date"
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+      />
+    </Box>
+  );
+}
+
+function DatePickerDisabledDemo() {
+  return (
+    <DatePicker label="Disabled" disabled defaultValue={dayjs()} />
+  );
+}
+
+function DatePickerViewsDemo() {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, maxWidth: 360 }}>
+      <DatePicker
+        label="Month & Year only"
+        views={['month', 'year']}
+        defaultValue={dayjs()}
+      />
+      <DatePicker
+        label="Year only"
+        views={['year']}
+        defaultValue={dayjs()}
+      />
+    </Box>
+  );
+}
+
+function StaticDatePickerDemo() {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(dayjs());
+  return (
+    <Box sx={{ maxWidth: 360 }}>
+      <StaticDatePicker
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+      />
+    </Box>
+  );
+}
+
+function DateCalendarDemo() {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(dayjs());
+  return (
+    <Box sx={{ maxWidth: 340 }}>
+      <DateCalendar
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+      />
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'date-picker',
+  name: 'Date Picker',
+  description: 'Date selection components with calendar popover. Supports various views (day, month, year), validation, and both interactive and static modes. Uses the design system\'s gradient + shadow styling for selected states.',
+  category: 'inputs',
+  importStatement: `import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `<DatePicker
+  label="Select a date"
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+/>`,
+      render: () => <DatePickerDemo />,
+    },
+    {
+      name: 'Custom Views',
+      code: `<DatePicker
+  label="Month & Year only"
+  views={['month', 'year']}
+  defaultValue={dayjs()}
+/>
+<DatePicker
+  label="Year only"
+  views={['year']}
+  defaultValue={dayjs()}
+/>`,
+      render: () => <DatePickerViewsDemo />,
+    },
+    {
+      name: 'Disabled',
+      code: `<DatePicker label="Disabled" disabled defaultValue={dayjs()} />`,
+      render: () => <DatePickerDisabledDemo />,
+    },
+    {
+      name: 'Inline Calendar',
+      code: `<DateCalendar
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+/>`,
+      render: () => <DateCalendarDemo />,
+    },
+    {
+      name: 'Static (Embedded)',
+      code: `<StaticDatePicker
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+/>`,
+      render: () => <StaticDatePickerDemo />,
+    },
+  ],
+  props: [
+    { name: 'value', type: 'Dayjs | null', description: 'The selected date value' },
+    { name: 'onChange', type: '(value: Dayjs | null) => void', description: 'Callback fired when the value changes' },
+    { name: 'defaultValue', type: 'Dayjs', description: 'Default value for uncontrolled usage' },
+    { name: 'label', type: 'string', description: 'Label for the text field' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the picker is disabled' },
+    { name: 'views', type: "('day' | 'month' | 'year')[]", description: 'Array of views available for selection' },
+    { name: 'disablePast', type: 'boolean', default: 'false', description: 'Disable dates before today' },
+    { name: 'disableFuture', type: 'boolean', default: 'false', description: 'Disable dates after today' },
+    { name: 'minDate', type: 'Dayjs', description: 'Minimum selectable date' },
+    { name: 'maxDate', type: 'Dayjs', description: 'Maximum selectable date' },
+  ],
+});
+
+
+/* ─── Time Picker ─── */
+
+function TimePickerDemo() {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(dayjs());
+  return (
+    <Box sx={{ maxWidth: 360 }}>
+      <TimePicker
+        label="Select a time"
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+      />
+    </Box>
+  );
+}
+
+function TimePickerSecondsDemo() {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(dayjs());
+  return (
+    <Box sx={{ maxWidth: 360 }}>
+      <TimePicker
+        label="With seconds"
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+        views={['hours', 'minutes', 'seconds']}
+      />
+    </Box>
+  );
+}
+
+function TimePickerDisabledDemo() {
+  return (
+    <Box sx={{ maxWidth: 360 }}>
+      <TimePicker label="Disabled" disabled defaultValue={dayjs()} />
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'time-picker',
+  name: 'Time Picker',
+  description: 'Time selection components with clock popover or digital input. Supports hours, minutes, and seconds views. Uses the design system\'s gradient styling for selected clock numbers.',
+  category: 'inputs',
+  importStatement: `import { TimePicker } from '@mui/x-date-pickers/TimePicker';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `<TimePicker
+  label="Select a time"
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+/>`,
+      render: () => <TimePickerDemo />,
+    },
+    {
+      name: 'With Seconds',
+      code: `<TimePicker
+  label="With seconds"
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+  views={['hours', 'minutes', 'seconds']}
+/>`,
+      render: () => <TimePickerSecondsDemo />,
+    },
+    {
+      name: 'Disabled',
+      code: `<TimePicker label="Disabled" disabled defaultValue={dayjs()} />`,
+      render: () => <TimePickerDisabledDemo />,
+    },
+  ],
+  props: [
+    { name: 'value', type: 'Dayjs | null', description: 'The selected time value' },
+    { name: 'onChange', type: '(value: Dayjs | null) => void', description: 'Callback fired when the value changes' },
+    { name: 'defaultValue', type: 'Dayjs', description: 'Default value for uncontrolled usage' },
+    { name: 'label', type: 'string', description: 'Label for the text field' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the picker is disabled' },
+    { name: 'views', type: "('hours' | 'minutes' | 'seconds')[]", description: 'Array of views available' },
+    { name: 'ampm', type: 'boolean', description: 'Use 12-hour or 24-hour format' },
+  ],
+});
+
+
+/* ─── DateTime Picker ─── */
+
+function DateTimePickerDemo() {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(dayjs());
+  return (
+    <Box sx={{ maxWidth: 360 }}>
+      <DateTimePicker
+        label="Select date & time"
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+      />
+    </Box>
+  );
+}
+
+function DateTimePickerDisablePastDemo() {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(dayjs());
+  return (
+    <Box sx={{ maxWidth: 360 }}>
+      <DateTimePicker
+        label="Future only"
+        value={value}
+        onChange={(newValue) => setValue(newValue)}
+        disablePast
+      />
+    </Box>
+  );
+}
+
+function DateTimePickerDisabledDemo() {
+  return (
+    <Box sx={{ maxWidth: 360 }}>
+      <DateTimePicker label="Disabled" disabled defaultValue={dayjs()} />
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'datetime-picker',
+  name: 'Date Time Picker',
+  description: 'Combined date and time selection in a single input. Switches between calendar and clock views. The design system applies consistent gradient styling across all picker views.',
+  category: 'inputs',
+  importStatement: `import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `<DateTimePicker
+  label="Select date & time"
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+/>`,
+      render: () => <DateTimePickerDemo />,
+    },
+    {
+      name: 'Disable Past',
+      code: `<DateTimePicker
+  label="Future only"
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+  disablePast
+/>`,
+      render: () => <DateTimePickerDisablePastDemo />,
+    },
+    {
+      name: 'Disabled',
+      code: `<DateTimePicker label="Disabled" disabled defaultValue={dayjs()} />`,
+      render: () => <DateTimePickerDisabledDemo />,
+    },
+  ],
+  props: [
+    { name: 'value', type: 'Dayjs | null', description: 'The selected date-time value' },
+    { name: 'onChange', type: '(value: Dayjs | null) => void', description: 'Callback fired when the value changes' },
+    { name: 'defaultValue', type: 'Dayjs', description: 'Default value for uncontrolled usage' },
+    { name: 'label', type: 'string', description: 'Label for the text field' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the picker is disabled' },
+    { name: 'disablePast', type: 'boolean', default: 'false', description: 'Disable past dates and times' },
+    { name: 'disableFuture', type: 'boolean', default: 'false', description: 'Disable future dates and times' },
+    { name: 'views', type: "('year' | 'month' | 'day' | 'hours' | 'minutes')[]", description: 'Available views' },
+  ],
+});
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NAVIGATION COMPONENTS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Sidebar Demo helpers ─── */
+
+function SidebarBasicDemo() {
+  const [active, setActive] = useState('Dashboard');
+  return (
+    <Box sx={{ height: 480, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+      <AppSidebar
+        logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+        showSearch
+        sections={[
+          {
+            title: 'Overview',
+            items: [
+              { label: 'Dashboard', icon: 'dashboard', active: active === 'Dashboard', onClick: () => setActive('Dashboard') },
+              { label: 'Notifications', icon: 'notifications', badge: 3, active: active === 'Notifications', onClick: () => setActive('Notifications') },
+              { label: 'Analytics', icon: 'analytics', active: active === 'Analytics', onClick: () => setActive('Analytics') },
+            ],
+          },
+          {
+            title: 'Content',
+            items: [
+              { label: 'Products', icon: 'inventory_2', active: active === 'Products', onClick: () => setActive('Products') },
+              { label: 'Media', icon: 'image', active: active === 'Media', onClick: () => setActive('Media') },
+              { label: 'Categories', icon: 'category', expandable: true, active: active === 'Categories', onClick: () => setActive('Categories') },
+            ],
+          },
+          {
+            title: 'Channels',
+            items: [
+              { label: 'Webshops', icon: 'storefront', active: active === 'Webshops', onClick: () => setActive('Webshops') },
+              { label: 'Presentations', icon: 'slideshow', active: active === 'Presentations', onClick: () => setActive('Presentations') },
+            ],
+          },
+        ]}
+      />
+    </Box>
+  );
+}
+
+function SidebarWithExtraNavDemo() {
+  const [active, setActive] = useState('Countries & languages');
+  const [expanded, setExpanded] = useState<string | null>('Localisation');
+  return (
+    <Box sx={{ height: 520, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden', display: 'flex' }}>
+      <AppSidebar
+        logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+        showSearch
+        expandedItem={expanded}
+        onExpandedChange={setExpanded}
+        sections={[
+          {
+            title: 'Overview',
+            items: [
+              { label: 'Dashboard', icon: 'dashboard', onClick: () => { setActive('Dashboard'); setExpanded(null); } },
+              { label: 'Notifications', icon: 'notifications', badge: 3, onClick: () => { setActive('Notifications'); setExpanded(null); } },
+            ],
+          },
+          {
+            title: 'Settings',
+            items: [
+              {
+                label: 'Localisation',
+                icon: 'language',
+                children: [
+                  { label: 'Countries & languages', icon: 'public', active: active === 'Countries & languages', onClick: () => setActive('Countries & languages') },
+                  { label: 'CMS', icon: 'article', active: active === 'CMS', onClick: () => setActive('CMS') },
+                  { label: 'CMS Tags', icon: 'label', active: active === 'CMS Tags', onClick: () => setActive('CMS Tags') },
+                  { label: 'Quality labels', icon: 'verified', active: active === 'Quality labels', onClick: () => setActive('Quality labels') },
+                  { label: 'Search synonyms', icon: 'search', active: active === 'Search synonyms', onClick: () => setActive('Search synonyms') },
+                  { label: 'Sources & settings', icon: 'tune', active: active === 'Sources & settings', onClick: () => setActive('Sources & settings') },
+                  { label: 'Translation management', icon: 'translate', active: active === 'Translation management', onClick: () => setActive('Translation management') },
+                ],
+              },
+              {
+                label: 'Users & roles',
+                icon: 'group',
+                children: [
+                  { label: 'Users', icon: 'person', active: active === 'Users', onClick: () => setActive('Users') },
+                  { label: 'Roles', icon: 'admin_panel_settings', active: active === 'Roles', onClick: () => setActive('Roles') },
+                  { label: 'Permissions', icon: 'lock', active: active === 'Permissions', onClick: () => setActive('Permissions') },
+                ],
+              },
+              { label: 'General', icon: 'settings', onClick: () => { setActive('General'); setExpanded(null); } },
+            ],
+          },
+        ]}
+      />
+    </Box>
+  );
+}
+
+function SidebarMinimalDemo() {
+  const [active, setActive] = useState('Home');
+  return (
+    <Box sx={{ height: 320, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: 240,
+          '& .MuiDrawer-paper': { width: 240, position: 'relative', height: '100%' },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h6">My App</Typography>
+        </Box>
+        <List disablePadding sx={{ px: 1 }}>
+          <ListSubheader disableSticky>Main</ListSubheader>
+          {['Home', 'Settings', 'Profile'].map((label) => (
+            <ListItemButton
+              key={label}
+              selected={active === label}
+              onClick={() => setActive(label)}
+              sx={{ my: 0.25 }}
+            >
+              <ListItemIcon>
+                <Icon name={label === 'Home' ? 'home' : label === 'Settings' ? 'settings' : 'person'} size={20} />
+              </ListItemIcon>
+              <ListItemText primary={label} />
+            </ListItemButton>
+          ))}
+        </List>
+      </Drawer>
+    </Box>
+  );
+}
+
+function SidebarWithBadgesDemo() {
+  const [active, setActive] = useState('Inbox');
+  return (
+    <Box sx={{ height: 360, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: 256,
+          '& .MuiDrawer-paper': { width: 256, position: 'relative', height: '100%' },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>Mail</Typography>
+        </Box>
+        <List disablePadding sx={{ px: 1 }}>
+          <ListSubheader disableSticky>Folders</ListSubheader>
+          {[
+            { label: 'Inbox', icon: 'inbox', badge: 12 },
+            { label: 'Sent', icon: 'send' },
+            { label: 'Drafts', icon: 'draft', badge: 2 },
+            { label: 'Spam', icon: 'report', badge: 99 },
+            { label: 'Trash', icon: 'delete' },
+          ].map((item) => (
+            <ListItemButton
+              key={item.label}
+              selected={active === item.label}
+              onClick={() => setActive(item.label)}
+              sx={{ my: 0.25 }}
+            >
+              <ListItemIcon>
+                <Icon name={item.icon} size={20} />
+              </ListItemIcon>
+              <ListItemText primary={item.label} />
+              {item.badge != null && (
+                <Chip label={item.badge} size="small" color="primary" variant="outlined" sx={{ height: 22, minWidth: 22, fontSize: '0.7rem', fontWeight: 600 }} />
+              )}
+            </ListItemButton>
+          ))}
+        </List>
+      </Drawer>
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'sidebar',
+  name: 'Sidebar',
+  description: 'Application sidebar navigation using MUI Drawer, List, ListSubheader, and ListItemButton. The theme applies the design system\'s gradient active state, uppercase section headers, and subtle sidebar shadow automatically.',
+  category: 'navigation',
+  importStatement: `import { Drawer, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+// Or use the pre-built component:
+import { AppSidebar } from './components/AppSidebar';`,
+  examples: [
+    {
+      name: 'AppSidebar Component',
+      code: `<AppSidebar
+  logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+  showSearch
+  sections={[
+    {
+      title: 'Overview',
+      items: [
+        { label: 'Dashboard', icon: 'dashboard', active: true },
+        { label: 'Notifications', icon: 'notifications', badge: 3 },
+        { label: 'Analytics', icon: 'analytics' },
+      ],
+    },
+    {
+      title: 'Content',
+      items: [
+        { label: 'Products', icon: 'inventory_2' },
+        { label: 'Media', icon: 'image' },
+        { label: 'Categories', icon: 'category', expandable: true },
+      ],
+    },
+  ]}
+/>`,
+      render: () => <SidebarBasicDemo />,
+    },
+    {
+      name: 'Minimal MUI Drawer',
+      code: `<Drawer variant="permanent" sx={{ width: 240, '& .MuiDrawer-paper': { width: 240 } }}>
+  <Box sx={{ p: 2 }}>
+    <Typography variant="h6">My App</Typography>
+  </Box>
+  <List disablePadding sx={{ px: 1 }}>
+    <ListSubheader disableSticky>Main</ListSubheader>
+    <ListItemButton selected>
+      <ListItemIcon><Icon name="home" size={20} /></ListItemIcon>
+      <ListItemText primary="Home" />
+    </ListItemButton>
+    <ListItemButton>
+      <ListItemIcon><Icon name="settings" size={20} /></ListItemIcon>
+      <ListItemText primary="Settings" />
+    </ListItemButton>
+  </List>
+</Drawer>`,
+      render: () => <SidebarMinimalDemo />,
+    },
+    {
+      name: 'With SubNav (ExtraNav)',
+      code: `<AppSidebar
+  logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+  showSearch
+  expandedItem="Localisation"
+  onExpandedChange={(label) => console.log('Expanded:', label)}
+  sections={[
+    {
+      title: 'Settings',
+      items: [
+        {
+          label: 'Localisation',
+          icon: 'language',
+          children: [
+            { label: 'Countries & languages', icon: 'public', active: true },
+            { label: 'CMS', icon: 'article' },
+            { label: 'CMS Tags', icon: 'label' },
+            { label: 'Quality labels', icon: 'verified' },
+            { label: 'Translation management', icon: 'translate' },
+          ],
+        },
+        {
+          label: 'Users & roles',
+          icon: 'group',
+          children: [
+            { label: 'Users', icon: 'person' },
+            { label: 'Roles', icon: 'admin_panel_settings' },
+          ],
+        },
+      ],
+    },
+  ]}
+/>`,
+      render: () => <SidebarWithExtraNavDemo />,
+    },
+    {
+      name: 'With Badges',
+      code: `<ListItemButton selected>
+  <ListItemIcon><Icon name="inbox" size={20} /></ListItemIcon>
+  <ListItemText primary="Inbox" />
+  <Chip label={12} size="small" color="primary" variant="outlined"
+    sx={{ height: 22, minWidth: 22, fontSize: '0.7rem', fontWeight: 600 }} />
+</ListItemButton>`,
+      render: () => <SidebarWithBadgesDemo />,
+    },
+  ],
+  props: [
+    { name: 'sections', type: 'SidebarSection[]', description: 'Array of navigation sections, each with a title and items' },
+    { name: 'logo', type: 'ReactNode', description: 'Content to render in the logo/header area' },
+    { name: 'width', type: 'number', default: '256', description: 'Sidebar width in pixels' },
+    { name: 'extraNavWidth', type: 'number', default: '256', description: 'Width of the extra sub-navigation panel when expanded' },
+    { name: 'showSearch', type: 'boolean', default: 'true', description: 'Whether to show the search field' },
+    { name: 'searchPlaceholder', type: 'string', default: '"Search..."', description: 'Placeholder text for the search field' },
+    { name: 'onSearch', type: '(query: string) => void', description: 'Callback when search value changes' },
+    { name: 'onCollapse', type: '() => void', description: 'Callback for collapse button (shows button when provided)' },
+    { name: 'expandedItem', type: 'string | null', description: 'Currently expanded parent item label (controlled mode)' },
+    { name: 'onExpandedChange', type: '(label: string | null) => void', description: 'Callback when a parent item is expanded/collapsed (controlled mode)' },
+    { name: 'footer', type: 'ReactNode', description: 'Content to render at the bottom of the sidebar' },
+    { name: 'children (on SidebarItem)', type: 'SidebarItem[]', description: 'Sub-navigation items shown in the ExtraNav panel when this item is expanded' },
+  ],
+});
+
+/* ─── TopBar Demo helpers ─── */
+
+function TopBarBasicDemo() {
+  return (
+    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+      <AppTopBar
+        breadcrumbs={[
+          { label: 'Home', onClick: () => {} },
+          { label: 'Products', hasDropdown: true, onClick: () => {} },
+          { label: 'Edit Product' },
+        ]}
+        actions={
+          <TopBarActions
+            utilityActions={[
+              { icon: 'support_agent', label: 'Support' },
+              { icon: 'language', label: 'Language' },
+            ]}
+            notificationActions={[
+              { icon: 'newspaper', label: 'News', badge: 0 },
+              { icon: 'notifications', label: 'Notifications', badge: 0 },
+            ]}
+            avatarInitials="OP"
+          />
+        }
+      />
+    </Box>
+  );
+}
+
+function TopBarMinimalDemo() {
+  return (
+    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+      <AppBar position="static" elevation={0}>
+        <Toolbar>
+          <IconButton size="small" sx={{ width: 32, height: 32 }}>
+            <Icon name="arrow_back" size={18} />
+          </IconButton>
+          <IconButton size="small" sx={{ width: 32, height: 32 }}>
+            <Icon name="arrow_forward" size={18} />
+          </IconButton>
+          <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+          <Breadcrumbs separator="/" sx={{ flex: 1 }}>
+            <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', color: 'text.secondary', border: 'none', background: 'none' }}>
+              Home
+            </Link>
+            <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+              Dashboard
+            </Typography>
+          </Breadcrumbs>
+          <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}
+
+function TopBarNoBreadcrumbsDemo() {
+  return (
+    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+      <AppTopBar
+        showNavigation={false}
+        breadcrumbs={[{ label: 'Application' }]}
+        actions={
+          <TopBarActions
+            notificationActions={[
+              { icon: 'notifications', label: 'Notifications', badge: 5 },
+            ]}
+            avatarInitials="JD"
+          />
+        }
+      />
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'top-bar',
+  name: 'Top Bar',
+  description: 'Application top bar using MUI AppBar, Toolbar, Breadcrumbs, and Avatar. Includes back/forward navigation, breadcrumb path, and right-side action icons with notification badges.',
+  category: 'navigation',
+  importStatement: `import { AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Avatar, Badge, Divider } from '@mui/material';
+// Or use the pre-built components:
+import { AppTopBar, TopBarActions } from './components/AppTopBar';`,
+  examples: [
+    {
+      name: 'Full Top Bar',
+      code: `<AppTopBar
+  breadcrumbs={[
+    { label: 'Home', onClick: () => {} },
+    { label: 'Products', hasDropdown: true, onClick: () => {} },
+    { label: 'Edit Product' },
+  ]}
+  actions={
+    <TopBarActions
+      utilityActions={[
+        { icon: 'support_agent', label: 'Support' },
+        { icon: 'language', label: 'Language' },
+      ]}
+      notificationActions={[
+        { icon: 'newspaper', label: 'News', badge: 0 },
+        { icon: 'notifications', label: 'Notifications', badge: 0 },
+      ]}
+      avatarInitials="OP"
+    />
+  }
+/>`,
+      render: () => <TopBarBasicDemo />,
+    },
+    {
+      name: 'Minimal AppBar',
+      code: `<AppBar position="static" elevation={0}>
+  <Toolbar>
+    <IconButton size="small"><Icon name="arrow_back" size={18} /></IconButton>
+    <IconButton size="small"><Icon name="arrow_forward" size={18} /></IconButton>
+    <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+    <Breadcrumbs separator="/" sx={{ flex: 1 }}>
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
+        Home
+      </Link>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+        Dashboard
+      </Typography>
+    </Breadcrumbs>
+    <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
+  </Toolbar>
+</AppBar>`,
+      render: () => <TopBarMinimalDemo />,
+    },
+    {
+      name: 'Simple (no navigation)',
+      code: `<AppTopBar
+  showNavigation={false}
+  breadcrumbs={[{ label: 'Application' }]}
+  actions={
+    <TopBarActions
+      notificationActions={[{ icon: 'notifications', label: 'Notifications', badge: 5 }]}
+      avatarInitials="JD"
+    />
+  }
+/>`,
+      render: () => <TopBarNoBreadcrumbsDemo />,
+    },
+  ],
+  props: [
+    { name: 'breadcrumbs', type: 'BreadcrumbItem[]', description: 'Array of breadcrumb items. Last item is rendered as current page (bold text).' },
+    { name: 'showNavigation', type: 'boolean', default: 'true', description: 'Show back/forward navigation buttons' },
+    { name: 'onBack', type: '() => void', description: 'Callback for back navigation button' },
+    { name: 'onForward', type: '() => void', description: 'Callback for forward navigation button' },
+    { name: 'actions', type: 'ReactNode', description: 'Content for the right-side action area (icons, avatar, etc.)' },
+  ],
+});
+
+/* ─── Breadcrumbs Demo helpers ─── */
+
+function BreadcrumbsBasicDemo() {
+  return (
+    <Breadcrumbs separator="/">
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer' }}>
+        Home
+      </Link>
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer' }}>
+        Products
+      </Link>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+        Widget Pro
+      </Typography>
+    </Breadcrumbs>
+  );
+}
+
+function BreadcrumbsWithDropdownDemo() {
+  return (
+    <Breadcrumbs separator="/">
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 0.25 }}>
+        Home
+        <Icon name="keyboard_arrow_down" size={16} />
+      </Link>
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 0.25 }}>
+        Channels
+        <Icon name="keyboard_arrow_down" size={16} />
+      </Link>
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 0.25 }}>
+        Webshops
+        <Icon name="keyboard_arrow_down" size={16} />
+      </Link>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary', display: 'flex', alignItems: 'center', gap: 0.25 }}>
+        Shop Settings
+        <Icon name="keyboard_arrow_down" size={16} />
+      </Typography>
+    </Breadcrumbs>
+  );
+}
+
+function BreadcrumbsCustomSeparatorDemo() {
+  return (
+    <Breadcrumbs separator={<Icon name="chevron_right" size={16} />}>
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer' }}>
+        Dashboard
+      </Link>
+      <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer' }}>
+        Reports
+      </Link>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+        Monthly
+      </Typography>
+    </Breadcrumbs>
+  );
+}
+
+registerComponent({
+  id: 'breadcrumbs',
+  name: 'Breadcrumbs',
+  description: 'Navigation breadcrumbs showing the current page hierarchy. Styled with the design system\'s typography and color tokens. Supports custom separators and dropdown indicators.',
+  category: 'navigation',
+  importStatement: `import { Breadcrumbs, Link, Typography } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Default',
+      code: `<Breadcrumbs separator="/">
+  <Link component="button" underline="hover"
+    sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none' }}>
+    Home
+  </Link>
+  <Link component="button" underline="hover"
+    sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none' }}>
+    Products
+  </Link>
+  <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+    Widget Pro
+  </Typography>
+</Breadcrumbs>`,
+      render: () => <BreadcrumbsBasicDemo />,
+    },
+    {
+      name: 'With Dropdowns',
+      code: `<Breadcrumbs separator="/">
+  <Link component="button" underline="hover"
+    sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
+    Channels
+    <Icon name="keyboard_arrow_down" size={16} />
+  </Link>
+  <Typography sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}>
+    Shop Settings
+    <Icon name="keyboard_arrow_down" size={16} />
+  </Typography>
+</Breadcrumbs>`,
+      render: () => <BreadcrumbsWithDropdownDemo />,
+    },
+    {
+      name: 'Chevron Separator',
+      code: `<Breadcrumbs separator={<Icon name="chevron_right" size={16} />}>
+  <Link component="button" underline="hover" sx={{ color: 'text.secondary' }}>
+    Dashboard
+  </Link>
+  <Link component="button" underline="hover" sx={{ color: 'text.secondary' }}>
+    Reports
+  </Link>
+  <Typography sx={{ fontWeight: 600, color: 'text.primary' }}>Monthly</Typography>
+</Breadcrumbs>`,
+      render: () => <BreadcrumbsCustomSeparatorDemo />,
+    },
+  ],
+  props: [
+    { name: 'separator', type: 'ReactNode', default: '"/"', description: 'Custom separator between breadcrumb items' },
+    { name: 'maxItems', type: 'number', description: 'Maximum breadcrumb items to show before collapsing' },
+    { name: 'itemsBeforeCollapse', type: 'number', default: '1', description: 'Items to show before the collapsed items' },
+    { name: 'itemsAfterCollapse', type: 'number', default: '1', description: 'Items to show after the collapsed items' },
+  ],
+});
+
+/* ─── Full Layout Demo ─── */
+
+function FullLayoutDemo() {
+  const [active, setActive] = useState('Products');
+  const [expanded, setExpanded] = useState<string | null>(null);
+  return (
+    <Box sx={{ height: 500, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden', display: 'flex' }}>
+      {/* Sidebar */}
+      <AppSidebar
+        width={220}
+        extraNavWidth={220}
+        logo={<Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>App</Typography>}
+        showSearch={false}
+        expandedItem={expanded}
+        onExpandedChange={setExpanded}
+        sections={[
+          {
+            title: 'Menu',
+            items: [
+              { label: 'Dashboard', icon: 'dashboard', active: active === 'Dashboard', onClick: () => { setActive('Dashboard'); setExpanded(null); } },
+              { label: 'Products', icon: 'inventory_2', active: active === 'Products', onClick: () => { setActive('Products'); setExpanded(null); } },
+              { label: 'Orders', icon: 'receipt_long', badge: 5, active: active === 'Orders', onClick: () => { setActive('Orders'); setExpanded(null); } },
+              {
+                label: 'Settings',
+                icon: 'settings',
+                children: [
+                  { label: 'General', icon: 'tune', active: active === 'General', onClick: () => setActive('General') },
+                  { label: 'Users', icon: 'group', active: active === 'Users', onClick: () => setActive('Users') },
+                  { label: 'Billing', icon: 'payment', active: active === 'Billing', onClick: () => setActive('Billing') },
+                ],
+              },
+            ],
+          },
+        ]}
+      />
+      {/* Main area */}
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <AppTopBar
+          breadcrumbs={[
+            { label: 'Home', onClick: () => { setActive('Dashboard'); setExpanded(null); } },
+            ...(expanded ? [{ label: expanded, onClick: () => {} }] : []),
+            { label: active },
+          ]}
+          onBack={() => {}}
+          actions={
+            <TopBarActions
+              notificationActions={[
+                { icon: 'notifications', label: 'Notifications', badge: 0 },
+              ]}
+              avatarInitials="OL"
+            />
+          }
+        />
+        <Box sx={{ flex: 1, p: 3, overflow: 'auto' }}>
+          <Typography variant="h5" gutterBottom>{active}</Typography>
+          <Typography color="text.secondary">
+            {expanded
+              ? `Viewing "${active}" under "${expanded}". Click the arrow in the sub-nav header to collapse the panel.`
+              : `This is the ${active.toLowerCase()} page. Click "Settings" in the sidebar to see the ExtraNav panel slide in.`}
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+registerComponent({
+  id: 'app-layout',
+  name: 'App Layout',
+  description: 'Complete application layout combining AppSidebar and AppTopBar. Demonstrates how the sidebar, top bar, breadcrumbs, and content area work together as a full application shell.',
+  category: 'navigation',
+  importStatement: `import { AppSidebar } from './components/AppSidebar';
+import { AppTopBar, TopBarActions } from './components/AppTopBar';`,
+  examples: [
+    {
+      name: 'Full Layout',
+      code: `<Box sx={{ display: 'flex', height: '100vh' }}>
+  <AppSidebar
+    logo={<Typography variant="h6">App</Typography>}
+    sections={[
+      {
+        title: 'Menu',
+        items: [
+          { label: 'Dashboard', icon: 'dashboard', active: true },
+          { label: 'Products', icon: 'inventory_2' },
+          { label: 'Orders', icon: 'receipt_long', badge: 5 },
+          { label: 'Settings', icon: 'settings' },
+        ],
+      },
+    ]}
+  />
+  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+    <AppTopBar
+      breadcrumbs={[
+        { label: 'Home', onClick: () => {} },
+        { label: 'Dashboard' },
+      ]}
+      actions={
+        <TopBarActions
+          notificationActions={[{ icon: 'notifications', label: 'Notifications', badge: 0 }]}
+          avatarInitials="OL"
+        />
+      }
+    />
+    <Box sx={{ flex: 1, p: 3 }}>
+      {/* Page content */}
+    </Box>
+  </Box>
+</Box>`,
+      render: () => <FullLayoutDemo />,
+    },
+  ],
+  props: [
+    { name: 'AppSidebar', type: 'component', description: 'See Sidebar component for props' },
+    { name: 'AppTopBar', type: 'component', description: 'See Top Bar component for props' },
+    { name: 'TopBarActions', type: 'component', description: 'Pre-built right-side actions with utility icons, notification badges, and avatar' },
   ],
 });

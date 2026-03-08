@@ -1,9 +1,6 @@
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from 'react';
-import { Box, type SxProps, type Theme } from '@mui/material';
+import { Box, Chip, type SxProps, type Theme } from '@mui/material';
 import { Icon } from './Icon';
-import { useBrand } from '../theme/brand-context';
-import { createEffects } from '../theme/tokens/effects';
-import { PRIMITIVES } from '../theme/tokens/primitives';
 
 /* ─── ToggleChip ─── */
 
@@ -25,69 +22,20 @@ export interface ToggleChipProps {
 }
 
 export function ToggleChip({ label, value, count, icon, selected, onClick, sx }: ToggleChipProps) {
-  const { brand } = useBrand();
-  const c = brand.colors;
-  const fx = createEffects(brand);
+  const displayLabel = count !== undefined ? `${label}  ${count}` : label;
 
   return (
-    <Box
-      component="button"
+    <Chip
+      label={displayLabel}
+      size="medium"
+      clickable
+      color={selected ? 'primary' : 'secondary'}
+      icon={icon ? <Icon name={icon} size={18} /> : undefined}
+      onClick={() => onClick?.(value)}
       role="option"
       aria-selected={selected}
-      onClick={() => onClick?.(value)}
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 0,
-        height: 'auto',
-        borderRadius: `${PRIMITIVES.radius.round}px`,
-        px: 1.5,
-        py: 0.5,
-        cursor: 'pointer',
-        fontFamily: brand.typography.bodyFont,
-        fontSize: PRIMITIVES.fontSize.sm,
-        fontWeight: PRIMITIVES.fontWeight.regular,
-        letterSpacing: '0.4px',
-        lineHeight: '24px',
-        outline: 'none',
-        overflow: 'hidden',
-        position: 'relative',
-        transition: 'all 0.15s ease',
-        ...(selected
-          ? {
-              backgroundColor: c.brand100,
-              color: c.brand450,
-              border: `1px solid ${c.brand100}`,
-              boxShadow: fx.shadows.chipBrand,
-            }
-          : {
-              background: fx.gradients.secondary,
-              color: c.contentSecondary,
-              border: `1px solid ${c.borderDefault}`,
-              boxShadow: [
-                'inset 0px 4px 4px 0px rgba(252, 252, 255, 0.12)',
-                'inset 0px -4px 4px 0px rgba(158, 157, 160, 0.08)',
-              ].join(', '),
-            }),
-        '&:hover': {
-          filter: selected ? 'brightness(0.97)' : 'brightness(0.98)',
-        },
-        ...((sx ?? {}) as Record<string, unknown>),
-      }}
-    >
-      {icon && (
-        <Icon
-          name={icon}
-          size={18}
-          color={selected ? c.brand450 : c.contentSecondary}
-        />
-      )}
-      <Box component="span" sx={{ px: 1 }}>{label}</Box>
-      {count !== undefined && (
-        <Box component="span" sx={{ pr: 0.5 }}>{count}</Box>
-      )}
-    </Box>
+      sx={sx}
+    />
   );
 }
 

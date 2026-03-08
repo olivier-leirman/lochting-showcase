@@ -40,7 +40,7 @@ export function radioOverrides(brand: BrandTokens, fx: Effects): Components<Them
       height: dotSize,
       borderRadius: '50%',
       background: c.contentStayLight,
-      border: `0.2px solid ${c.borderWeak}`,
+      border: `0.2px solid color-mix(in srgb, ${c.contentStayDark} 10%, ${c.contentStayLight})`,
       boxShadow: fx.shadows.innerElement,
     },
   }));

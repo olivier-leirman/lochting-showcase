@@ -173,9 +173,19 @@ function Swatch({ name, token, value, format }: SwatchProps) {
   );
 }
 
+/** Helper to convert hex to an rgba string with a specific alpha */
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export function ColorsPage() {
-  const { brand } = useBrand();
+  const { brand, colorMode } = useBrand();
   const c = brand.colors;
+  const isDark = colorMode === 'dark';
   const [format, setFormat] = useState<ColorFormat>('hex');
 
   const sections = [
@@ -213,6 +223,7 @@ export function ColorsPage() {
         { name: 'Secondary', token: 'contentSecondary', value: c.contentSecondary },
         { name: 'Tertiary', token: 'contentTertiary', value: c.contentTertiary },
         { name: 'Spot', token: 'contentSpot', value: c.contentSpot },
+        { name: 'Spot Weak', token: 'contentSpotWeak', value: c.contentSpotWeak },
         { name: 'Stay Light', token: 'contentStayLight', value: c.contentStayLight },
         { name: 'Stay Dark', token: 'contentStayDark', value: c.contentStayDark },
         { name: 'Inverse Primary', token: 'contentInversePrimary', value: c.contentInversePrimary },
@@ -230,17 +241,52 @@ export function ColorsPage() {
       ],
     },
     {
-      title: 'Feedback',
+      title: 'Feedback — Error',
       swatches: [
-        { name: 'Error', token: 'error.bgDefault', value: c.error.bgDefault },
+        { name: 'Error Default', token: 'error.bgDefault', value: c.error.bgDefault },
         { name: 'Error Content', token: 'error.contentStrong', value: c.error.contentStrong },
-        { name: 'Error Bg', token: 'error.bgWeakest', value: c.error.bgWeakest },
-        { name: 'Warning', token: 'warning.bgDefault', value: c.warning.bgDefault },
+        { name: 'Error Bg Weakest', token: 'error.bgWeakest', value: c.error.bgWeakest },
+        { name: 'Error Border', token: 'error.borderWeak', value: c.error.borderWeak },
+      ],
+    },
+    {
+      title: 'Feedback — Warning',
+      swatches: [
+        { name: 'Warning Default', token: 'warning.bgDefault', value: c.warning.bgDefault },
         { name: 'Warning Content', token: 'warning.contentStrong', value: c.warning.contentStrong },
-        { name: 'Info', token: 'info.bgDefault', value: c.info.bgDefault },
+        { name: 'Warning Bg Weakest', token: 'warning.bgWeakest', value: c.warning.bgWeakest },
+        { name: 'Warning Border', token: 'warning.borderWeak', value: c.warning.borderWeak },
+      ],
+    },
+    {
+      title: 'Feedback — Info',
+      swatches: [
+        { name: 'Info Default', token: 'info.bgDefault', value: c.info.bgDefault },
         { name: 'Info Content', token: 'info.contentStrong', value: c.info.contentStrong },
-        { name: 'Success', token: 'success.bgDefault', value: c.success.bgDefault },
+        { name: 'Info Bg Weakest', token: 'info.bgWeakest', value: c.info.bgWeakest },
+        { name: 'Info Border', token: 'info.borderWeak', value: c.info.borderWeak },
+      ],
+    },
+    {
+      title: 'Feedback — Success',
+      swatches: [
+        { name: 'Success Default', token: 'success.bgDefault', value: c.success.bgDefault },
         { name: 'Success Content', token: 'success.contentStrong', value: c.success.contentStrong },
+        { name: 'Success Bg Weakest', token: 'success.bgWeakest', value: c.success.bgWeakest },
+        { name: 'Success Border', token: 'success.borderWeak', value: c.success.borderWeak },
+      ],
+    },
+    {
+      title: 'Effect Ingredients — Shadows',
+      swatches: [
+        { name: 'Drop Primary', token: 'effect/dropPrimary', value: isDark ? '#00000040' : hexToRgba(c.contentPrimary, 0.08) },
+        { name: 'Drop Primary Hover', token: 'effect/dropPrimaryHover', value: isDark ? '#00000066' : hexToRgba(c.contentPrimary, 0.16) },
+        { name: 'Inner Light', token: 'effect/innerLight', value: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(252, 252, 255, 0.12)' },
+        { name: 'Inner Dark', token: 'effect/innerDark', value: isDark ? 'rgba(0, 0, 0, 0.20)' : hexToRgba(c.bgBaseInverse, 0.08) },
+        { name: 'Chip Brand Inner', token: 'effect/chipInner', value: isDark ? hexToRgba(c.brand200, 0.10) : hexToRgba(c.brand200, 0.22) },
+        { name: 'Chip Brand Inner Deep', token: 'effect/chipInner2', value: isDark ? hexToRgba(c.brand200, 0.14) : hexToRgba(c.brand200, 0.32) },
+        { name: 'Inner Element Drop', token: 'effect/innerElDrop', value: isDark ? 'rgba(0, 0, 0, 0.25)' : hexToRgba(c.bgBaseInverse, 0.08) },
+        { name: 'Inner Element Inset', token: 'effect/innerElInset', value: isDark ? 'rgba(0, 0, 0, 0.20)' : hexToRgba(c.bgBaseInverse, 0.14) },
       ],
     },
   ];

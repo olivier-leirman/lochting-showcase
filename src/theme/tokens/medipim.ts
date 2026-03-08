@@ -30,6 +30,7 @@ export const MEDIPIM: BrandTokens = {
     contentSecondary: '#2f4e4e',   // mp-neutral/700
     contentTertiary:  '#657676',   // mp-neutral/600-grayish
     contentSpot:      '#8a9d9d',   // mp-neutral/400-greyish
+    contentSpotWeak:  '#04212a26', // contentPrimary at ~15% — transparent overlay
     contentStayLight: '#fcfcff',   // neutral/light/50 — always light
     contentStayDark:  '#04212a',   // mp-brand/900 — always dark
     contentInversePrimary:   '#fafcfc',   // mp-neutral/50
@@ -84,6 +85,7 @@ export const MEDIPIM: BrandTokens = {
     contentSecondary: '#bfd9d9',   // mp-neutral/200
     contentTertiary:  '#8a9d9d',   // mp-neutral/400-greyish
     contentSpot:      '#657676',   // mp-neutral/600-grayish
+    contentSpotWeak:  '#fcfcff33', // contentStayLight at ~20% — transparent overlay
     contentStayLight: '#fcfcff',   // stays light
     contentStayDark:  '#04212a',   // stays dark
     contentInversePrimary:   '#04212a',   // mp-brand/900 (swap)

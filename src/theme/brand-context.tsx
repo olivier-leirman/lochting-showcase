@@ -6,6 +6,7 @@ import { LOCHTING } from './tokens/lochting';
 import { MEDIPIM } from './tokens/medipim';
 import { createBrandTheme } from './create-brand-theme';
 import { deriveDarkColors } from './dark-colors';
+import { FONT_PRESETS, type FontPreset } from './tokens/font-presets';
 
 const BRANDS: Record<string, BrandTokens> = {
   lochting: LOCHTING,
@@ -25,6 +26,10 @@ interface BrandContextValue {
   theme: Theme;
   effects: Effects;
   availableBrands: { id: string; name: string }[];
+  /** Font preset switching */
+  fontPresetIndex: number;
+  setFontPreset: (index: number) => void;
+  fontPresets: FontPreset[];
 }
 
 const BrandContext = createContext<BrandContextValue | null>(null);
@@ -32,31 +37,55 @@ const BrandContext = createContext<BrandContextValue | null>(null);
 export function BrandProvider({ children }: { children: ReactNode }) {
   const [brandId, setBrandId] = useState('lochting');
   const [colorMode, setColorMode] = useState<ColorMode>('light');
+  const [fontPresetIndex, setFontPresetIndex] = useState(0);
+
+  // Reset font preset when brand changes
+  const setBrand = (id: string) => {
+    setBrandId(id);
+    setFontPresetIndex(0);
+  };
 
   const value = useMemo(() => {
     const sourceBrand = BRANDS[brandId] ?? LOCHTING;
-    const { theme, effects } = createBrandTheme(sourceBrand, colorMode);
+    const presets = FONT_PRESETS[brandId] ?? [];
+    const fontPreset = presets[fontPresetIndex] ?? presets[0];
+
+    // Apply font preset overrides to the brand's typography
+    const brandWithFonts: BrandTokens = fontPreset
+      ? {
+          ...sourceBrand,
+          typography: {
+            ...sourceBrand.typography,
+            ...fontPreset.typography,
+          },
+        }
+      : sourceBrand;
+
+    const { theme, effects } = createBrandTheme(brandWithFonts, colorMode);
 
     // Expose brand tokens with mode-effective colors so components reading
     // brand.colors directly get the correct dark-adapted values.
     const effectiveColors = colorMode === 'dark'
       ? deriveDarkColors(sourceBrand)
       : sourceBrand.colors;
-    const brand: BrandTokens = { ...sourceBrand, colors: effectiveColors };
+    const brand: BrandTokens = { ...brandWithFonts, colors: effectiveColors };
 
     return {
       brand,
       sourceBrand,
       brandId,
-      setBrand: setBrandId,
+      setBrand,
       colorMode,
       setColorMode,
       toggleColorMode: () => setColorMode(prev => prev === 'light' ? 'dark' : 'light'),
       theme,
       effects,
       availableBrands: Object.values(BRANDS).map(b => ({ id: b.id, name: b.name })),
+      fontPresetIndex,
+      setFontPreset: setFontPresetIndex,
+      fontPresets: presets,
     };
-  }, [brandId, colorMode]);
+  }, [brandId, colorMode, fontPresetIndex]);
 
   return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
 }

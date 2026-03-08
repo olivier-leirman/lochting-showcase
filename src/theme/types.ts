@@ -27,6 +27,7 @@ export interface BrandColors {
   contentSecondary: string;
   contentTertiary: string;
   contentSpot: string;
+  contentSpotWeak: string;
   contentStayLight: string;
   contentStayDark: string;
   contentInversePrimary: string;

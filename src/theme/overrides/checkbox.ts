@@ -39,7 +39,7 @@ export function checkboxOverrides(brand: BrandTokens, fx: Effects): Components<T
     className: 'material-symbols-rounded',
     style: {
       fontFamily: '"Material Symbols Rounded"',
-      fontVariationSettings: `'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' ${size}`,
+      fontVariationSettings: `'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' ${size}`,
       fontSize: size,
       lineHeight: 1,
       color: c.contentStayLight,
@@ -59,6 +59,12 @@ export function checkboxOverrides(brand: BrandTokens, fx: Effects): Components<T
           padding: 8,
           '&:hover': {
             backgroundColor: `color-mix(in srgb, ${c.brand400} 4%, transparent)`,
+          },
+        },
+        sizeSmall: {
+          padding: 4,
+          '& > span': {
+            transform: 'scale(0.8)',
           },
         },
       },

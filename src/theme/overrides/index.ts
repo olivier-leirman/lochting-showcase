@@ -12,6 +12,15 @@ import { chipOverrides } from './chip';
 import { toggleButtonOverrides } from './toggle-button';
 import { badgeOverrides } from './badge';
 import { buttonGroupOverrides } from './button-group';
+import { autocompleteOverrides } from './autocomplete';
+import { tabsOverrides } from './tabs';
+import { stepperOverrides } from './stepper';
+import { dialogOverrides } from './dialog';
+import { tableOverrides } from './table';
+import { accordionOverrides } from './accordion';
+import { cardOverrides } from './card';
+import { datePickerOverrides } from './date-picker';
+import { navigationOverrides } from './navigation';
 import { globalOverrides } from './global';
 
 export function buildAllOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
@@ -28,5 +37,14 @@ export function buildAllOverrides(brand: BrandTokens, fx: Effects): Components<T
     ...chipOverrides(brand, fx),
     ...toggleButtonOverrides(brand, fx),
     ...badgeOverrides(brand, fx),
+    ...autocompleteOverrides(brand, fx),
+    ...tabsOverrides(brand, fx),
+    ...stepperOverrides(brand, fx),
+    ...dialogOverrides(brand, fx),
+    ...tableOverrides(brand, fx),
+    ...accordionOverrides(brand, fx),
+    ...cardOverrides(brand, fx),
+    ...datePickerOverrides(brand, fx),
+    ...navigationOverrides(brand, fx),
   };
 }
