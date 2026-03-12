@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup, Chip, Button, Avatar } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
+import { Icon } from '../../components/Icon';
 import { CodeBlock } from '../blocks/CodeBlock';
+import type { BrandTokens, BrandScale } from '../../theme/types';
 
 /* ─── Color format conversion ─── */
 
@@ -182,8 +184,127 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+/* ─── uicolors.app-style swatch strip (moved from HomePage) ─── */
+
+/** Resolve the strong font-weight for the current brand */
+function sw(brand: BrandTokens) { return brand.typography.strongWeight ?? 600; }
+
+function parseHexSimple(hex: string) {
+  const h = hex.replace('#', '');
+  return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
+}
+
+function swatchRgbToHsv(r: number, g: number, b: number) {
+  const r1 = r / 255, g1 = g / 255, b1 = b / 255;
+  const max = Math.max(r1, g1, b1), min = Math.min(r1, g1, b1);
+  const v = max, d = max - min;
+  const s = max === 0 ? 0 : d / max;
+  if (max === min) return { h: 0, s: 0, v };
+  let h = 0;
+  if (max === r1) h = ((g1 - b1) / d + (g1 < b1 ? 6 : 0)) / 6;
+  else if (max === g1) h = ((b1 - r1) / d + 2) / 6;
+  else h = ((r1 - g1) / d + 4) / 6;
+  return { h: Math.round(h * 360), s: Math.round(s * 100), v: Math.round(v * 100) };
+}
+
+interface SwatchItem { name: string; hex: string }
+
+function swatchTextColor(hex: string): string {
+  const { r, g, b } = parseHexSimple(hex);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.55 ? '#200845' : '#ffffff';
+}
+
+function SwatchStrip({ items, label, brand }: { items: SwatchItem[]; label: string; brand: BrandTokens }) {
+  return (
+    <Box>
+      <Typography variant="caption" sx={{ fontWeight: sw(brand), mb: 1, display: 'block', color: 'text.secondary', letterSpacing: 1, textTransform: 'uppercase', fontSize: '0.65rem' }}>
+        {label}
+      </Typography>
+      <Box sx={{ display: 'flex', borderRadius: 2, overflow: 'hidden' }}>
+        {items.map((item) => {
+          const textColor = swatchTextColor(item.hex);
+          const { r, g, b } = parseHexSimple(item.hex);
+          const hsv = swatchRgbToHsv(r, g, b);
+          return (
+            <Box
+              key={item.name}
+              sx={{
+                flex: 1,
+                bgcolor: item.hex,
+                py: 1.5,
+                px: 0.75,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: 80,
+                cursor: 'default',
+                transition: 'flex 0.2s',
+                '&:hover': { flex: 1.6 },
+              }}
+            >
+              <Typography sx={{ color: textColor, fontSize: '0.7rem', fontWeight: 600, lineHeight: 1 }}>
+                {item.name}
+              </Typography>
+              <Box>
+                <Typography sx={{ color: textColor, fontFamily: 'monospace', fontSize: '0.55rem', lineHeight: 1.5, opacity: 0.85 }}>
+                  {item.hex.toUpperCase().replace('#', '')}
+                </Typography>
+                <Typography sx={{ color: textColor, fontFamily: 'monospace', fontSize: '0.55rem', lineHeight: 1.5, opacity: 0.65 }}>
+                  {hsv.h} {hsv.s} {hsv.v}
+                </Typography>
+              </Box>
+            </Box>
+          );
+        })}
+      </Box>
+    </Box>
+  );
+}
+
+const SCALE_KEYS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const;
+
+function BrandScaleSwatch({ scale, brandName, brand }: { scale: BrandScale; brandName: string; brand: BrandTokens }) {
+  const items: SwatchItem[] = SCALE_KEYS.map(key => ({ name: key, hex: scale[key] }));
+  return <SwatchStrip items={items} label={brandName} brand={brand} />;
+}
+
+/* ─── Dark Mode Preview ─── */
+
+function DarkModePreview({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  return (
+    <Box sx={{
+      bgcolor: c.bgBaseInverse,
+      borderRadius: 3,
+      p: 3,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2,
+    }}>
+      <Typography sx={{ color: c.contentInversePrimary, fontWeight: sw(brand), fontSize: '1.1rem' }}>
+        Dark Mode Preview
+      </Typography>
+      <Typography sx={{ color: c.contentInverseSecondary, fontSize: '0.85rem' }}>
+        Inverse tokens provide light-on-dark text colors for overlays and dark backgrounds.
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', alignItems: 'center' }}>
+        <Chip label="Primary" size="small" sx={{ bgcolor: c.brand400, color: c.contentStayLight }} />
+        <Chip label="Brand 100" size="small" sx={{ bgcolor: c.brand100, color: c.brand450 }} />
+        <Chip label="Error" size="small" sx={{ bgcolor: c.error.bgDefault, color: '#fff' }} />
+        <Chip label="Success" size="small" sx={{ bgcolor: c.success.bgDefault, color: '#fff' }} />
+      </Box>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Button variant="contained" color="primary" size="small">Action</Button>
+        <Typography sx={{ color: c.contentInverseSpot, fontSize: '0.75rem' }}>
+          Spot text
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
 export function ColorsPage() {
-  const { brand, colorMode } = useBrand();
+  const { brand, sourceBrand, colorMode } = useBrand();
   const c = brand.colors;
   const isDark = colorMode === 'dark';
   const [format, setFormat] = useState<ColorFormat>('hex');
@@ -301,6 +422,41 @@ export function ColorsPage() {
         code={`import { useBrand } from './theme/brand-context';\nconst { brand } = useBrand();\n// brand.colors.brand400 → "${c.brand400}"`}
         language="tsx"
       />
+
+      {/* ─── Brand Scale (uicolors.app style) — moved from HomePage ─── */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 4, mb: 4 }}>
+        <BrandScaleSwatch scale={sourceBrand.brandScale} brandName={`${brand.name} · Primary`} brand={brand} />
+
+        <SwatchStrip
+          label="System"
+          brand={brand}
+          items={[
+            { name: 'Error', hex: c.error.bgDefault },
+            { name: 'Warning', hex: c.warning.bgDefault },
+            { name: 'Success', hex: c.success.bgDefault },
+            { name: 'Info', hex: c.info.bgDefault },
+          ]}
+        />
+
+        <SwatchStrip
+          label="Neutral Backgrounds"
+          brand={brand}
+          items={[
+            { name: 'Elevated', hex: c.bgElevated },
+            { name: 'Base', hex: c.bgBase },
+            { name: 'Sunken', hex: c.bgSunken },
+            { name: 'Deep', hex: c.bgSunkenDeep },
+            { name: 'Deeper', hex: c.bgSunkenDeeper },
+          ]}
+        />
+      </Box>
+
+      {/* ─── Dark Mode Preview — moved from HomePage ─── */}
+      <Box sx={{ mb: 4 }}>
+        <DarkModePreview brand={brand} />
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
 
       <Box sx={{ my: 3 }}>
         <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>

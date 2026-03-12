@@ -12,10 +12,10 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
     MuiToggleButtonGroup: {
       styleOverrides: {
         root: {
-          background: fx.gradients.inactive,
-          border: `1px solid ${c.borderWeak}`,
-          boxShadow: fx.shadows.inactive,
-          // Default = medium
+          // Soft default — plain sunken background, no gradient or shadow
+          backgroundColor: c.bgSunken,
+          border: 'none',
+          boxShadow: 'none',
           borderRadius: 12,
           padding: 4,
           gap: 2,
@@ -29,6 +29,12 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
             padding: 4,
           },
         },
+        grouped: {
+          // Remove MUI's default -1px margin overlap — we use transparent borders instead
+          '&:not(:first-of-type)': {
+            marginLeft: 0,
+          },
+        },
       },
     },
     MuiToggleButton: {
@@ -36,19 +42,20 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
         root: {
           // Default = medium
           borderRadius: '8px !important',
-          border: 'none !important',
+          border: '1px solid transparent !important',
           textTransform: 'none' as const,
           fontFamily: brand.typography.bodyFont,
           fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.sm,       // 14px
           letterSpacing: '0.46px',
-          color: c.contentSecondary,
+          color: c.contentTertiary,
           height: 32,
           padding: '0 12px',
           lineHeight: 1,
+          transition: 'all 0.15s ease',
           '&.Mui-selected': {
             background: fx.gradients.secondary,
-            color: c.contentPrimary,
+            color: c.contentSecondary,
             border: `1px solid ${c.borderDefault} !important`,
             boxShadow: fx.shadows.secondaryButton,
             '&:hover': {

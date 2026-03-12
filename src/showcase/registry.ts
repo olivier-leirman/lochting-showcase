@@ -17,7 +17,7 @@ export interface ComponentDoc {
   id: string;
   name: string;
   description: string;
-  category: 'inputs' | 'data-display' | 'navigation';
+  category: 'actions' | 'inputs' | 'data-display' | 'feedback' | 'surfaces' | 'navigation';
   importStatement: string;
   examples: ComponentExample[];
   props: ComponentProp[];

@@ -140,7 +140,7 @@ export const LOCHTING: BrandTokens = {
     '950': '#120428',   // extrapolated darker
   },
   typography: {
-    displayFont: '"Playwrite HU", cursive',
-    bodyFont: '"Nunito", sans-serif',
+    displayFont: '"Calibre", sans-serif',
+    bodyFont: '"Calibre", sans-serif',
   },
 };

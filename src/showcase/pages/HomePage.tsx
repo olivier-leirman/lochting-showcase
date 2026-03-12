@@ -1,200 +1,47 @@
-import { Box, Typography, Button, Checkbox, Switch, Slider, Chip, Radio, RadioGroup, FormControlLabel, TextField, Badge, ToggleButton, ToggleButtonGroup, Avatar, IconButton } from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box, Typography, Button, Chip, Avatar, Tabs, Tab,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination,
+} from '@mui/material';
 import { Icon } from '../../components/Icon';
+import { SearchField } from '../../components/SearchField';
 import { ToggleChip, ToggleChipGroup } from '../../components/ToggleChip';
 import { useBrand } from '../../theme/brand-context';
-import { useState } from 'react';
-import type { BrandTokens, BrandScale } from '../../theme/types';
+import { COMPONENT_REGISTRY, getComponentsByCategory } from '../registry';
+import type { BrandTokens } from '../../theme/types';
 
 /** Resolve the strong font-weight for the current brand */
 function sw(brand: BrandTokens) { return brand.typography.strongWeight ?? 600; }
 
-/* ─── Color conversion helpers (for HSV display) ─── */
+/* ─── Component icon mapping ─── */
 
-function parseHexSimple(hex: string) {
-  const h = hex.replace('#', '');
-  return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
-}
+const COMPONENT_ICONS: Record<string, string> = {
+  button: 'smart_button', 'button-group': 'view_column', 'toggle-button': 'toggle_on', 'toggle-chip': 'filter_alt',
+  textfield: 'text_fields', 'search-field': 'search', select: 'arrow_drop_down_circle', autocomplete: 'auto_awesome',
+  'multi-select': 'checklist', checkbox: 'check_box', radio: 'radio_button_checked', switch: 'toggle_on',
+  slider: 'linear_scale', 'date-picker': 'calendar_today', 'time-picker': 'schedule', 'datetime-picker': 'event',
+  'date-range-picker': 'date_range',
+  table: 'table_chart', 'advanced-table': 'table_view', chip: 'label', badge: 'notifications', icon: 'emoji_symbols',
+  alert: 'warning', dialog: 'open_in_new', progress: 'hourglass_top',
+  card: 'crop_landscape', accordion: 'expand_more',
+  tabs: 'tab', breadcrumbs: 'chevron_right', pagination: 'more_horiz', stepper: 'linear_scale',
+  sidebar: 'side_navigation', 'top-bar': 'web_asset', 'app-layout': 'dashboard',
+};
 
-function rgbToHsv(r: number, g: number, b: number) {
-  const r1 = r / 255, g1 = g / 255, b1 = b / 255;
-  const max = Math.max(r1, g1, b1), min = Math.min(r1, g1, b1);
-  const v = max, d = max - min;
-  const s = max === 0 ? 0 : d / max;
-  if (max === min) return { h: 0, s: 0, v };
-  let h = 0;
-  if (max === r1) h = ((g1 - b1) / d + (g1 < b1 ? 6 : 0)) / 6;
-  else if (max === g1) h = ((b1 - r1) / d + 2) / 6;
-  else h = ((r1 - g1) / d + 4) / 6;
-  return { h: Math.round(h * 360), s: Math.round(s * 100), v: Math.round(v * 100) };
-}
-
-/* ─── uicolors.app-style swatch strip (reusable) ─── */
-
-interface SwatchItem { name: string; hex: string }
-
-function swatchTextColor(hex: string): string {
-  const { r, g, b } = parseHexSimple(hex);
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.55 ? '#200845' : '#ffffff';
-}
-
-function SwatchStrip({ items, label, brand }: { items: SwatchItem[]; label: string; brand: BrandTokens }) {
-  return (
-    <Box>
-      <Typography variant="caption" sx={{ fontWeight: sw(brand), mb: 1, display: 'block', color: 'text.secondary', letterSpacing: 1, textTransform: 'uppercase', fontSize: '0.65rem' }}>
-        {label}
-      </Typography>
-      <Box sx={{ display: 'flex', borderRadius: 2, overflow: 'hidden' }}>
-        {items.map((item) => {
-          const textColor = swatchTextColor(item.hex);
-          const { r, g, b } = parseHexSimple(item.hex);
-          const hsv = rgbToHsv(r, g, b);
-          return (
-            <Box
-              key={item.name}
-              sx={{
-                flex: 1,
-                bgcolor: item.hex,
-                py: 1.5,
-                px: 0.75,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                minHeight: 80,
-                cursor: 'default',
-                transition: 'flex 0.2s',
-                '&:hover': { flex: 1.6 },
-              }}
-            >
-              <Typography sx={{ color: textColor, fontSize: '0.7rem', fontWeight: 600, lineHeight: 1 }}>
-                {item.name}
-              </Typography>
-              <Box>
-                <Typography sx={{ color: textColor, fontFamily: 'monospace', fontSize: '0.55rem', lineHeight: 1.5, opacity: 0.85 }}>
-                  {item.hex.toUpperCase().replace('#', '')}
-                </Typography>
-                <Typography sx={{ color: textColor, fontFamily: 'monospace', fontSize: '0.55rem', lineHeight: 1.5, opacity: 0.65 }}>
-                  {hsv.h} {hsv.s} {hsv.v}
-                </Typography>
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-    </Box>
-  );
-}
-
-const SCALE_KEYS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const;
-
-function BrandScaleSwatch({ scale, brandName, brand }: { scale: BrandScale; brandName: string; brand: BrandTokens }) {
-  const items: SwatchItem[] = SCALE_KEYS.map(key => ({ name: key, hex: scale[key] }));
-  return <SwatchStrip items={items} label={brandName} brand={brand} />;
-}
-
-/* ─── Dark Mode Preview ─── */
-
-function DarkModePreview({ brand }: { brand: BrandTokens }) {
-  const c = brand.colors;
-  return (
-    <Box sx={{
-      bgcolor: c.bgBaseInverse,
-      borderRadius: 3,
-      p: 3,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 2,
-    }}>
-      <Typography sx={{ color: c.contentInversePrimary, fontWeight: sw(brand), fontSize: '1.1rem' }}>
-        Dark Mode Preview
-      </Typography>
-      <Typography sx={{ color: c.contentInverseSecondary, fontSize: '0.85rem' }}>
-        Inverse tokens provide light-on-dark text colors for overlays and dark backgrounds.
-      </Typography>
-      <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', alignItems: 'center' }}>
-        <Chip label="Primary" size="small" sx={{ bgcolor: c.brand400, color: c.contentStayLight }} />
-        <Chip label="Brand 100" size="small" sx={{ bgcolor: c.brand100, color: c.brand450 }} />
-        <Chip label="Error" size="small" sx={{ bgcolor: c.error.bgDefault, color: '#fff' }} />
-        <Chip label="Success" size="small" sx={{ bgcolor: c.success.bgDefault, color: '#fff' }} />
-      </Box>
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-        <Button variant="contained" color="primary" size="small">Action</Button>
-        <Typography sx={{ color: c.contentInverseSpot, fontSize: '0.75rem' }}>
-          Spot text · {c.contentInverseSpot}
-        </Typography>
-      </Box>
-    </Box>
-  );
-}
-
-/* ─── Section label ─── */
-
-function SectionLabel({ children, brand }: { children: string; brand: BrandTokens }) {
-  return (
-    <Typography variant="caption" sx={{
-      fontWeight: sw(brand), mb: 1, display: 'block', color: 'text.secondary',
-      letterSpacing: 1, textTransform: 'uppercase', fontSize: '0.65rem',
-    }}>
-      {children}
-    </Typography>
-  );
-}
-
-/* ─── Component card wrapper ─── */
-
-function ComponentCard({ children, brand }: { children: React.ReactNode; brand: BrandTokens }) {
-  const c = brand.colors;
-  return (
-    <Box sx={{
-      bgcolor: c.bgElevated,
-      borderRadius: 2,
-      p: 2.5,
-      border: '1px solid',
-      borderColor: c.borderDefault,
-    }}>
-      {children}
-    </Box>
-  );
-}
-
-/* ─── Mini card preview ─── */
-function PreviewCard({ brand }: { brand: BrandTokens }) {
-  const c = brand.colors;
-  return (
-    <Box sx={{
-      bgcolor: c.bgElevated,
-      borderRadius: 3,
-      p: 2.5,
-      border: '1px solid',
-      borderColor: c.borderDefault,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 1.5,
-    }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Avatar sx={{ bgcolor: c.brand400, width: 36, height: 36, fontSize: '0.85rem' }}>OL</Avatar>
-        <Box>
-          <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, lineHeight: 1.3 }}>
-            Olivier Leirman
-          </Typography>
-          <Typography variant="caption" sx={{ color: c.contentSecondary, lineHeight: 1.3 }}>
-            UX Designer
-          </Typography>
-        </Box>
-      </Box>
-      <Typography variant="body2" sx={{ color: c.contentSecondary, fontSize: '0.8rem' }}>
-        Building a design system with gradients and layered shadows for a premium feel.
-      </Typography>
-      <Box sx={{ display: 'flex', gap: 1 }}>
-        <Chip label="Design" size="small" color="primary" />
-        <Chip label="MUI" size="small" />
-      </Box>
-    </Box>
-  );
-}
+const CATEGORY_LABELS: Record<string, string> = {
+  actions: 'Actions', inputs: 'Inputs', 'data-display': 'Data Display',
+  feedback: 'Feedback', surfaces: 'Surfaces', navigation: 'Navigation',
+};
+const CATEGORY_ORDER = ['actions', 'inputs', 'data-display', 'feedback', 'surfaces', 'navigation'];
 
 /* ─── Mini stat card ─── */
-function StatCard({ icon, value, label, brand }: { icon: string; value: string; label: string; brand: BrandTokens }) {
+
+function StatCard({ icon, value, label, change, brand }: {
+  icon: string; value: string; label: string; change?: string; brand: BrandTokens;
+}) {
   const c = brand.colors;
+  const isPositive = change?.startsWith('+');
   return (
     <Box sx={{
       bgcolor: c.bgElevated,
@@ -203,16 +50,29 @@ function StatCard({ icon, value, label, brand }: { icon: string; value: string; 
       border: '1px solid',
       borderColor: c.borderDefault,
       flex: 1,
-      minWidth: 120,
+      minWidth: 140,
     }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
         <Box sx={{
-          width: 32, height: 32, borderRadius: 1.5,
-          bgcolor: c.bgSubtle,
+          width: 36, height: 36, borderRadius: 1.5,
+          bgcolor: c.brand100,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <Icon name={icon} size={18} color={c.brand400} />
         </Box>
+        {change && (
+          <Chip
+            label={change}
+            size="small"
+            sx={{
+              fontSize: '0.7rem',
+              height: 22,
+              bgcolor: isPositive ? c.success.bgWeakest : c.error.bgWeakest,
+              color: isPositive ? c.success.contentStrong : c.error.contentStrong,
+              fontWeight: sw(brand),
+            }}
+          />
+        )}
       </Box>
       <Typography variant="h5" sx={{ fontWeight: 700, color: c.contentPrimary, fontFamily: 'inherit', lineHeight: 1.2 }}>
         {value}
@@ -224,246 +84,358 @@ function StatCard({ icon, value, label, brand }: { icon: string; value: string; 
   );
 }
 
-/* ─── Feedback banner previews ─── */
-function FeedbackBanners({ brand }: { brand: BrandTokens }) {
+/* ─── Chart placeholder (decorative SVG) ─── */
+
+function ChartPlaceholder({ brand }: { brand: BrandTokens }) {
   const c = brand.colors;
-  const banners = [
-    { key: 'error' as const, icon: 'error', text: 'Payment failed' },
-    { key: 'warning' as const, icon: 'warning', text: 'Almost full' },
-    { key: 'success' as const, icon: 'check_circle', text: 'Published' },
-    { key: 'info' as const, icon: 'info', text: '3 updates' },
-  ];
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-      {banners.map(({ key, icon, text }) => (
-        <Box key={key} sx={{
-          display: 'flex', alignItems: 'center', gap: 1, px: 1.5, py: 0.75,
-          bgcolor: c[key].bgWeakest,
-          border: '1px solid',
-          borderColor: c[key].borderWeak,
-          borderRadius: 1.5,
-        }}>
-          <Icon name={icon} size={16} color={c[key].contentStrong} />
-          <Typography variant="caption" sx={{ color: c[key].contentStrong, fontWeight: sw(brand) }}>
-            {text}
+    <Box sx={{
+      bgcolor: c.bgElevated,
+      borderRadius: 2,
+      border: '1px solid',
+      borderColor: c.borderDefault,
+      p: 3,
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, mb: 0.5 }}>
+        Revenue Overview
+      </Typography>
+      <Typography variant="caption" sx={{ color: c.contentTertiary, mb: 2, display: 'block' }}>
+        Monthly revenue for the current quarter
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end', height: 120, mt: 2 }}>
+        {[40, 65, 45, 80, 55, 90, 70, 95, 60, 85, 75, 100].map((h, i) => (
+          <Box
+            key={i}
+            sx={{
+              flex: 1,
+              height: `${h}%`,
+              borderRadius: '4px 4px 0 0',
+              background: i >= 10 ? c.brand200 : c.brand400,
+              opacity: i >= 10 ? 0.5 : 0.15 + (i * 0.07),
+              transition: 'opacity 0.2s',
+              '&:hover': { opacity: 1 },
+            }}
+          />
+        ))}
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
+          <Typography key={m} variant="caption" sx={{ color: c.contentTertiary, fontSize: '0.6rem', flex: 1, textAlign: 'center' }}>
+            {m}
           </Typography>
-        </Box>
-      ))}
+        ))}
+      </Box>
     </Box>
   );
 }
 
-/* ─── Nav list preview ─── */
-function NavPreview({ brand }: { brand: BrandTokens }) {
+/* ─── Recent Activity Table ─── */
+
+const ACTIVITY_DATA = [
+  { name: 'Sarah Chen', avatar: 'SC', action: 'Updated product catalog', date: 'Mar 12, 2026', status: 'Completed' },
+  { name: 'Marcus Webb', avatar: 'MW', action: 'Created new campaign', date: 'Mar 11, 2026', status: 'Active' },
+  { name: 'Elena Rossi', avatar: 'ER', action: 'Submitted order #4821', date: 'Mar 11, 2026', status: 'Pending' },
+  { name: 'James Park', avatar: 'JP', action: 'Published blog post', date: 'Mar 10, 2026', status: 'Completed' },
+  { name: 'Aisha Patel', avatar: 'AP', action: 'Updated pricing tier', date: 'Mar 10, 2026', status: 'Active' },
+];
+
+function ActivityTable({ brand }: { brand: BrandTokens }) {
   const c = brand.colors;
-  const items = [
-    { icon: 'dashboard', label: 'Dashboard', active: true },
-    { icon: 'inventory_2', label: 'Products', active: false },
-    { icon: 'people', label: 'Customers', active: false },
-    { icon: 'settings', label: 'Settings', active: false },
-  ];
+  const statusColor = (s: string) => {
+    if (s === 'Completed') return 'success';
+    if (s === 'Active') return 'primary';
+    return 'warning';
+  };
   return (
     <Box sx={{
-      bgcolor: c.bgElevated, borderRadius: 2, p: 1,
-      border: '1px solid', borderColor: c.borderDefault,
+      bgcolor: c.bgElevated,
+      borderRadius: 2,
+      border: '1px solid',
+      borderColor: c.borderDefault,
     }}>
-      {items.map((item) => (
-        <Box key={item.label} sx={{
-          display: 'flex', alignItems: 'center', gap: 1.5,
-          px: 1.5, py: 1, borderRadius: 1.5, cursor: 'default',
-          bgcolor: item.active ? c.bgSubtle : 'transparent',
-        }}>
-          <Icon name={item.icon} size={18} color={item.active ? c.brand400 : c.contentSpot} />
-          <Typography variant="body2" sx={{
-            fontWeight: item.active ? sw(brand) : 400,
-            color: item.active ? c.brand450 : c.contentSecondary,
-            fontSize: '0.85rem',
-          }}>
-            {item.label}
-          </Typography>
-        </Box>
-      ))}
+      <Box sx={{ px: 3, py: 2 }}>
+        <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary }}>
+          Recent Activity
+        </Typography>
+      </Box>
+      <TableContainer sx={{ borderRadius: 0, border: 'none' }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>User</TableCell>
+              <TableCell>Action</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {ACTIVITY_DATA.map((row) => (
+              <TableRow key={row.name + row.action}>
+                <TableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Avatar sx={{ width: 28, height: 28, fontSize: '0.7rem', bgcolor: c.brand100, color: c.brand500 }}>{row.avatar}</Avatar>
+                    <Typography variant="body2">{row.name}</Typography>
+                  </Box>
+                </TableCell>
+                <TableCell>{row.action}</TableCell>
+                <TableCell>
+                  <Typography variant="body2" sx={{ color: c.contentSecondary }}>{row.date}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Chip label={row.status} size="small" color={statusColor(row.status) as any} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}
+
+/* ─── Tasks Tab ─── */
+
+const TASKS_DATA = [
+  { task: 'Design checkout flow', assignee: 'Sarah Chen', avatar: 'SC', priority: 'High', due: 'Mar 15, 2026', status: 'In Progress' },
+  { task: 'Update product API', assignee: 'Marcus Webb', avatar: 'MW', priority: 'High', due: 'Mar 14, 2026', status: 'In Progress' },
+  { task: 'Write onboarding docs', assignee: 'Elena Rossi', avatar: 'ER', priority: 'Medium', due: 'Mar 18, 2026', status: 'To Do' },
+  { task: 'Fix cart calculations', assignee: 'James Park', avatar: 'JP', priority: 'High', due: 'Mar 13, 2026', status: 'In Review' },
+  { task: 'Add search filters', assignee: 'Aisha Patel', avatar: 'AP', priority: 'Medium', due: 'Mar 20, 2026', status: 'To Do' },
+  { task: 'Optimize image loading', assignee: 'Sarah Chen', avatar: 'SC', priority: 'Low', due: 'Mar 22, 2026', status: 'To Do' },
+  { task: 'Setup CI/CD pipeline', assignee: 'Marcus Webb', avatar: 'MW', priority: 'Medium', due: 'Mar 19, 2026', status: 'Completed' },
+  { task: 'Audit accessibility', assignee: 'Elena Rossi', avatar: 'ER', priority: 'Low', due: 'Mar 25, 2026', status: 'To Do' },
+];
+
+function TasksTab({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  const [filter, setFilter] = useState<string | string[]>('all');
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 5;
+
+  const filteredTasks = filter === 'all'
+    ? TASKS_DATA
+    : TASKS_DATA.filter(t => t.status === filter);
+
+  const priorityColor = (p: string) => {
+    if (p === 'High') return 'error';
+    if (p === 'Medium') return 'warning';
+    return 'info';
+  };
+
+  const statusColor = (s: string) => {
+    if (s === 'Completed') return 'success';
+    if (s === 'In Progress') return 'primary';
+    if (s === 'In Review') return 'warning';
+    return 'default';
+  };
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {/* Toolbar */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <SearchField placeholder="Search tasks..." sx={{ width: 240 }} />
+        <ToggleChipGroup value={filter} exclusive onChange={setFilter}>
+          <ToggleChip value="all" label="All" count={TASKS_DATA.length} />
+          <ToggleChip value="In Progress" label="In Progress" icon="pending" count={TASKS_DATA.filter(t => t.status === 'In Progress').length} />
+          <ToggleChip value="Completed" label="Completed" icon="check_circle" count={TASKS_DATA.filter(t => t.status === 'Completed').length} />
+        </ToggleChipGroup>
+        <Box sx={{ flex: 1 }} />
+        <Button variant="contained" startIcon={<Icon name="add" size={20} />}>
+          Add Task
+        </Button>
+      </Box>
+
+      {/* Table */}
+      <TableContainer sx={{
+        bgcolor: c.bgElevated,
+        borderRadius: 2,
+        border: '1px solid',
+        borderColor: c.borderDefault,
+      }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Task</TableCell>
+              <TableCell>Assignee</TableCell>
+              <TableCell>Priority</TableCell>
+              <TableCell>Due Date</TableCell>
+              <TableCell>Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredTasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+              <TableRow key={row.task}>
+                <TableCell>
+                  <Typography variant="body2" sx={{ fontWeight: sw(brand) }}>{row.task}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Avatar sx={{ width: 28, height: 28, fontSize: '0.7rem', bgcolor: c.brand100, color: c.brand500 }}>{row.avatar}</Avatar>
+                    <Typography variant="body2">{row.assignee}</Typography>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Chip label={row.priority} size="small" color={priorityColor(row.priority) as any} />
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2" sx={{ color: c.contentSecondary }}>{row.due}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Chip label={row.status} size="small" color={statusColor(row.status) as any} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <TablePagination
+          component="div"
+          count={filteredTasks.length}
+          page={page}
+          onPageChange={(_, p) => setPage(p)}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5]}
+        />
+      </TableContainer>
+    </Box>
+  );
+}
+
+/* ─── Components Tab ─── */
+
+function ComponentsTab({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  const { effects } = useBrand();
+  const navigate = useNavigate();
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      {CATEGORY_ORDER.map(cat => {
+        const components = getComponentsByCategory(cat);
+        if (components.length === 0) return null;
+        return (
+          <Box key={cat}>
+            <Typography variant="caption" sx={{
+              fontWeight: sw(brand), mb: 2, display: 'block', color: 'text.secondary',
+              letterSpacing: 1, textTransform: 'uppercase', fontSize: '0.65rem',
+            }}>
+              {CATEGORY_LABELS[cat]}
+            </Typography>
+            <Box sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' },
+              gap: 2,
+            }}>
+              {components.map(comp => (
+                <Box
+                  key={comp.id}
+                  onClick={() => navigate(`/components/${comp.id}`)}
+                  sx={{
+                    bgcolor: c.bgElevated,
+                    borderRadius: 2,
+                    p: 2.5,
+                    border: '1px solid',
+                    borderColor: c.borderWeak,
+                    boxShadow: effects.shadows.secondaryButton,
+                    cursor: 'pointer',
+                    transition: 'border-color 0.15s, box-shadow 0.15s',
+                    '&:hover': {
+                      borderColor: c.brand300,
+                      boxShadow: effects.shadows.secondaryButtonHover,
+                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1.5,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Box sx={{
+                      width: 36, height: 36, borderRadius: 1.5,
+                      bgcolor: c.brand100,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      <Icon name={COMPONENT_ICONS[comp.id] ?? 'widgets'} size={18} color={c.brand400} />
+                    </Box>
+                    <Typography variant="body1" sx={{ fontWeight: sw(brand), color: c.contentPrimary }}>
+                      {comp.name}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{
+                    color: c.contentSecondary,
+                    fontSize: '0.8rem',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    minHeight: '2.4em',
+                  }}>
+                    {comp.description}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        );
+      })}
     </Box>
   );
 }
 
 /* ─── Main Home Page ─── */
+
 export function HomePage() {
-  const { brand, sourceBrand } = useBrand();
+  const { brand } = useBrand();
   const c = brand.colors;
-  const [toggleVal, setToggleVal] = useState('active');
-  const [chipVal, setChipVal] = useState<string | string[]>('all');
-  const strongWeight = sw(brand);
+  const [tab, setTab] = useState(0);
 
   return (
     <Box>
-      <Typography variant="h1" sx={{ mb: 4, fontSize: '2.5rem' }}>
+      <Typography variant="h1" sx={{ mb: 1, fontSize: '2.5rem' }}>
         Design System
       </Typography>
-      <Typography variant="body1" sx={{ color: 'text.secondary', mb: 6, maxWidth: 600 }}>
-        A modern component library built on MUI with gradients, layered shadows, and a premium tactile feel. Import the theme and use standard MUI components.
+      <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, maxWidth: 600 }}>
+        A modern component library built on MUI with gradients, layered shadows, and a premium tactile feel.
       </Typography>
 
-      {/* ─── Brand Scale (uicolors.app style) ─── */}
-      <Typography variant="h4" sx={{ mb: 3, fontFamily: 'inherit' }}>Color Palette</Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mb: 6 }}>
-        <BrandScaleSwatch scale={sourceBrand.brandScale} brandName={`${brand.name} · Primary`} brand={brand} />
-
-        {/* System colors */}
-        <SwatchStrip
-          label="System"
-          brand={brand}
-          items={[
-            { name: 'Error', hex: c.error.bgDefault },
-            { name: 'Warning', hex: c.warning.bgDefault },
-            { name: 'Success', hex: c.success.bgDefault },
-            { name: 'Info', hex: c.info.bgDefault },
-          ]}
-        />
-
-        {/* Neutral backgrounds */}
-        <SwatchStrip
-          label="Neutral Backgrounds"
-          brand={brand}
-          items={[
-            { name: 'Elevated', hex: c.bgElevated },
-            { name: 'Base', hex: c.bgBase },
-            { name: 'Sunken', hex: c.bgSunken },
-            { name: 'Deep', hex: c.bgSunkenDeep },
-            { name: 'Deeper', hex: c.bgSunkenDeeper },
-          ]}
-        />
+      {/* ─── Tab Bar ─── */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
+        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
+          <Tab label="Dashboard" icon={<Icon name="dashboard" size={18} />} iconPosition="start" />
+          <Tab label="Tasks" icon={<Icon name="task_alt" size={18} />} iconPosition="start" />
+          <Tab label="Components" icon={<Icon name="widgets" size={18} />} iconPosition="start" />
+        </Tabs>
       </Box>
 
-      {/* ─── Dark Mode Preview ─── */}
-      <Typography variant="h4" sx={{ mb: 3, fontFamily: 'inherit' }}>Dark Mode</Typography>
-      <Box sx={{ mb: 6 }}>
-        <DarkModePreview brand={brand} />
-      </Box>
+      {/* ─── Dashboard Tab ─── */}
+      {tab === 0 && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Stat Cards */}
+          <Box sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
+            gap: 2,
+          }}>
+            <StatCard icon="trending_up" value="2,847" label="Active users" change="+12.5%" brand={brand} />
+            <StatCard icon="inventory_2" value="14.2k" label="Products" change="+3.1%" brand={brand} />
+            <StatCard icon="payments" value="$48.2k" label="Revenue" change="+8.7%" brand={brand} />
+            <StatCard icon="shopping_cart" value="1,423" label="Orders" change="+5.2%" brand={brand} />
+          </Box>
 
-      {/* ─── Colors in Action ─── */}
-      <Typography variant="h4" sx={{ mb: 3, fontFamily: 'inherit' }}>Colors in Action</Typography>
+          {/* Chart */}
+          <ChartPlaceholder brand={brand} />
 
-      <Box sx={{
-        display: 'grid',
-        gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-        gap: 3,
-        mb: 6,
-      }}>
-        {/* Card Preview */}
-        <Box>
-          <SectionLabel brand={brand}>Card Component</SectionLabel>
-          <PreviewCard brand={brand} />
+          {/* Recent Activity */}
+          <ActivityTable brand={brand} />
         </Box>
+      )}
 
-        {/* Nav Preview */}
-        <Box>
-          <SectionLabel brand={brand}>Navigation</SectionLabel>
-          <NavPreview brand={brand} />
-        </Box>
+      {/* ─── Tasks Tab ─── */}
+      {tab === 1 && <TasksTab brand={brand} />}
 
-        {/* Stats */}
-        <Box>
-          <SectionLabel brand={brand}>Stat Cards</SectionLabel>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <StatCard icon="trending_up" value="2,847" label="Active users" brand={brand} />
-            <StatCard icon="inventory_2" value="14.2k" label="Products" brand={brand} />
-          </Box>
-        </Box>
-
-        {/* Feedback Banners */}
-        <Box>
-          <SectionLabel brand={brand}>System Feedback</SectionLabel>
-          <FeedbackBanners brand={brand} />
-        </Box>
-      </Box>
-
-      {/* ─── Component Overview ─── */}
-      <Typography variant="h4" sx={{ mb: 3, fontFamily: 'inherit' }}>
-        Component Overview
-      </Typography>
-
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {/* Buttons */}
-        <ComponentCard brand={brand}>
-          <Typography variant="h6" sx={{ mb: 2, fontFamily: 'inherit', color: 'text.secondary' }}>Buttons</Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-            <Button variant="contained" color="primary">Primary</Button>
-            <Button variant="contained" color="primary" startIcon={<Icon name="add" size={20} />}>Create</Button>
-            <Button variant="outlined">Secondary</Button>
-            <Button variant="outlined" startIcon={<Icon name="edit" size={20} />}>Edit</Button>
-            <Button variant="text">Tertiary</Button>
-            <IconButton color="primary"><Icon name="add" /></IconButton>
-            <IconButton color="secondary"><Icon name="edit" /></IconButton>
-            <IconButton><Icon name="more_vert" /></IconButton>
-          </Box>
-        </ComponentCard>
-
-        {/* Form Controls */}
-        <ComponentCard brand={brand}>
-          <Typography variant="h6" sx={{ mb: 2, fontFamily: 'inherit', color: 'text.secondary' }}>Form Controls</Typography>
-          <Box sx={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Checkbox defaultChecked />
-              <Checkbox />
-            </Box>
-            <RadioGroup row defaultValue="a">
-              <FormControlLabel value="a" control={<Radio />} label="" />
-              <FormControlLabel value="b" control={<Radio />} label="" />
-            </RadioGroup>
-            <Switch defaultChecked />
-            <Switch />
-            <Box sx={{ width: 180 }}>
-              <Slider defaultValue={40} />
-            </Box>
-          </Box>
-        </ComponentCard>
-
-        {/* Text Fields */}
-        <ComponentCard brand={brand}>
-          <Typography variant="h6" sx={{ mb: 2, fontFamily: 'inherit', color: 'text.secondary' }}>Text Fields</Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <TextField placeholder="Label" size="small" sx={{ width: 200 }} />
-            <TextField label="Label" defaultValue="Value" size="small" sx={{ width: 200 }} />
-          </Box>
-        </ComponentCard>
-
-        {/* Chips & Badges */}
-        <ComponentCard brand={brand}>
-          <Typography variant="h6" sx={{ mb: 2, fontFamily: 'inherit', color: 'text.secondary' }}>Chips & Badges</Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-            <Chip label="Primary" color="primary" size="small" />
-            <Chip label="Secondary" color="secondary" size="small" />
-            <Chip label="Error" color="error" size="small" />
-            <Chip label="Warning" color="warning" size="small" />
-            <Chip label="Success" color="success" size="small" />
-            <Chip label="Info" color="info" size="small" />
-            <Badge badgeContent={4} color="primary">
-              <Icon name="notifications" color="action" />
-            </Badge>
-            <Badge badgeContent={2} color="error">
-              <Icon name="mail" color="action" />
-            </Badge>
-          </Box>
-        </ComponentCard>
-
-        {/* Toggle Buttons & Toggle Chips */}
-        <ComponentCard brand={brand}>
-          <Typography variant="h6" sx={{ mb: 2, fontFamily: 'inherit', color: 'text.secondary' }}>Toggle Controls</Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <ToggleButtonGroup value={toggleVal} exclusive onChange={(_, v) => v && setToggleVal(v)}>
-              <ToggleButton value="active">Active</ToggleButton>
-              <ToggleButton value="inactive1">Inactive</ToggleButton>
-              <ToggleButton value="inactive2">Inactive</ToggleButton>
-            </ToggleButtonGroup>
-            <ToggleChipGroup value={chipVal} exclusive onChange={setChipVal}>
-              <ToggleChip value="all" label="All" count={9} />
-              <ToggleChip value="webshop" label="Webshop" icon="shopping_cart" count={4} />
-              <ToggleChip value="rx" label="Prescriptions" icon="prescriptions" count={1} />
-            </ToggleChipGroup>
-          </Box>
-        </ComponentCard>
-      </Box>
+      {/* ─── Components Tab ─── */}
+      {tab === 2 && <ComponentsTab brand={brand} />}
     </Box>
   );
 }

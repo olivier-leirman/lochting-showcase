@@ -35,6 +35,10 @@ export function textFieldOverrides(brand: BrandTokens, fx: Effects): Components<
             opacity: 1,
           },
         },
+        inputSizeSmall: {
+          padding: '10px 12px',
+          fontSize: PRIMITIVES.fontSize.sm,
+        },
       },
     },
     MuiInputLabel: {
@@ -51,6 +55,12 @@ export function textFieldOverrides(brand: BrandTokens, fx: Effects): Components<
           // Align un-shrunk label with input padding (14px top)
           '&:not(.MuiInputLabel-shrink)': {
             transform: 'translate(12px, 14px) scale(1)',
+          },
+        },
+        sizeSmall: {
+          fontSize: PRIMITIVES.fontSize.sm,
+          '&.MuiInputLabel-outlined:not(.MuiInputLabel-shrink)': {
+            transform: 'translate(12px, 10px) scale(1)',
           },
         },
       },

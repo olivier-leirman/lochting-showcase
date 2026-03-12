@@ -31,7 +31,7 @@ export function tabsOverrides(brand: BrandTokens, fx: Effects): Components<Theme
           fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.sm,
           letterSpacing: '0.01em',
-          color: c.contentTertiary,
+          color: c.contentSecondary,
           minHeight: 40,
           padding: '8px 16px',
           borderRadius: `${PRIMITIVES.radius.sm}px ${PRIMITIVES.radius.sm}px 0 0`,
@@ -41,12 +41,16 @@ export function tabsOverrides(brand: BrandTokens, fx: Effects): Components<Theme
             backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : c.bgSunken,
           },
           '&.Mui-selected': {
-            color: c.contentPrimary,
+            color: c.brand450,
             fontWeight: PRIMITIVES.fontWeight.semibold,
           },
           '&.Mui-disabled': {
             color: c.contentTertiary,
             opacity: 0.5,
+          },
+          // Icon + label spacing (iconPosition start/end)
+          '&.MuiTab-labelIcon': {
+            gap: 4,
           },
         },
       },

@@ -1,7 +1,10 @@
-import { Box, AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Divider, Badge, Avatar } from '@mui/material';
+import { useRef, useEffect } from 'react';
+import { Box, AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Divider, Tooltip } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Icon } from '../../components/Icon';
+import { BrandSwitcher } from '../blocks/BrandSwitcher';
+import { useBrand } from '../../theme/brand-context';
 import { getComponent } from '../registry';
 
 /** Build breadcrumb segments from the current route path */
@@ -26,12 +29,20 @@ function useBreadcrumbs() {
 
 export function ShowcaseShell() {
   const navigate = useNavigate();
+  const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
+  const { colorMode, toggleColorMode } = useBrand();
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  // Scroll content area to top on route change
+  useEffect(() => {
+    mainRef.current?.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar />
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
         {/* ── Top bar ── */}
         <AppBar position="static" elevation={0}>
           <Toolbar>
@@ -79,31 +90,23 @@ export function ShowcaseShell() {
               })}
             </Breadcrumbs>
 
-            {/* Right side actions */}
-            <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-            <IconButton size="small" sx={{ width: 32, height: 32 }}>
-              <Icon name="support_agent" size={20} />
-            </IconButton>
-            <IconButton size="small" sx={{ width: 32, height: 32 }}>
-              <Icon name="language" size={20} />
-            </IconButton>
-            <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-            <IconButton size="small" sx={{ width: 32, height: 32 }}>
-              <Badge variant="dot" color="primary">
-                <Icon name="newspaper" size={20} />
-              </Badge>
-            </IconButton>
-            <IconButton size="small" sx={{ width: 32, height: 32 }}>
-              <Badge variant="dot" color="primary">
-                <Icon name="notifications" size={20} />
-              </Badge>
-            </IconButton>
-            <Avatar sx={{ width: 32, height: 32, ml: 1 }}>OL</Avatar>
+            {/* Right side: brand switcher + dark mode */}
+            <BrandSwitcher />
+            <Tooltip title={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
+              <IconButton
+                onClick={toggleColorMode}
+                size="small"
+                sx={{ ml: 1, width: 36, height: 36, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}
+              >
+                <Icon name={colorMode === 'light' ? 'dark_mode' : 'light_mode'} size={18} />
+              </IconButton>
+            </Tooltip>
           </Toolbar>
         </AppBar>
 
         {/* ── Main content ── */}
         <Box
+          ref={mainRef}
           component="main"
           sx={{
             flex: 1,

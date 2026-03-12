@@ -81,12 +81,16 @@ export function chipOverrides(brand: BrandTokens, fx: Effects): Components<Theme
         },
         clickable: {
           cursor: 'pointer',
-          transition: 'filter 0.15s ease',
+          transition: 'filter 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease',
           '&:hover': {
             filter: secondaryHoverFilter,
           },
           '&:active': {
-            filter: isDark ? 'brightness(1.18)' : 'brightness(0.95)',
+            transform: 'scale(0.96)',
+            boxShadow: isDark
+              ? 'inset 0px 2px 4px 0px rgba(0,0,0,0.25)'
+              : 'inset 0px 2px 4px 0px rgba(0,0,0,0.08)',
+            filter: 'none',
           },
         },
         colorPrimary: {

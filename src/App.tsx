@@ -10,6 +10,8 @@ import { ComponentPage } from './showcase/pages/ComponentPage';
 import { ColorsPage } from './showcase/pages/ColorsPage';
 import { EffectsPage } from './showcase/pages/EffectsPage';
 import { TypographyPage } from './showcase/pages/TypographyPage';
+import { SpacingPage } from './showcase/pages/SpacingPage';
+import { SizingPage } from './showcase/pages/SizingPage';
 
 // Register all component docs
 import './showcase/register-components';
@@ -29,6 +31,8 @@ function ThemedApp() {
               <Route path="tokens/colors" element={<ColorsPage />} />
               <Route path="tokens/effects" element={<EffectsPage />} />
               <Route path="tokens/typography" element={<TypographyPage />} />
+              <Route path="tokens/spacing" element={<SpacingPage />} />
+              <Route path="tokens/sizing" element={<SizingPage />} />
               <Route path="components/:id" element={<ComponentPage />} />
             </Route>
           </Routes>

@@ -5,10 +5,15 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';
+import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
 import dayjs from 'dayjs';
 import { Icon } from '../components/Icon';
 import { ToggleChip, ToggleChipGroup } from '../components/ToggleChip';
 import { SearchField } from '../components/SearchField';
+import { MultiSelect, type MultiSelectOption } from '../components/MultiSelect';
+import { AdvancedTable, type ColumnDef, type RowAction } from '../components/AdvancedTable';
 import { AppSidebar } from '../components/AppSidebar';
 import { AppTopBar, TopBarActions } from '../components/AppTopBar';
 import { useBrand } from '../theme/brand-context';
@@ -98,7 +103,7 @@ registerComponent({
   id: 'button',
   name: 'Button',
   description: 'Buttons trigger actions. The primary button uses a brand gradient with layered shadows for a premium tactile feel.',
-  category: 'inputs',
+  category: 'actions',
   importStatement: `import { Button, IconButton } from '@mui/material';`,
   examples: [
     {
@@ -374,6 +379,17 @@ registerComponent({
   importStatement: `import { TextField } from '@mui/material';`,
   examples: [
     {
+      name: 'Sizes',
+      code: `<TextField label="Small" size="small" />
+<TextField label="Medium (default)" />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          <TextField label="Small" size="small" defaultValue="Value" />
+          <TextField label="Medium" defaultValue="Value" />
+        </Box>
+      ),
+    },
+    {
       name: 'Variants',
       code: `<TextField placeholder="Label" />
 <TextField label="Label" />
@@ -475,6 +491,39 @@ registerComponent({
   category: 'inputs',
   importStatement: `import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';`,
   examples: [
+    {
+      name: 'Sizes',
+      code: `<FormControl size="small" sx={{ width: 200 }}>
+  <InputLabel>Small</InputLabel>
+  <Select label="Small" defaultValue="1">
+    <MenuItem value="1">Option 1</MenuItem>
+  </Select>
+</FormControl>
+<FormControl sx={{ width: 200 }}>
+  <InputLabel>Medium</InputLabel>
+  <Select label="Medium" defaultValue="1">
+    <MenuItem value="1">Option 1</MenuItem>
+  </Select>
+</FormControl>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          <FormControl size="small" sx={{ width: 200 }}>
+            <InputLabel>Small</InputLabel>
+            <Select label="Small" defaultValue="1">
+              <MenuItem value="1">Option 1</MenuItem>
+              <MenuItem value="2">Option 2</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ width: 200 }}>
+            <InputLabel>Medium</InputLabel>
+            <Select label="Medium" defaultValue="1">
+              <MenuItem value="1">Option 1</MenuItem>
+              <MenuItem value="2">Option 2</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      ),
+    },
     {
       name: 'Basic',
       code: `<FormControl size="small" sx={{ width: 200 }}>
@@ -688,7 +737,7 @@ registerComponent({
   id: 'toggle-button',
   name: 'Toggle Button',
   description: 'A segmented control with a sunken container. The active segment elevates with a secondary gradient and shadow. Available in small, medium, and large sizes.',
-  category: 'inputs',
+  category: 'actions',
   importStatement: `import { ToggleButton, ToggleButtonGroup } from '@mui/material';`,
   examples: [
     {
@@ -806,9 +855,9 @@ function SplitButtonDemo() {
           <Icon name={open ? 'expand_less' : 'expand_more'} size={20} />
         </Button>
       </ButtonGroup>
-      <Popper open={open} anchorEl={anchorRef.current} transition disablePortal sx={{ zIndex: 1 }}>
+      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal sx={{ zIndex: 1 }}>
         {({ TransitionProps, placement }) => (
-          <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
+          <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'right bottom' }}>
             <Paper sx={{ mt: 0.5 }}>
               <ClickAwayListener onClickAway={() => setOpen(false)}>
                 <MenuList>
@@ -849,9 +898,9 @@ function SplitButtonSecondaryDemo() {
           <Icon name={open ? 'expand_less' : 'expand_more'} size={20} />
         </Button>
       </ButtonGroup>
-      <Popper open={open} anchorEl={anchorRef.current} transition disablePortal sx={{ zIndex: 1 }}>
+      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal sx={{ zIndex: 1 }}>
         {({ TransitionProps, placement }) => (
-          <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
+          <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'right bottom' }}>
             <Paper sx={{ mt: 0.5 }}>
               <ClickAwayListener onClickAway={() => setOpen(false)}>
                 <MenuList>
@@ -878,7 +927,7 @@ registerComponent({
   id: 'button-group',
   name: 'Button Group',
   description: 'Groups related buttons together. The split button pattern combines a main action with a chevron dropdown for secondary options.',
-  category: 'inputs',
+  category: 'actions',
   importStatement: `import { Button, ButtonGroup } from '@mui/material';`,
   examples: [
     {
@@ -956,7 +1005,7 @@ registerComponent({
   id: 'toggle-chip',
   name: 'Toggle Chip',
   description: 'A filter chip with active/inactive toggle states. Active chips use the brand background with inner shadows, inactive chips use the secondary gradient. Supports exclusive (single) and multiple selection.',
-  category: 'inputs',
+  category: 'actions',
   importStatement: `import { ToggleChip, ToggleChipGroup } from './components/ToggleChip';`,
   examples: [
     {
@@ -1172,13 +1221,13 @@ registerComponent({
     },
     {
       name: 'With Keyboard Shortcut',
-      code: `<SearchField shortcut="⌘ S" />`,
-      render: () => <SearchField shortcut="⌘ S" />,
+      code: `<SearchField shortcut="⌘ S" globalShortcut="meta+s" />`,
+      render: () => <SearchField shortcut="⌘ S" globalShortcut="meta+s" />,
     },
     {
       name: 'Custom Placeholder',
-      code: `<SearchField placeholder="Find components…" shortcut="⌘ K" />`,
-      render: () => <SearchField placeholder="Find components…" shortcut="⌘ K" />,
+      code: `<SearchField placeholder="Find components…" shortcut="⌘ K" globalShortcut="meta+k" />`,
+      render: () => <SearchField placeholder="Find components…" shortcut="⌘ K" globalShortcut="meta+k" />,
     },
     {
       name: 'Medium Size',
@@ -1194,6 +1243,7 @@ registerComponent({
   props: [
     { name: 'placeholder', type: 'string', default: '"Search..."', description: 'Input placeholder text' },
     { name: 'shortcut', type: 'string', description: 'Keyboard shortcut label to display (e.g. "⌘ S")' },
+    { name: 'globalShortcut', type: 'string', description: 'Register a global keyboard shortcut that focuses the field (e.g. "meta+s", "meta+k")' },
     { name: 'size', type: '"small" | "medium"', default: '"small"', description: 'Field size' },
     { name: 'fullWidth', type: 'boolean', default: 'false', description: 'If true, takes full container width' },
     { name: '...rest', type: 'TextFieldProps', description: 'All other MUI TextField props are forwarded' },
@@ -1222,6 +1272,37 @@ registerComponent({
   category: 'inputs',
   importStatement: `import { Autocomplete, TextField } from '@mui/material';`,
   examples: [
+    {
+      name: 'Sizes',
+      code: `<Autocomplete
+  size="small"
+  options={['Apple', 'Banana', 'Cherry']}
+  renderInput={(params) => <TextField {...params} label="Small" />}
+  sx={{ width: 300 }}
+/>
+<Autocomplete
+  options={['Apple', 'Banana', 'Cherry']}
+  renderInput={(params) => <TextField {...params} label="Medium" />}
+  sx={{ width: 300 }}
+/>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          <Autocomplete
+            size="small"
+            options={demoStringOptions}
+            defaultValue="Apple"
+            renderInput={(params) => <TextField {...params} label="Small" />}
+            sx={{ width: 300 }}
+          />
+          <Autocomplete
+            options={demoStringOptions}
+            defaultValue="Apple"
+            renderInput={(params) => <TextField {...params} label="Medium" />}
+            sx={{ width: 300 }}
+          />
+        </Box>
+      ),
+    },
     {
       name: 'Single Select',
       code: `<Autocomplete
@@ -1616,7 +1697,7 @@ registerComponent({
   id: 'progress',
   name: 'Progress',
   description: 'Linear and circular progress indicators with brand gradient fill and sunken track. Use for loading states, upload progress, or completion tracking.',
-  category: 'data-display',
+  category: 'feedback',
   importStatement: `import { LinearProgress, CircularProgress } from '@mui/material';`,
   examples: [
     {
@@ -1739,7 +1820,7 @@ registerComponent({
   id: 'dialog',
   name: 'Dialog',
   description: 'Modal dialogs with brand-styled backdrop blur, rounded corners, and layered shadows. Use for confirmations, forms, and destructive actions.',
-  category: 'data-display',
+  category: 'feedback',
   importStatement: `import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';`,
   examples: [
     {
@@ -1978,7 +2059,7 @@ registerComponent({
   id: 'accordion',
   name: 'Accordion',
   description: 'Expandable content panels with rounded borders, themed header and expand icon. Great for FAQs, settings, and collapsible sections.',
-  category: 'data-display',
+  category: 'surfaces',
   importStatement: `import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';`,
   examples: [
     {
@@ -2093,13 +2174,13 @@ function SunkenCardDemo() {
     <Card sx={{
       bgcolor: c.bgSunken,
       borderRadius: 3,
-      boxShadow: effects.shadows.inactive,
+      boxShadow: 'none',
       border: `1px solid ${c.borderWeak}`,
       p: 0, maxWidth: 320,
     }}>
       <CardHeader
         title="Sunken Card"
-        subheader="Inset surface with inner shadows"
+        subheader="Flat inset surface"
         titleTypographyProps={{ variant: 'body1', fontWeight: 600 }}
         subheaderTypographyProps={{ variant: 'caption' }}
       />
@@ -2164,9 +2245,9 @@ function FeedbackCardDemo() {
 registerComponent({
   id: 'card',
   name: 'Card',
-  description: 'Surface containers in four variants: Elevated (shadow), Sunken (inner shadow), Base/Border (flat with border), and Feedback (Alert). Built with Box/Card + design system tokens.',
-  category: 'data-display',
-  importStatement: `import { Card, CardContent, CardActions, CardHeader, Alert } from '@mui/material';`,
+  description: 'Surface containers in three variants: Elevated (shadow), Sunken (inner shadow), and Base/Border (flat with border). Built with Box/Card + design system tokens.',
+  category: 'surfaces',
+  importStatement: `import { Card, CardContent, CardActions, CardHeader } from '@mui/material';`,
   examples: [
     {
       name: 'Elevated',
@@ -2183,8 +2264,8 @@ registerComponent({
     },
     {
       name: 'Sunken',
-      code: `<Card sx={{ bgcolor: 'bgSunken', borderRadius: 3, boxShadow: effects.shadows.inactive, border: '1px solid borderWeak' }}>
-  <CardHeader title="Sunken Card" subheader="Inset surface" />
+      code: `<Card sx={{ bgcolor: 'bgSunken', borderRadius: 3, boxShadow: 'none', border: '1px solid borderWeak' }}>
+  <CardHeader title="Sunken Card" subheader="Flat inset surface" />
   <CardContent>
     <Typography variant="body2">Recessed into the page…</Typography>
   </CardContent>
@@ -2204,20 +2285,67 @@ registerComponent({
 </Card>`,
       render: () => <BorderCardDemo />,
     },
-    {
-      name: 'Feedback (Alert)',
-      code: `<Alert severity="success" variant="outlined">Changes saved.</Alert>
-<Alert severity="info" variant="outlined">New version available.</Alert>
-<Alert severity="warning" variant="outlined">Subscription expiring.</Alert>
-<Alert severity="error" variant="outlined">Save failed.</Alert>`,
-      render: () => <FeedbackCardDemo />,
-    },
   ],
   props: [
     { name: 'sx', type: 'SxProps', description: 'Style overrides — use design tokens (bgElevated, bgSunken, etc.)' },
     { name: 'variant', type: '"elevation" | "outlined"', default: '"elevation"', description: 'Card variant' },
     { name: 'elevation', type: 'number', default: '1', description: 'Shadow depth (0–24)' },
-    { name: 'severity', type: '"success" | "info" | "warning" | "error"', description: 'Alert severity level (for feedback cards)' },
+  ],
+});
+
+// ─── Alert ───
+registerComponent({
+  id: 'alert',
+  name: 'Alert',
+  description: 'System feedback banners for success, info, warning, and error states. Uses semantic background and border colors from the design system with Material Symbols Rounded icons.',
+  category: 'feedback',
+  importStatement: `import { Alert } from '@mui/material';`,
+  examples: [
+    {
+      name: 'Outlined',
+      code: `<Alert severity="success" variant="outlined">Your changes have been saved successfully.</Alert>
+<Alert severity="info" variant="outlined">A new version is available. Refresh to update.</Alert>
+<Alert severity="warning" variant="outlined">Your subscription will expire in 3 days.</Alert>
+<Alert severity="error" variant="outlined">Failed to save changes. Please try again.</Alert>`,
+      render: () => <FeedbackCardDemo />,
+    },
+    {
+      name: 'Filled',
+      code: `<Alert severity="success" variant="filled">Changes saved.</Alert>
+<Alert severity="info" variant="filled">New version available.</Alert>
+<Alert severity="warning" variant="filled">Subscription expiring.</Alert>
+<Alert severity="error" variant="filled">Save failed.</Alert>`,
+      render: () => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+          <Alert severity="success" variant="filled">Changes saved.</Alert>
+          <Alert severity="info" variant="filled">New version available.</Alert>
+          <Alert severity="warning" variant="filled">Subscription expiring.</Alert>
+          <Alert severity="error" variant="filled">Save failed.</Alert>
+        </Box>
+      ),
+    },
+    {
+      name: 'Standard',
+      code: `<Alert severity="success">Changes saved.</Alert>
+<Alert severity="info">New version available.</Alert>
+<Alert severity="warning">Subscription expiring.</Alert>
+<Alert severity="error">Save failed.</Alert>`,
+      render: () => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+          <Alert severity="success">Changes saved.</Alert>
+          <Alert severity="info">New version available.</Alert>
+          <Alert severity="warning">Subscription expiring.</Alert>
+          <Alert severity="error">Save failed.</Alert>
+        </Box>
+      ),
+    },
+  ],
+  props: [
+    { name: 'severity', type: '"success" | "info" | "warning" | "error"', description: 'The severity level — controls icon, color, and styling' },
+    { name: 'variant', type: '"outlined" | "filled" | "standard"', default: '"outlined"', description: 'Alert visual variant' },
+    { name: 'onClose', type: '() => void', description: 'If set, shows a close button and fires this callback' },
+    { name: 'icon', type: 'ReactNode | false', description: 'Override the default icon, or set to false to remove it' },
+    { name: 'action', type: 'ReactNode', description: 'Custom action element (e.g. a button) shown at the end' },
   ],
 });
 
@@ -2294,6 +2422,24 @@ registerComponent({
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';`,
   examples: [
+    {
+      name: 'Sizes',
+      code: `<DatePicker
+  label="Small"
+  slotProps={{ textField: { size: 'small' } }}
+  defaultValue={dayjs()}
+/>
+<DatePicker
+  label="Medium"
+  defaultValue={dayjs()}
+/>`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          <DatePicker label="Small" slotProps={{ textField: { size: 'small' } }} defaultValue={dayjs()} />
+          <DatePicker label="Medium" defaultValue={dayjs()} />
+        </Box>
+      ),
+    },
     {
       name: 'Default',
       code: `<DatePicker
@@ -2399,6 +2545,17 @@ registerComponent({
   importStatement: `import { TimePicker } from '@mui/x-date-pickers/TimePicker';`,
   examples: [
     {
+      name: 'Sizes',
+      code: `<TimePicker label="Small" slotProps={{ textField: { size: 'small' } }} defaultValue={dayjs()} />
+<TimePicker label="Medium" defaultValue={dayjs()} />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          <TimePicker label="Small" slotProps={{ textField: { size: 'small' } }} defaultValue={dayjs()} />
+          <TimePicker label="Medium" defaultValue={dayjs()} />
+        </Box>
+      ),
+    },
+    {
       name: 'Default',
       code: `<TimePicker
   label="Select a time"
@@ -2479,6 +2636,17 @@ registerComponent({
   category: 'inputs',
   importStatement: `import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';`,
   examples: [
+    {
+      name: 'Sizes',
+      code: `<DateTimePicker label="Small" slotProps={{ textField: { size: 'small' } }} defaultValue={dayjs()} />
+<DateTimePicker label="Medium" defaultValue={dayjs()} />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          <DateTimePicker label="Small" slotProps={{ textField: { size: 'small' } }} defaultValue={dayjs()} />
+          <DateTimePicker label="Medium" defaultValue={dayjs()} />
+        </Box>
+      ),
+    },
     {
       name: 'Default',
       code: `<DateTimePicker
@@ -3194,5 +3362,416 @@ import { AppTopBar, TopBarActions } from './components/AppTopBar';`,
     { name: 'AppSidebar', type: 'component', description: 'See Sidebar component for props' },
     { name: 'AppTopBar', type: 'component', description: 'See Top Bar component for props' },
     { name: 'TopBarActions', type: 'component', description: 'Pre-built right-side actions with utility icons, notification badges, and avatar' },
+  ],
+});
+
+// ─── Multi-select ───
+
+const MULTI_SELECT_OPTIONS: MultiSelectOption[] = [
+  {
+    id: 'europe',
+    label: 'Europe',
+    children: [
+      {
+        id: 'benelux',
+        label: 'Benelux',
+        children: [
+          { id: 'be', label: 'Belgium' },
+          { id: 'nl', label: 'Netherlands' },
+          { id: 'lu', label: 'Luxembourg' },
+        ],
+      },
+      {
+        id: 'dach',
+        label: 'DACH',
+        children: [
+          { id: 'de', label: 'Germany' },
+          { id: 'at', label: 'Austria' },
+          { id: 'ch', label: 'Switzerland' },
+        ],
+      },
+      { id: 'fr', label: 'France' },
+      { id: 'es', label: 'Spain' },
+      { id: 'it', label: 'Italy' },
+    ],
+  },
+  {
+    id: 'americas',
+    label: 'Americas',
+    children: [
+      { id: 'us', label: 'United States' },
+      { id: 'ca', label: 'Canada' },
+      { id: 'br', label: 'Brazil' },
+    ],
+  },
+  {
+    id: 'asia',
+    label: 'Asia',
+    children: [
+      { id: 'jp', label: 'Japan' },
+      { id: 'kr', label: 'South Korea' },
+      { id: 'cn', label: 'China' },
+    ],
+  },
+];
+
+function MultiSelectBasicDemo() {
+  const [value, setValue] = useState<string[]>(['be', 'nl']);
+  return <MultiSelect options={MULTI_SELECT_OPTIONS} value={value} onChange={setValue} label="Countries" fullWidth />;
+}
+
+function MultiSelectEmptyDemo() {
+  const [value, setValue] = useState<string[]>([]);
+  return <MultiSelect options={MULTI_SELECT_OPTIONS} value={value} onChange={setValue} placeholder="Choose regions..." fullWidth />;
+}
+
+registerComponent({
+  id: 'multi-select',
+  name: 'Multi-select',
+  description: 'Advanced multi-select dropdown with hierarchical sublevels, search filtering, and select all / select none controls. Built with MUI Popover, Checkbox, and Collapse.',
+  category: 'inputs',
+  importStatement: `import { MultiSelect } from '../components/MultiSelect';
+import type { MultiSelectOption } from '../components/MultiSelect';`,
+  examples: [
+    {
+      name: 'Sizes',
+      code: `<MultiSelect options={OPTIONS} value={['be']} onChange={setValue} label="Small" size="small" fullWidth />
+<MultiSelect options={OPTIONS} value={['be']} onChange={setValue} label="Medium" fullWidth />`,
+      render: () => (
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          <MultiSelect
+            options={MULTI_SELECT_OPTIONS}
+            value={['be']}
+            onChange={() => {}}
+            label="Small"
+            size="small"
+            fullWidth
+          />
+          <MultiSelect
+            options={MULTI_SELECT_OPTIONS}
+            value={['be']}
+            onChange={() => {}}
+            label="Medium"
+            fullWidth
+          />
+        </Box>
+      ),
+    },
+    {
+      name: 'With pre-selected values',
+      code: `const OPTIONS: MultiSelectOption[] = [
+  {
+    id: 'europe', label: 'Europe',
+    children: [
+      {
+        id: 'benelux', label: 'Benelux',
+        children: [
+          { id: 'be', label: 'Belgium' },
+          { id: 'nl', label: 'Netherlands' },
+          { id: 'lu', label: 'Luxembourg' },
+        ],
+      },
+      { id: 'fr', label: 'France' },
+    ],
+  },
+];
+
+const [value, setValue] = useState(['be', 'nl']);
+
+<MultiSelect
+  options={OPTIONS}
+  value={value}
+  onChange={setValue}
+  label="Countries"
+  fullWidth
+/>`,
+      render: () => <MultiSelectBasicDemo />,
+    },
+    {
+      name: 'Empty state',
+      code: `<MultiSelect
+  options={OPTIONS}
+  value={[]}
+  onChange={setValue}
+  placeholder="Choose regions..."
+  fullWidth
+/>`,
+      render: () => <MultiSelectEmptyDemo />,
+    },
+    {
+      name: 'Disabled',
+      code: `<MultiSelect options={OPTIONS} value={['be']} onChange={() => {}} label="Disabled" disabled fullWidth />`,
+      render: () => (
+        <MultiSelect
+          options={MULTI_SELECT_OPTIONS}
+          value={['be']}
+          onChange={() => {}}
+          label="Disabled"
+          disabled
+          fullWidth
+        />
+      ),
+    },
+  ],
+  props: [
+    { name: 'options', type: 'MultiSelectOption[]', description: 'Nested option tree. Each option has id, label, and optional children array.' },
+    { name: 'value', type: 'string[]', description: 'Array of selected leaf option IDs' },
+    { name: 'onChange', type: '(selected: string[]) => void', description: 'Callback when selection changes' },
+    { name: 'label', type: 'string', description: 'Label for the trigger field' },
+    { name: 'placeholder', type: 'string', default: '"Select..."', description: 'Placeholder when nothing is selected' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the component' },
+    { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Full width' },
+    { name: 'maxChips', type: 'number', default: '3', description: 'Max chips shown before collapsing to +N count' },
+    { name: 'size', type: '"small" | "medium"', default: '"medium"', description: 'Size of the trigger field' },
+  ],
+});
+
+// ─── Date Range Picker ───
+
+function DateRangeBasicDemo() {
+  return (
+    <DateRangePicker
+      localeText={{ start: 'Start date', end: 'End date' }}
+    />
+  );
+}
+
+function DateRangeControlledDemo() {
+  const [value, setValue] = useState<[typeof dayjs.Dayjs | null, typeof dayjs.Dayjs | null]>([
+    dayjs('2026-03-01'),
+    dayjs('2026-03-15'),
+  ] as any);
+  return (
+    <DateRangePicker
+      value={value as any}
+      onChange={(newValue) => setValue(newValue as any)}
+      localeText={{ start: 'Check-in', end: 'Check-out' }}
+    />
+  );
+}
+
+function DateRangeStaticDemo() {
+  return (
+    <StaticDateRangePicker
+      defaultValue={[dayjs('2026-03-05'), dayjs('2026-03-20')] as any}
+      slotProps={{ actionBar: { actions: [] } }}
+    />
+  );
+}
+
+registerComponent({
+  id: 'date-range-picker',
+  name: 'Date Range Picker',
+  description: 'Lets users select a date range with a dual-calendar picker. Based on MUI X Date Pickers Pro. Supports controlled/uncontrolled values, shortcuts, and multiple calendar months.',
+  category: 'inputs',
+  importStatement: `import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';`,
+  examples: [
+    {
+      name: 'Basic',
+      code: `<DateRangePicker
+  localeText={{ start: 'Start date', end: 'End date' }}
+/>`,
+      render: () => <DateRangeBasicDemo />,
+    },
+    {
+      name: 'Controlled',
+      code: `const [value, setValue] = useState([
+  dayjs('2026-03-01'),
+  dayjs('2026-03-15'),
+]);
+
+<DateRangePicker
+  value={value}
+  onChange={(newValue) => setValue(newValue)}
+  localeText={{ start: 'Check-in', end: 'Check-out' }}
+/>`,
+      render: () => <DateRangeControlledDemo />,
+    },
+    {
+      name: 'Static (inline calendar)',
+      code: `<StaticDateRangePicker
+  defaultValue={[dayjs('2026-03-05'), dayjs('2026-03-20')]}
+  slotProps={{ actionBar: { actions: [] } }}
+/>`,
+      render: () => <DateRangeStaticDemo />,
+    },
+    {
+      name: 'Disabled',
+      code: `<DateRangePicker disabled localeText={{ start: 'Start', end: 'End' }} />`,
+      render: () => (
+        <DateRangePicker disabled localeText={{ start: 'Start', end: 'End' }} />
+      ),
+    },
+  ],
+  props: [
+    { name: 'value', type: 'DateRange<Dayjs>', description: 'The selected date range [start, end]' },
+    { name: 'onChange', type: '(value: DateRange<Dayjs>) => void', description: 'Callback when range changes' },
+    { name: 'defaultValue', type: 'DateRange<Dayjs>', description: 'Default value for uncontrolled mode' },
+    { name: 'localeText', type: '{ start: string; end: string }', description: 'Labels for start/end fields' },
+    { name: 'calendars', type: '1 | 2 | 3', default: '2', description: 'Number of calendar months to display' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the picker' },
+    { name: 'readOnly', type: 'boolean', default: 'false', description: 'Read-only mode' },
+    { name: 'minDate', type: 'Dayjs', description: 'Minimum selectable date' },
+    { name: 'maxDate', type: 'Dayjs', description: 'Maximum selectable date' },
+  ],
+});
+
+// ─── Advanced Table ───
+
+interface SampleRow {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  joined: string;
+}
+
+const SAMPLE_ROWS: SampleRow[] = [
+  { id: 1, name: 'Alice Martin', email: 'alice@example.com', role: 'Admin', status: 'Active', joined: '2024-01-15' },
+  { id: 2, name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor', status: 'Active', joined: '2024-02-20' },
+  { id: 3, name: 'Charlie Davis', email: 'charlie@example.com', role: 'Viewer', status: 'Inactive', joined: '2024-03-10' },
+  { id: 4, name: 'Diana Wilson', email: 'diana@example.com', role: 'Editor', status: 'Active', joined: '2024-04-05' },
+  { id: 5, name: 'Eve Thompson', email: 'eve@example.com', role: 'Admin', status: 'Active', joined: '2024-05-18' },
+  { id: 6, name: 'Frank Miller', email: 'frank@example.com', role: 'Viewer', status: 'Pending', joined: '2024-06-22' },
+  { id: 7, name: 'Grace Lee', email: 'grace@example.com', role: 'Editor', status: 'Active', joined: '2024-07-14' },
+  { id: 8, name: 'Henry Brown', email: 'henry@example.com', role: 'Viewer', status: 'Inactive', joined: '2024-08-30' },
+];
+
+const TABLE_COLUMNS: ColumnDef<SampleRow>[] = [
+  { id: 'name', label: 'Name', width: 180, minWidth: 120, getValue: r => r.name },
+  { id: 'email', label: 'Email', width: 220, minWidth: 150, getValue: r => r.email },
+  { id: 'role', label: 'Role', width: 120, minWidth: 80, getValue: r => r.role },
+  {
+    id: 'status', label: 'Status', width: 120, minWidth: 80, getValue: r => r.status,
+    renderCell: (row) => (
+      <Chip
+        label={row.status}
+        size="small"
+        color={row.status === 'Active' ? 'success' : row.status === 'Pending' ? 'warning' : 'default'}
+        variant="outlined"
+      />
+    ),
+  },
+  { id: 'joined', label: 'Joined', width: 130, minWidth: 100, getValue: r => r.joined },
+];
+
+const TABLE_ACTIONS: RowAction<SampleRow>[] = [
+  { icon: 'visibility', label: 'View', onClick: () => {} },
+  { icon: 'edit', label: 'Edit', onClick: () => {} },
+  { icon: 'delete', label: 'Delete', onClick: () => {}, color: 'error.main' },
+];
+
+registerComponent({
+  id: 'advanced-table',
+  name: 'Advanced Table',
+  description: 'Feature-rich data table with sortable columns, inline filter popups, resizable column widths, row selection, and a fixed multi-action column on the right side.',
+  category: 'data-display',
+  importStatement: `import { AdvancedTable } from '../components/AdvancedTable';
+import type { ColumnDef, RowAction } from '../components/AdvancedTable';`,
+  examples: [
+    {
+      name: 'Full featured',
+      code: `const columns: ColumnDef<User>[] = [
+  { id: 'name', label: 'Name', width: 180, getValue: r => r.name },
+  { id: 'email', label: 'Email', width: 220, getValue: r => r.email },
+  { id: 'role', label: 'Role', width: 120, getValue: r => r.role },
+  {
+    id: 'status', label: 'Status', width: 120,
+    renderCell: (row) => <Chip label={row.status} size="small" />,
+  },
+  { id: 'joined', label: 'Joined', width: 130, getValue: r => r.joined },
+];
+
+const actions: RowAction<User>[] = [
+  { icon: 'visibility', label: 'View', onClick: (row) => {} },
+  { icon: 'edit', label: 'Edit', onClick: (row) => {} },
+  { icon: 'delete', label: 'Delete', onClick: (row) => {}, color: 'error.main' },
+];
+
+<AdvancedTable
+  columns={columns}
+  rows={users}
+  getRowId={(r) => r.id}
+  actions={actions}
+  selectable
+/>`,
+      render: () => (
+        <AdvancedTable
+          columns={TABLE_COLUMNS}
+          rows={SAMPLE_ROWS}
+          getRowId={r => r.id}
+          actions={TABLE_ACTIONS}
+          selectable
+        />
+      ),
+    },
+    {
+      name: 'Without actions',
+      code: `<AdvancedTable
+  columns={columns}
+  rows={users}
+  getRowId={(r) => r.id}
+/>`,
+      render: () => (
+        <AdvancedTable
+          columns={TABLE_COLUMNS}
+          rows={SAMPLE_ROWS}
+          getRowId={r => r.id}
+        />
+      ),
+    },
+    {
+      name: 'Elevated',
+      code: `<AdvancedTable
+  columns={columns}
+  rows={users}
+  getRowId={(r) => r.id}
+  actions={actions}
+  selectable
+  elevated
+/>`,
+      render: () => (
+        <AdvancedTable
+          columns={TABLE_COLUMNS}
+          rows={SAMPLE_ROWS}
+          getRowId={r => r.id}
+          actions={TABLE_ACTIONS}
+          selectable
+          elevated
+        />
+      ),
+    },
+    {
+      name: 'Dense',
+      code: `<AdvancedTable
+  columns={columns}
+  rows={users}
+  getRowId={(r) => r.id}
+  actions={actions}
+  selectable
+  dense
+/>`,
+      render: () => (
+        <AdvancedTable
+          columns={TABLE_COLUMNS}
+          rows={SAMPLE_ROWS}
+          getRowId={r => r.id}
+          actions={TABLE_ACTIONS}
+          selectable
+          dense
+        />
+      ),
+    },
+  ],
+  props: [
+    { name: 'columns', type: 'ColumnDef<T>[]', description: 'Column definitions with id, label, width, sortable, filterable, renderCell, getValue' },
+    { name: 'rows', type: 'T[]', description: 'Array of data rows' },
+    { name: 'getRowId', type: '(row: T) => string | number', description: 'Unique key accessor for each row' },
+    { name: 'actions', type: 'RowAction<T>[]', description: 'Array of row actions shown in the fixed right column. Each has icon, label, onClick, and optional color.' },
+    { name: 'selectable', type: 'boolean', default: 'false', description: 'Enable row selection checkboxes' },
+    { name: 'dense', type: 'boolean', default: 'false', description: 'Dense padding mode' },
+    { name: 'elevated', type: 'boolean', default: 'false', description: 'Elevated card wrapper with drop shadow' },
   ],
 });

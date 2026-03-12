@@ -73,6 +73,11 @@ export function buttonOverrides(brand: BrandTokens, fx: Effects): Components<The
           fontSize: PRIMITIVES.fontSize.sm,
           height: PRIMITIVES.component.buttonHeightSm,
         },
+        sizeLarge: {
+          padding: '16px 32px',
+          fontSize: PRIMITIVES.fontSize.xl,
+          height: PRIMITIVES.component.buttonHeightLg,
+        },
       },
     },
     MuiIconButton: {

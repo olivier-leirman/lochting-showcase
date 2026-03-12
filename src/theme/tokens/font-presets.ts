@@ -16,6 +16,13 @@ export interface FontPreset {
 export const FONT_PRESETS: Record<string, FontPreset[]> = {
   lochting: [
     {
+      label: 'Calibre',
+      typography: {
+        displayFont: '"Calibre", sans-serif',
+        bodyFont: '"Calibre", sans-serif',
+      },
+    },
+    {
       label: 'Playwrite + Nunito',
       typography: {
         displayFont: '"Playwrite HU", cursive',
@@ -27,13 +34,6 @@ export const FONT_PRESETS: Record<string, FontPreset[]> = {
       typography: {
         displayFont: '"Noto Serif JP", serif',
         bodyFont: '"Figtree", sans-serif',
-      },
-    },
-    {
-      label: 'Calibre',
-      typography: {
-        displayFont: '"Calibre", sans-serif',
-        bodyFont: '"Calibre", sans-serif',
       },
     },
   ],
