@@ -337,6 +337,143 @@ registerComponent({
 });
 
 // ─── Slider ───
+
+/* Slider variant: Volume bars */
+function VolumeSlider() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const [value, setValue] = useState(50);
+  const total = 30;
+  const filledBars = Math.round((value / 100) * total);
+
+  return (
+    <Box sx={{ width: 280, position: 'relative' }}>
+      {/* Bar visualisation */}
+      <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: 20, mb: -1.25, mx: '10px', position: 'relative', zIndex: 1, pointerEvents: 'none' }}>
+        {Array.from({ length: total }, (_, i) => (
+          <Box key={i} sx={{
+            flex: 1, height: '100%', borderRadius: '1px',
+            background: i < filledBars ? c.brand400 : c.borderDefault,
+            opacity: i < filledBars ? 0.6 + ((i / total) * 0.4) : 0.4,
+            transition: 'background 0.1s, opacity 0.1s',
+          }} />
+        ))}
+      </Box>
+      <Slider value={value} onChange={(_, v) => setValue(v as number)} />
+    </Box>
+  );
+}
+
+/* Slider variant: Distribution histogram with range */
+function DistributionSlider() {
+  const { brand } = useBrand();
+  const c = brand.colors;
+  const [value, setValue] = useState<number[]>([25, 75]);
+
+  /* Bell curve heights (0-1) for 30 bars */
+  const barHeights = Array.from({ length: 30 }, (_, i) => {
+    const x = (i - 15) / 5;
+    return Math.exp(-0.5 * x * x);
+  });
+
+  return (
+    <Box sx={{ width: 300, position: 'relative' }}>
+      {/* Histogram */}
+      <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: 40, mb: -1.5, mx: '10px', pointerEvents: 'none', position: 'relative', zIndex: 1 }}>
+        {barHeights.map((h, i) => {
+          const pct = (i / (barHeights.length - 1)) * 100;
+          const inRange = pct >= value[0] && pct <= value[1];
+          return (
+            <Box key={i} sx={{
+              flex: 1, height: `${h * 100}%`, borderRadius: '1.5px 1.5px 0 0',
+              bgcolor: inRange ? c.brand400 : c.contentTertiary,
+              opacity: inRange ? 0.7 : 0.2,
+              transition: 'background 0.1s, opacity 0.1s',
+            }} />
+          );
+        })}
+      </Box>
+      <Slider value={value} onChange={(_, v) => setValue(v as number[])} />
+    </Box>
+  );
+}
+
+/* Slider variant: Range with value labels and ruler scale */
+function RulerRangeSlider() {
+  const { brand } = useBrand();
+  const c = brand.colors;
+
+  return (
+    <Box sx={{ width: 280 }}>
+      <Slider
+        defaultValue={[2, 8]}
+        min={0}
+        max={10}
+        step={1}
+        valueLabelDisplay="on"
+        marks={Array.from({ length: 11 }, (_, i) => ({ value: i, label: i % 2 === 0 ? String(i) : '' }))}
+        sx={{
+          '& .MuiSlider-markLabel': {
+            fontSize: '0.65rem', color: c.contentTertiary, top: 30,
+          },
+          '& .MuiSlider-mark': {
+            height: 6, width: 1, bgcolor: c.borderDefault,
+          },
+          '& .MuiSlider-valueLabel': {
+            bgcolor: c.bgBaseInverse, color: c.contentInversePrimary,
+            borderRadius: 1, fontSize: '0.7rem', fontWeight: 600,
+            px: 1, py: 0.25,
+            '&::before': { display: 'none' },
+          },
+        }}
+      />
+    </Box>
+  );
+}
+
+/* Slider variant: Step dots (pagination-style) */
+function StepDotSlider() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const [value, setValue] = useState(3);
+  const steps = 7;
+
+  return (
+    <Box sx={{
+      display: 'inline-flex', alignItems: 'center', gap: 0.75,
+      bgcolor: c.bgElevated, borderRadius: 2, px: 1.5, py: 1,
+      border: '1px solid', borderColor: c.borderDefault,
+      boxShadow: effects.shadows.secondaryButton,
+    }}>
+      <IconButton size="small" disabled={value <= 1} onClick={() => setValue(v => Math.max(1, v - 1))}>
+        <Icon name="chevron_left" size={18} />
+      </IconButton>
+      <Divider orientation="vertical" flexItem sx={{ mx: 0.25 }} />
+      <Box sx={{ display: 'flex', gap: 0.75, alignItems: 'center', px: 0.5 }}>
+        {Array.from({ length: steps }, (_, i) => (
+          <Box
+            key={i}
+            onClick={() => setValue(i + 1)}
+            sx={{
+              width: value === i + 1 ? 10 : 7,
+              height: value === i + 1 ? 10 : 7,
+              borderRadius: '50%',
+              bgcolor: value === i + 1 ? c.brand400 : c.contentTertiary,
+              opacity: value === i + 1 ? 1 : 0.35,
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+          />
+        ))}
+      </Box>
+      <Divider orientation="vertical" flexItem sx={{ mx: 0.25 }} />
+      <IconButton size="small" disabled={value >= steps} onClick={() => setValue(v => Math.min(steps, v + 1))}>
+        <Icon name="chevron_right" size={18} />
+      </IconButton>
+    </Box>
+  );
+}
+
 registerComponent({
   id: 'slider',
   name: 'Slider',
@@ -355,6 +492,68 @@ registerComponent({
       render: () => <Box sx={{ width: 250 }}><Slider defaultValue={[20, 60]} /></Box>,
     },
     {
+      name: 'Discrete with Marks',
+      code: `<Slider
+  defaultValue={50}
+  step={null}
+  marks={[
+    { value: 0, label: 'Minimum' },
+    { value: 50, label: 'Recommended' },
+    { value: 100, label: 'Great' },
+  ]}
+/>`,
+      render: () => (
+        <Box sx={{ width: 300 }}>
+          <Slider
+            defaultValue={50}
+            step={null}
+            marks={[
+              { value: 0, label: 'Minimum' },
+              { value: 50, label: 'Recommended' },
+              { value: 100, label: 'Great' },
+            ]}
+          />
+        </Box>
+      ),
+    },
+    {
+      name: 'Tick Marks',
+      code: `<Slider defaultValue={40} step={5} marks />`,
+      render: () => <Box sx={{ width: 280 }}><Slider defaultValue={40} step={5} marks /></Box>,
+    },
+    {
+      name: 'Step Dots',
+      code: `// Pagination-style step indicator with prev/next
+<StepDotSlider steps={7} defaultValue={3} />`,
+      render: () => <StepDotSlider />,
+    },
+    {
+      name: 'Range with Scale',
+      code: `<Slider
+  defaultValue={[2, 8]}
+  min={0} max={10} step={1}
+  valueLabelDisplay="on"
+  marks={[
+    { value: 0, label: '0' },
+    { value: 2, label: '2' },
+    // ... etc
+  ]}
+/>`,
+      render: () => <RulerRangeSlider />,
+    },
+    {
+      name: 'Volume Bars',
+      code: `// Custom bar visualisation above a standard slider
+<VolumeSlider />`,
+      render: () => <VolumeSlider />,
+    },
+    {
+      name: 'Distribution Range',
+      code: `// Histogram distribution overlay on a range slider
+<DistributionSlider />`,
+      render: () => <DistributionSlider />,
+    },
+    {
       name: 'Disabled',
       code: `<Slider defaultValue={30} disabled />`,
       render: () => <Box sx={{ width: 250 }}><Slider defaultValue={30} disabled /></Box>,
@@ -365,7 +564,9 @@ registerComponent({
     { name: 'defaultValue', type: 'number | number[]', description: 'The default value' },
     { name: 'min', type: 'number', default: '0', description: 'Minimum value' },
     { name: 'max', type: 'number', default: '100', description: 'Maximum value' },
-    { name: 'step', type: 'number', default: '1', description: 'Step increment' },
+    { name: 'step', type: 'number | null', default: '1', description: 'Step increment. Pass null for discrete marks-only.' },
+    { name: 'marks', type: 'boolean | Mark[]', default: 'false', description: 'Marks on the rail. Pass true for auto-marks or an array of { value, label }.' },
+    { name: 'valueLabelDisplay', type: "'auto' | 'on' | 'off'", default: "'off'", description: 'Controls when the value label is displayed' },
     { name: 'disabled', type: 'boolean', default: 'false', description: 'If true, the slider is disabled' },
   ],
 });
@@ -2004,6 +2205,282 @@ function PaginationOutlinedDemo() {
   return <Pagination count={10} page={page} onChange={(_, p) => setPage(p)} variant="outlined" />;
 }
 
+/* Pagination variant: Classic with Previous/Next text buttons + page numbers */
+function ClassicPagination() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const [page, setPage] = useState(2);
+  const totalPages = 17;
+
+  const getVisiblePages = () => {
+    const pages: (number | '...')[] = [1];
+    if (page > 3) pages.push('...');
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pages.push(i);
+    if (page < totalPages - 2) pages.push('...');
+    if (totalPages > 1) pages.push(totalPages);
+    return pages;
+  };
+
+  const pillSx = {
+    height: 36,
+    borderRadius: 2,
+    border: '1px solid',
+    borderColor: c.borderDefault,
+    bgcolor: c.bgElevated,
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    px: 1.5,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    userSelect: 'none' as const,
+    transition: 'all 0.15s',
+    '&:hover': { bgcolor: c.bgSunken },
+  };
+  const activePillSx = {
+    ...pillSx,
+    background: effects.gradients.primary,
+    color: c.contentStayLight,
+    borderColor: 'transparent',
+    boxShadow: effects.shadows.primaryButton,
+    '&:hover': { background: effects.gradients.primary, filter: 'brightness(1.08)' },
+  };
+
+  return (
+    <Box sx={{ display: 'flex', gap: 0.75, alignItems: 'center' }}>
+      <Box
+        onClick={() => setPage((p) => Math.max(1, p - 1))}
+        sx={{ ...pillSx, opacity: page === 1 ? 0.4 : 1, pointerEvents: page === 1 ? 'none' : 'auto' }}
+      >
+        Previous
+      </Box>
+      {getVisiblePages().map((p, i) =>
+        p === '...' ? (
+          <Typography key={`e${i}`} variant="body2" sx={{ px: 0.5, color: c.contentTertiary }}>…</Typography>
+        ) : (
+          <Box key={p} onClick={() => setPage(p)} sx={{ ...(p === page ? activePillSx : pillSx), minWidth: 36 }}>
+            {p}
+          </Box>
+        ),
+      )}
+      <Box
+        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        sx={{ ...activePillSx, pointerEvents: page === totalPages ? 'none' : 'auto', opacity: page === totalPages ? 0.4 : 1 }}
+      >
+        Next
+      </Box>
+    </Box>
+  );
+}
+
+/* Pagination variant: Minimal arrows with page counter */
+function MinimalPagination() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const [page, setPage] = useState(2);
+  const totalPages = 17;
+
+  const arrowBtnSx = {
+    width: 40,
+    height: 40,
+    borderRadius: 2,
+    border: '1px solid',
+    borderColor: c.borderDefault,
+    bgcolor: c.bgElevated,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+    '&:hover': { bgcolor: c.bgSunken },
+  };
+  const arrowBtnActiveSx = {
+    ...arrowBtnSx,
+    background: effects.gradients.primary,
+    borderColor: 'transparent',
+    boxShadow: effects.shadows.primaryButton,
+    color: c.contentStayLight,
+    '&:hover': { background: effects.gradients.primary, filter: 'brightness(1.08)' },
+  };
+
+  return (
+    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      <Box
+        onClick={() => setPage((p) => Math.max(1, p - 1))}
+        sx={{ ...arrowBtnSx, opacity: page === 1 ? 0.4 : 1, pointerEvents: page === 1 ? 'none' : 'auto' }}
+      >
+        <Icon name="arrow_back" size={18} />
+      </Box>
+      <Typography variant="body2" sx={{ fontWeight: 600, px: 1.5, color: c.contentPrimary, minWidth: 60, textAlign: 'center' }}>
+        {page} of {totalPages}
+      </Typography>
+      <Box
+        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        sx={{ ...arrowBtnActiveSx, pointerEvents: page === totalPages ? 'none' : 'auto', opacity: page === totalPages ? 0.4 : 1 }}
+      >
+        <Icon name="arrow_forward" size={18} color="inherit" />
+      </Box>
+    </Box>
+  );
+}
+
+/* Pagination variant: Page size selector + arrows + counter */
+function PageSizePagination() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const [page, setPage] = useState(2);
+  const [pageSize, setPageSize] = useState(10);
+  const totalItems = 170;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const pageSizes = [10, 25, 50];
+
+  const chipSx = (active: boolean) => ({
+    height: 32,
+    borderRadius: 2,
+    px: 1.5,
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    fontSize: '0.8rem',
+    fontWeight: active ? 600 : 500,
+    bgcolor: active ? c.bgElevated : 'transparent',
+    color: active ? c.contentPrimary : c.contentSecondary,
+    boxShadow: active ? effects.shadows.secondaryButton : 'none',
+    border: active ? `1px solid ${c.borderDefault}` : '1px solid transparent',
+    transition: 'all 0.15s',
+    userSelect: 'none' as const,
+    '&:hover': { bgcolor: active ? c.bgElevated : c.bgSunken },
+  });
+
+  const arrowSx = (filled: boolean) => ({
+    width: 32,
+    height: 32,
+    borderRadius: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+    ...(filled
+      ? {
+          background: effects.gradients.primary,
+          color: c.contentStayLight,
+          boxShadow: effects.shadows.primaryButton,
+          '&:hover': { background: effects.gradients.primary, filter: 'brightness(1.08)' },
+        }
+      : {
+          bgcolor: c.bgElevated,
+          border: '1px solid',
+          borderColor: c.borderDefault,
+          '&:hover': { bgcolor: c.bgSunken },
+        }),
+  });
+
+  return (
+    <Box sx={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 1,
+      bgcolor: c.bgSunken,
+      borderRadius: 2.5,
+      px: 1,
+      py: 0.75,
+      border: '1px solid',
+      borderColor: c.borderWeak,
+    }}>
+      <Box sx={{ display: 'flex', gap: 0.25, alignItems: 'center' }}>
+        {pageSizes.map((s) => (
+          <Box key={s} onClick={() => { setPageSize(s); setPage(1); }} sx={chipSx(pageSize === s)}>
+            {pageSize === s ? `${s} Items` : s}
+          </Box>
+        ))}
+      </Box>
+      <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+      <Box
+        onClick={() => setPage((p) => Math.max(1, p - 1))}
+        sx={{ ...arrowSx(false), opacity: page === 1 ? 0.4 : 1, pointerEvents: page === 1 ? 'none' : 'auto' }}
+      >
+        <Icon name="chevron_left" size={18} />
+      </Box>
+      <Typography variant="body2" sx={{ fontWeight: 600, px: 0.5, color: c.contentPrimary, minWidth: 50, textAlign: 'center' }}>
+        {page} of {totalPages}
+      </Typography>
+      <Box
+        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        sx={{ ...arrowSx(true), pointerEvents: page === totalPages ? 'none' : 'auto', opacity: page === totalPages ? 0.4 : 1 }}
+      >
+        <Icon name="chevron_right" size={18} color="inherit" />
+      </Box>
+    </Box>
+  );
+}
+
+/* Pagination variant: Compact "Showing X/Y" with arrows */
+function CompactPagination() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const totalItems = 100;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const showingEnd = Math.min(page * pageSize, totalItems);
+
+  const arrowSx = (filled: boolean) => ({
+    width: 36,
+    height: 36,
+    borderRadius: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+    ...(filled
+      ? {
+          background: effects.gradients.primary,
+          color: c.contentStayLight,
+          boxShadow: effects.shadows.primaryButton,
+          '&:hover': { background: effects.gradients.primary, filter: 'brightness(1.08)' },
+        }
+      : {
+          bgcolor: c.bgElevated,
+          border: '1px solid',
+          borderColor: c.borderDefault,
+          '&:hover': { bgcolor: c.bgSunken },
+        }),
+  });
+
+  return (
+    <Box sx={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 0.75,
+      bgcolor: c.bgSunken,
+      borderRadius: 2.5,
+      px: 1,
+      py: 0.75,
+      border: '1px solid',
+      borderColor: c.borderWeak,
+    }}>
+      <Typography variant="body2" sx={{ fontWeight: 600, px: 1.5, color: c.contentPrimary, whiteSpace: 'nowrap' }}>
+        Showing {showingEnd}/{totalItems}
+      </Typography>
+      <Box
+        onClick={() => setPage((p) => Math.max(1, p - 1))}
+        sx={{ ...arrowSx(false), opacity: page === 1 ? 0.4 : 1, pointerEvents: page === 1 ? 'none' : 'auto' }}
+      >
+        <Icon name="arrow_back" size={18} />
+      </Box>
+      <Box
+        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        sx={{ ...arrowSx(true), pointerEvents: page === totalPages ? 'none' : 'auto', opacity: page === totalPages ? 0.4 : 1 }}
+      >
+        <Icon name="arrow_forward" size={18} color="inherit" />
+      </Box>
+    </Box>
+  );
+}
+
 registerComponent({
   id: 'pagination',
   name: 'Pagination',
@@ -2020,6 +2497,34 @@ registerComponent({
       name: 'Outlined',
       code: `<Pagination count={10} variant="outlined" />`,
       render: () => <PaginationOutlinedDemo />,
+    },
+    {
+      name: 'Classic with Text Buttons',
+      code: `// Previous | 1 | 2 | 3 | ... | 17 | Next
+// Custom pill-style buttons with brand gradient on active page and Next
+<ClassicPagination totalPages={17} />`,
+      render: () => <ClassicPagination />,
+    },
+    {
+      name: 'Minimal Arrows',
+      code: `// ← | 2 of 17 | →
+// Compact navigation with branded forward arrow
+<MinimalPagination totalPages={17} />`,
+      render: () => <MinimalPagination />,
+    },
+    {
+      name: 'Page Size Selector',
+      code: `// 10 Items | 25 | 50 | ‹ | 2 of 17 | ›
+// Combines page size chips with navigation arrows
+<PageSizePagination totalItems={170} pageSizes={[10, 25, 50]} />`,
+      render: () => <PageSizePagination />,
+    },
+    {
+      name: 'Compact Counter',
+      code: `// Showing 10/100 | ← | →
+// Minimal footer-style pagination with item counter
+<CompactPagination totalItems={100} pageSize={10} />`,
+      render: () => <CompactPagination />,
     },
     {
       name: 'Sizes',
