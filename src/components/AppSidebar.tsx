@@ -15,6 +15,34 @@ import {
 } from '@mui/material';
 import { Icon } from './Icon';
 import { SearchField } from './SearchField';
+import { useBrand } from '../theme/brand-context';
+
+/** Build the active nav item styles from current brand tokens */
+function useActiveItemSx() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const isDark = effects.mode === 'dark';
+  const activeBg = isDark ? c.brand500 : c.brand100;
+
+  return {
+    '&.Mui-selected': {
+      background: activeBg,
+      backgroundColor: activeBg,
+      color: isDark ? c.brand200 : c.brand450,
+      border: '1px solid transparent',
+      boxShadow: 'none',
+      borderRadius: '12px',
+      '&:hover': {
+        background: activeBg,
+        backgroundColor: activeBg,
+        filter: isDark ? 'brightness(1.12)' : 'brightness(0.97)',
+      },
+      '& .MuiListItemIcon-root': {
+        color: isDark ? c.brand200 : c.brand450,
+      },
+    },
+  };
+}
 
 export interface SidebarItem {
   /** Display label */
@@ -81,6 +109,8 @@ export function AppSidebar({
   onExpandedChange,
   drawerProps,
 }: AppSidebarProps) {
+  const activeItemSx = useActiveItemSx();
+
   // Internal state for uncontrolled mode
   const [internalExpanded, setInternalExpanded] = useState<string | null>(null);
 
@@ -191,7 +221,7 @@ export function AppSidebar({
                   key={item.label}
                   selected={item.active || expandedItem === item.label}
                   onClick={() => handleItemClick(item)}
-                  sx={{ my: 0.25 }}
+                  sx={{ my: 0.25, ...activeItemSx }}
                 >
                   {item.icon && (
                     <ListItemIcon>
@@ -269,6 +299,8 @@ interface ExtraNavPanelProps {
 }
 
 function ExtraNavPanel({ width, parentLabel, items, onCollapse }: ExtraNavPanelProps) {
+  const activeItemSx = useActiveItemSx();
+
   return (
     <Box
       sx={{
@@ -315,7 +347,7 @@ function ExtraNavPanel({ width, parentLabel, items, onCollapse }: ExtraNavPanelP
               key={item.label}
               selected={item.active}
               onClick={item.onClick}
-              sx={{ my: 0.25 }}
+              sx={{ my: 0.25, ...activeItemSx }}
             >
               {item.icon && (
                 <ListItemIcon>

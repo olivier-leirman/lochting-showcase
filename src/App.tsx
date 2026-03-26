@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { BrandProvider, useBrand } from './theme/brand-context';
+import { InspectorProvider } from './showcase/context/inspector-context';
 import { ShowcaseShell } from './showcase/layout/ShowcaseShell';
 import { HomePage } from './showcase/pages/HomePage';
 import { GettingStartedPage } from './showcase/pages/GettingStartedPage';
@@ -23,20 +24,22 @@ function ThemedApp() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <HashRouter>
-          <Routes>
-            <Route element={<ShowcaseShell />}>
-              <Route index element={<HomePage />} />
-              <Route path="getting-started" element={<GettingStartedPage />} />
-              <Route path="tokens/colors" element={<ColorsPage />} />
-              <Route path="tokens/effects" element={<EffectsPage />} />
-              <Route path="tokens/typography" element={<TypographyPage />} />
-              <Route path="tokens/spacing" element={<SpacingPage />} />
-              <Route path="tokens/sizing" element={<SizingPage />} />
-              <Route path="components/:id" element={<ComponentPage />} />
-            </Route>
-          </Routes>
-        </HashRouter>
+        <InspectorProvider>
+          <HashRouter>
+            <Routes>
+              <Route element={<ShowcaseShell />}>
+                <Route index element={<HomePage />} />
+                <Route path="getting-started" element={<GettingStartedPage />} />
+                <Route path="tokens/colors" element={<ColorsPage />} />
+                <Route path="tokens/effects" element={<EffectsPage />} />
+                <Route path="tokens/typography" element={<TypographyPage />} />
+                <Route path="tokens/spacing" element={<SpacingPage />} />
+                <Route path="tokens/sizing" element={<SizingPage />} />
+                <Route path="components/:id" element={<ComponentPage />} />
+              </Route>
+            </Routes>
+          </HashRouter>
+        </InspectorProvider>
       </LocalizationProvider>
     </ThemeProvider>
   );

@@ -37,6 +37,7 @@ export interface BrandColors {
   borderWeak: string;
   borderStrong: string;
   borderStrongest: string;
+  brand: SystemColorSet;
   error: SystemColorSet;
   warning: SystemColorSet;
   info: SystemColorSet;

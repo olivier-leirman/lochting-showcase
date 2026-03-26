@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Button, ButtonGroup, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography, Popper, Grow, Paper, ClickAwayListener, MenuList, Autocomplete, InputAdornment, Tab, Tabs, Stepper, Step, StepLabel, StepContent, LinearProgress, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Accordion, AccordionSummary, AccordionDetails, Card, CardContent, CardActions, CardHeader, Alert, Stack, Drawer, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText, AppBar, Toolbar, Breadcrumbs, Link, Divider, Avatar } from '@mui/material';
+import { Button, ButtonGroup, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography, Popper, Grow, Paper, ClickAwayListener, MenuList, Autocomplete, InputAdornment, Tab, Tabs, Stepper, Step, StepLabel, StepContent, LinearProgress, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Accordion, AccordionSummary, AccordionDetails, Card, CardContent, CardActions, CardHeader, Alert, Drawer, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText, AppBar, Toolbar, Breadcrumbs, Link, Divider, Avatar } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -7,7 +7,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePicker';
-import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
+
 import dayjs from 'dayjs';
 import { Icon } from '../components/Icon';
 import { ToggleChip, ToggleChipGroup } from '../components/ToggleChip';
@@ -38,7 +38,7 @@ function IconBgSoftDemo() {
   return (
     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
       <Box sx={{ textAlign: 'center' }}>
-        <IconBg icon="star" iconColor={c.brand400} bg={c.brand100} />
+        <IconBg icon="star" iconColor={c.brand.contentStrong} bg={c.brand.bgWeakest} />
         <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Brand</Typography>
       </Box>
       <Box sx={{ textAlign: 'center' }}>
@@ -71,7 +71,7 @@ function IconBgBrightDemo() {
   return (
     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
       <Box sx={{ textAlign: 'center' }}>
-        <IconBg icon="star" iconColor={c.contentStayLight} bg={c.brand400} />
+        <IconBg icon="star" iconColor={c.contentStayLight} bg={c.brand.bgDefault} />
         <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Brand</Typography>
       </Box>
       <Box sx={{ textAlign: 'center' }}>
@@ -91,7 +91,7 @@ function IconBgBrightDemo() {
         <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Info</Typography>
       </Box>
       <Box sx={{ textAlign: 'center' }}>
-        <IconBg icon="settings" iconColor={c.contentStayLight} bg={c.contentSecondary} />
+        <IconBg icon="settings" iconColor={c.contentInverseSecondary} bg={c.contentSecondary} />
         <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: c.contentTertiary, fontSize: '0.65rem' }}>Neutral</Typography>
       </Box>
     </Box>
@@ -340,7 +340,7 @@ registerComponent({
 
 /* Slider variant: Volume bars */
 function VolumeSlider() {
-  const { brand, effects } = useBrand();
+  const { brand } = useBrand();
   const c = brand.colors;
   const [value, setValue] = useState(50);
   const total = 30;
@@ -1383,15 +1383,15 @@ registerComponent({
     },
     {
       name: 'With Background (Soft)',
-      code: `<Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: 'brand100', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-  <Icon name="star" size={18} color="brand400" />
+      code: `<Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: c.brand.bgWeakest, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <Icon name="star" size={18} color={c.brand.contentStrong} />
 </Box>`,
       render: () => <IconBgSoftDemo />,
     },
     {
       name: 'With Background (Bright)',
-      code: `<Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: 'brand400', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-  <Icon name="star" size={18} color="white" />
+      code: `<Box sx={{ width: 36, height: 36, borderRadius: 1.5, bgcolor: c.brand.bgDefault, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <Icon name="star" size={18} color={c.contentStayLight} />
 </Box>`,
       render: () => <IconBgBrightDemo />,
     },
@@ -1454,16 +1454,6 @@ registerComponent({
 /* ─────────────────────────────────────
    Autocomplete (single + multi-select)
    ───────────────────────────────────── */
-const demoOptions = [
-  { label: 'Apple' },
-  { label: 'Banana' },
-  { label: 'Cherry' },
-  { label: 'Date' },
-  { label: 'Elderberry' },
-  { label: 'Fig' },
-  { label: 'Grape' },
-];
-
 const demoStringOptions = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry', 'Fig', 'Grape'];
 
 registerComponent({
@@ -2673,7 +2663,7 @@ function ElevatedCardDemo() {
 }
 
 function SunkenCardDemo() {
-  const { brand, effects } = useBrand();
+  const { brand } = useBrand();
   const c = brand.colors;
   return (
     <Card sx={{
@@ -3286,6 +3276,29 @@ function SidebarWithExtraNavDemo() {
 
 function SidebarMinimalDemo() {
   const [active, setActive] = useState('Home');
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const isDark = effects.mode === 'dark';
+  const activeBg = isDark ? c.brand500 : c.brand100;
+  const activeItemSx = {
+    '&.Mui-selected': {
+      background: activeBg,
+      backgroundColor: activeBg,
+      color: isDark ? c.brand200 : c.brand450,
+      border: '1px solid transparent',
+      boxShadow: 'none',
+      borderRadius: '12px',
+      '&:hover': {
+        background: activeBg,
+        backgroundColor: activeBg,
+        filter: isDark ? 'brightness(1.12)' : 'brightness(0.97)',
+      },
+      '& .MuiListItemIcon-root': {
+        color: isDark ? c.brand200 : c.brand450,
+      },
+    },
+  };
+
   return (
     <Box sx={{ height: 320, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
       <Drawer
@@ -3305,7 +3318,7 @@ function SidebarMinimalDemo() {
               key={label}
               selected={active === label}
               onClick={() => setActive(label)}
-              sx={{ my: 0.25 }}
+              sx={{ my: 0.25, ...activeItemSx }}
             >
               <ListItemIcon>
                 <Icon name={label === 'Home' ? 'home' : label === 'Settings' ? 'settings' : 'person'} size={20} />
@@ -3321,6 +3334,29 @@ function SidebarMinimalDemo() {
 
 function SidebarWithBadgesDemo() {
   const [active, setActive] = useState('Inbox');
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const isDark = effects.mode === 'dark';
+  const activeBg = isDark ? c.brand500 : c.brand100;
+  const activeItemSx = {
+    '&.Mui-selected': {
+      background: activeBg,
+      backgroundColor: activeBg,
+      color: isDark ? c.brand200 : c.brand450,
+      border: '1px solid transparent',
+      boxShadow: 'none',
+      borderRadius: '12px',
+      '&:hover': {
+        background: activeBg,
+        backgroundColor: activeBg,
+        filter: isDark ? 'brightness(1.12)' : 'brightness(0.97)',
+      },
+      '& .MuiListItemIcon-root': {
+        color: isDark ? c.brand200 : c.brand450,
+      },
+    },
+  };
+
   return (
     <Box sx={{ height: 360, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
       <Drawer
@@ -3346,7 +3382,7 @@ function SidebarWithBadgesDemo() {
               key={item.label}
               selected={active === item.label}
               onClick={() => setActive(item.label)}
-              sx={{ my: 0.25 }}
+              sx={{ my: 0.25, ...activeItemSx }}
             >
               <ListItemIcon>
                 <Icon name={item.icon} size={20} />
@@ -3363,6 +3399,83 @@ function SidebarWithBadgesDemo() {
   );
 }
 
+function NavItemStatesDemo() {
+  const { brand, effects } = useBrand();
+  const c = brand.colors;
+  const isDark = effects.mode === 'dark';
+  const activeBg = isDark ? c.brand500 : c.brand100;
+  const activeColor = isDark ? c.brand200 : c.brand450;
+  const hoverBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
+
+  const baseItemSx = {
+    borderRadius: '12px',
+    my: 0.25,
+  };
+
+  const activeItemSx = {
+    background: activeBg,
+    backgroundColor: activeBg,
+    color: activeColor,
+    border: '1px solid transparent',
+    boxShadow: 'none',
+    borderRadius: '12px',
+    '&:hover': {
+      background: activeBg,
+      backgroundColor: activeBg,
+    },
+    '& .MuiListItemIcon-root': { color: activeColor },
+  };
+
+  const hoverItemSx = {
+    background: hoverBg,
+    backgroundColor: hoverBg,
+    borderRadius: '12px',
+  };
+
+  return (
+    <Box sx={{ display: 'flex', gap: 6, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+      {/* Inactive */}
+      <Box>
+        <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
+          Default
+        </Typography>
+        <List disablePadding sx={{ width: 220, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: 1 }}>
+          <ListItemButton sx={baseItemSx}>
+            <ListItemIcon><Icon name="dashboard" size={20} /></ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
+        </List>
+      </Box>
+
+      {/* Hover */}
+      <Box>
+        <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
+          Hover
+        </Typography>
+        <List disablePadding sx={{ width: 220, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: 1 }}>
+          <ListItemButton sx={{ ...baseItemSx, ...hoverItemSx }}>
+            <ListItemIcon><Icon name="analytics" size={20} /></ListItemIcon>
+            <ListItemText primary="Analytics" />
+          </ListItemButton>
+        </List>
+      </Box>
+
+      {/* Active / Selected */}
+      <Box>
+        <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
+          Active
+        </Typography>
+        <List disablePadding sx={{ width: 220, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: 1 }}>
+          <ListItemButton selected sx={{ ...baseItemSx, '&.Mui-selected': activeItemSx }}>
+            <ListItemIcon><Icon name="home" size={20} /></ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItemButton>
+        </List>
+      </Box>
+    </Box>
+  );
+}
+
 registerComponent({
   id: 'sidebar',
   name: 'Sidebar',
@@ -3372,6 +3485,36 @@ registerComponent({
 // Or use the pre-built component:
 import { AppSidebar } from './components/AppSidebar';`,
   examples: [
+    {
+      name: 'Nav Item States',
+      code: `// Active state styling (from Sidebar.tsx)
+const activeBg = isDark ? brand.colors.brand500 : brand.colors.brand100;
+const activeColor = isDark ? brand.colors.brand200 : brand.colors.brand450;
+
+<ListItemButton>                          {/* Default */}
+  <ListItemIcon><Icon name="dashboard" /></ListItemIcon>
+  <ListItemText primary="Dashboard" />
+</ListItemButton>
+
+<ListItemButton sx={{ bgcolor: 'action.hover' }}>  {/* Hover */}
+  <ListItemIcon><Icon name="analytics" /></ListItemIcon>
+  <ListItemText primary="Analytics" />
+</ListItemButton>
+
+<ListItemButton selected sx={{            {/* Active */}
+  '&.Mui-selected': {
+    background: activeBg,
+    color: activeColor,
+    borderRadius: '12px',
+    boxShadow: 'none',
+    '& .MuiListItemIcon-root': { color: activeColor },
+  },
+}}>
+  <ListItemIcon><Icon name="home" /></ListItemIcon>
+  <ListItemText primary="Home" />
+</ListItemButton>`,
+      render: () => <NavItemStatesDemo />,
+    },
     {
       name: 'AppSidebar Component',
       code: `<AppSidebar
@@ -4125,6 +4268,7 @@ import { StaticDateRangePicker } from '@mui/x-date-pickers-pro/StaticDateRangePi
 // ─── Advanced Table ───
 
 interface SampleRow {
+  [key: string]: unknown;
   id: number;
   name: string;
   email: string;
@@ -4220,7 +4364,7 @@ const actions: RowAction<User>[] = [
   getRowId={(r) => r.id}
 />`,
       render: () => (
-        <AdvancedTable
+        <AdvancedTable<SampleRow>
           columns={TABLE_COLUMNS}
           rows={SAMPLE_ROWS}
           getRowId={r => r.id}
@@ -4238,7 +4382,7 @@ const actions: RowAction<User>[] = [
   elevated
 />`,
       render: () => (
-        <AdvancedTable
+        <AdvancedTable<SampleRow>
           columns={TABLE_COLUMNS}
           rows={SAMPLE_ROWS}
           getRowId={r => r.id}
@@ -4259,7 +4403,7 @@ const actions: RowAction<User>[] = [
   dense
 />`,
       render: () => (
-        <AdvancedTable
+        <AdvancedTable<SampleRow>
           columns={TABLE_COLUMNS}
           rows={SAMPLE_ROWS}
           getRowId={r => r.id}

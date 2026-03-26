@@ -27,7 +27,7 @@ function msIcon(name: string, size = 20, color?: string) {
 
 export function cardOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
   const c = brand.colors;
-  const isDark = fx.mode === 'dark';
+  void fx; // preserve parameter for API parity
 
   return {
     MuiCard: {

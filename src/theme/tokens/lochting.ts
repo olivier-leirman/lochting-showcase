@@ -43,6 +43,14 @@ export const LOCHTING: BrandTokens = {
     borderStrong:    '#dfdfe6',
     borderStrongest: '#d3d3dc',
 
+    // Brand feedback — mirrors error/warning/info/success for dark-mode adaptability
+    brand: {
+      contentStrong: '#41197d',   // brand/700 — dark for light bg
+      bgWeakest: '#efe7fb',       // brand/50 — very light tint
+      bgDefault: '#8a54dd',       // brand/400 — primary accent
+      borderWeak: '#d8c4f6',      // brand/100 — light border
+    },
+
     // System feedback — from Figma custom/theme System/*
     error: {
       contentStrong: '#881337',
@@ -97,6 +105,14 @@ export const LOCHTING: BrandTokens = {
     borderWeak:      '#26214b',
     borderStrong:    '#4d487a',
     borderStrongest: '#736e99',
+
+    // Brand feedback — DM (mirrors system colors pattern)
+    brand: {
+      contentStrong: '#d8c4f6',   // brand/100 — bright for dark bg
+      bgWeakest: '#291055',       // deep dark purple — between brand/800 and /900
+      bgDefault: '#8a54dd',       // brand/400 — unchanged
+      borderWeak: '#d8c4f6',      // brand/100 — bright border
+    },
 
     // System feedback — from Figma custom/theme System/* DM
     error: {

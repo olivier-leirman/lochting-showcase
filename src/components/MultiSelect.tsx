@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, type ReactNode } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import {
   Box,
   TextField,
@@ -57,18 +57,6 @@ function collectLeafIds(options: MultiSelectOption[]): string[] {
       ids.push(...collectLeafIds(opt.children));
     } else {
       ids.push(opt.id);
-    }
-  }
-  return ids;
-}
-
-/** Collect ALL IDs (parents + leaves) */
-function collectAllIds(options: MultiSelectOption[]): string[] {
-  const ids: string[] = [];
-  for (const opt of options) {
-    ids.push(opt.id);
-    if (opt.children?.length) {
-      ids.push(...collectAllIds(opt.children));
     }
   }
   return ids;

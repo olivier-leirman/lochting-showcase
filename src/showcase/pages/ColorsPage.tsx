@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup, Chip, Button, Avatar } from '@mui/material';
+import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup, Chip, Button } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
-import { Icon } from '../../components/Icon';
 import { CodeBlock } from '../blocks/CodeBlock';
 import type { BrandTokens, BrandScale } from '../../theme/types';
 

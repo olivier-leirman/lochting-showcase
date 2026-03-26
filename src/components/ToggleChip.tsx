@@ -68,7 +68,7 @@ export function ToggleChipGroup({ children, value, exclusive, onChange, sx }: To
   };
 
   const enhancedChildren = Children.map(children, (child) => {
-    if (isValidElement(child) && 'value' in child.props) {
+    if (isValidElement(child) && 'value' in (child.props as Record<string, unknown>)) {
       const chipValue = (child as ReactElement<ToggleChipProps>).props.value;
       const isSelected = exclusive
         ? value === chipValue

@@ -80,8 +80,8 @@ export function Sidebar() {
       background: activeBg,
       backgroundColor: activeBg,
       color: isDark ? c.brand200 : c.brand450,
-      border: `1px solid ${activeBg}`,
-      boxShadow: effects.shadows.chipBrand,
+      border: '1px solid transparent',
+      boxShadow: 'none',
       borderRadius: '12px',
       '&:hover': {
         background: activeBg,
@@ -134,7 +134,7 @@ export function Sidebar() {
       </Box>
 
       {/* ── Nav content ── */}
-      <Box sx={{ flex: 1, overflow: 'auto', px: 1 }}>
+      <Box sx={{ flex: 1, overflow: 'auto', px: '8px' }}>
         {q ? (
           /* ── Search results ── */
           <List disablePadding subheader={<ListSubheader disableSticky>Results</ListSubheader>}>

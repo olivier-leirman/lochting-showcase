@@ -8,7 +8,7 @@ import { Icon } from '../../components/Icon';
 import { SearchField } from '../../components/SearchField';
 import { ToggleChip, ToggleChipGroup } from '../../components/ToggleChip';
 import { useBrand } from '../../theme/brand-context';
-import { COMPONENT_REGISTRY, getComponentsByCategory } from '../registry';
+import { getComponentsByCategory } from '../registry';
 import type { BrandTokens } from '../../theme/types';
 
 /** Resolve the strong font-weight for the current brand */
@@ -387,7 +387,6 @@ function ComponentsTab({ brand }: { brand: BrandTokens }) {
 
 export function HomePage() {
   const { brand } = useBrand();
-  const c = brand.colors;
   const [tab, setTab] = useState(0);
 
   return (

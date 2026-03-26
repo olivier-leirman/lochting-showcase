@@ -43,6 +43,14 @@ export const MEDIPIM: BrandTokens = {
     borderStrong:    '#bfd9d9',   // mp-neutral/200
     borderStrongest: '#accdcd',   // mp-neutral/250
 
+    // Brand feedback — mirrors error/warning/info/success for dark-mode adaptability
+    brand: {
+      contentStrong: '#0c627e',   // mp-brand/700 — dark for light bg
+      bgWeakest: '#d4f1fb',       // mp-brand/50 — very light tint
+      bgDefault: '#2abbea',       // mp-brand/400 — primary accent
+      borderWeak: '#aae4f7',      // mp-brand/100 — light border
+    },
+
     // System feedback — from Figma custom/theme System/*
     error: {
       contentStrong: '#881337',
@@ -98,28 +106,36 @@ export const MEDIPIM: BrandTokens = {
     borderStrong:    '#3b6262',   // mp-neutral/650
     borderStrongest: '#477676',   // mp-neutral/500
 
+    // Brand feedback — DM (mirrors system colors pattern)
+    brand: {
+      contentStrong: '#aae4f7',   // mp-brand/100 — bright for dark bg
+      bgWeakest: '#0a2e3b',       // deep dark teal — between mp-brand/800 and /900
+      bgDefault: '#2abbea',       // mp-brand/400 — unchanged
+      borderWeak: '#aae4f7',      // mp-brand/100 — bright border
+    },
+
     // System feedback — from Figma custom/theme System/* DM
-    // Most stay the same! Only bgWeakest darkens
+    // contentStrong flipped to bright values for readability on dark backgrounds
     error: {
-      contentStrong: '#881337',
+      contentStrong: '#fda4af',  // bright for dark bg (matches Lochting pattern)
       bgWeakest: '#540c22',
       bgDefault: '#f43f5e',
       borderWeak: '#fda4af',
     },
     warning: {
-      contentStrong: '#78350f',
+      contentStrong: '#fcd34d',  // bright for dark bg
       bgWeakest: '#451e09',
       bgDefault: '#fbbf24',
       borderWeak: '#fcd34d',
     },
     info: {
-      contentStrong: '#1e3a8a',
+      contentStrong: '#93c5fd',  // bright for dark bg
       bgWeakest: '#132457',
       bgDefault: '#3b82f6',
       borderWeak: '#93c5fd',
     },
     success: {
-      contentStrong: '#064e3b',
+      contentStrong: '#6ee7b7',  // bright for dark bg
       bgWeakest: '#043629',
       bgDefault: '#10b981',
       borderWeak: '#6ee7b7',

@@ -1,5 +1,5 @@
 import { createElement } from 'react';
-import type { Components, Theme } from '@mui/material/styles';
+
 import type { BrandTokens } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
@@ -25,7 +25,8 @@ function msIcon(name: string, size = 20, color?: string) {
     }, name);
 }
 
-export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<string, any> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
 
@@ -77,7 +78,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components
           fontSize: PRIMITIVES.fontSize.sm,
         },
       },
-    } as Components<Theme>['MuiPickersOutlinedInput'],
+    },
 
     // ── Picker input label — match textfield label overrides ──
     MuiPickersInputBase: {
@@ -86,7 +87,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components
           fontFamily: brand.typography.bodyFont,
         },
       },
-    } as Components<Theme>['MuiPickersInputBase'],
+    },
 
     // ── DatePicker — custom icon slots ──
     MuiDatePicker: {
@@ -98,7 +99,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components
           switchViewIcon: DropdownIcon,
         },
       },
-    } as Components<Theme>['MuiDatePicker'],
+    },
 
     // ── TimePicker — custom icon slots ──
     MuiTimePicker: {
@@ -109,7 +110,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components
           rightArrowIcon: ChevronRightIcon,
         },
       },
-    } as Components<Theme>['MuiTimePicker'],
+    },
 
     // ── DateTimePicker — custom icon slots ──
     MuiDateTimePicker: {
@@ -121,7 +122,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components
           switchViewIcon: DropdownIcon,
         },
       },
-    } as Components<Theme>['MuiDateTimePicker'],
+    },
 
     // ── DateCalendar root ──
     MuiDateCalendar: {
@@ -180,7 +181,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components
           color: c.contentPrimary,
         },
       },
-    } as Components<Theme>['MuiDateRangePickerDay'],
+    },
 
     // ── Calendar header (month/year navigation) ──
     MuiPickersCalendarHeader: {
@@ -414,5 +415,5 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Components
         },
       },
     },
-  } as Components<Theme>;
+  };
 }

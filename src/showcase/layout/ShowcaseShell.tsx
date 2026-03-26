@@ -1,11 +1,21 @@
 import { useRef, useEffect } from 'react';
-import { Box, AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Divider, Tooltip } from '@mui/material';
+import { Box, AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Divider, Tooltip, alpha } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
+import { InspectorSidebar } from './InspectorSidebar';
 import { Icon } from '../../components/Icon';
 import { BrandSwitcher } from '../blocks/BrandSwitcher';
 import { useBrand } from '../../theme/brand-context';
+import { useInspector } from '../context/inspector-context';
 import { getComponent } from '../registry';
+
+/** Format a category slug into a display label */
+function formatCategory(category: string): string {
+  return category
+    .split('-')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
 
 /** Build breadcrumb segments from the current route path */
 function useBreadcrumbs() {
@@ -22,7 +32,8 @@ function useBreadcrumbs() {
   if (path.startsWith('/components/')) {
     const id = path.split('/').pop() ?? '';
     const comp = getComponent(id);
-    return [{ label: 'Home', path: '/' }, { label: 'Components' }, { label: comp?.name ?? id }];
+    const categoryLabel = comp ? formatCategory(comp.category) : 'Components';
+    return [{ label: 'Home', path: '/' }, { label: categoryLabel }, { label: comp?.name ?? id }];
   }
   return [{ label: 'Home', path: '/' }];
 }
@@ -32,6 +43,7 @@ export function ShowcaseShell() {
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
   const { colorMode, toggleColorMode } = useBrand();
+  const { inspectorEnabled, toggleInspector, selectedElement, clearSelection } = useInspector();
   const mainRef = useRef<HTMLDivElement>(null);
 
   // Scroll content area to top on route change
@@ -39,10 +51,15 @@ export function ShowcaseShell() {
     mainRef.current?.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // Clear selection on route change
+  useEffect(() => {
+    clearSelection();
+  }, [location.pathname, clearSelection]);
+
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar />
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', minWidth: 0 }}>
         {/* ── Top bar ── */}
         <AppBar position="static" elevation={0}>
           <Toolbar>
@@ -56,41 +73,71 @@ export function ShowcaseShell() {
             <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
             {/* Breadcrumbs */}
-            <Breadcrumbs separator="/" sx={{ flex: 1 }}>
+            <Breadcrumbs separator="/" sx={{ flex: 1, '& .MuiBreadcrumbs-separator': { color: 'text.disabled' } }}>
               {breadcrumbs.map((crumb, i) => {
                 const isLast = i === breadcrumbs.length - 1;
                 if (isLast) {
                   return (
                     <Typography
                       key={crumb.label}
-                      sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}
+                      sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary', lineHeight: 1.5 }}
                     >
                       {crumb.label}
                     </Typography>
                   );
                 }
+                // Clickable crumb (has a path)
+                if (crumb.path) {
+                  return (
+                    <Link
+                      key={crumb.label}
+                      component="button"
+                      underline="hover"
+                      onClick={() => navigate(crumb.path!)}
+                      sx={{
+                        fontSize: '0.875rem',
+                        fontWeight: 500,
+                        color: 'text.secondary',
+                        cursor: 'pointer',
+                        border: 'none',
+                        background: 'none',
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {crumb.label}
+                    </Link>
+                  );
+                }
+                // Non-clickable crumb (category label, no path)
                 return (
-                  <Link
+                  <Typography
                     key={crumb.label}
-                    component="button"
-                    underline="hover"
-                    onClick={() => crumb.path && navigate(crumb.path)}
-                    sx={{
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      color: 'text.secondary',
-                      cursor: crumb.path ? 'pointer' : 'default',
-                      border: 'none',
-                      background: 'none',
-                    }}
+                    sx={{ fontSize: '0.875rem', fontWeight: 400, color: 'text.disabled', lineHeight: 1.5 }}
                   >
                     {crumb.label}
-                  </Link>
+                  </Typography>
                 );
               })}
             </Breadcrumbs>
 
-            {/* Right side: brand switcher + dark mode */}
+            {/* Right side: inspector toggle + brand switcher + dark mode */}
+            <Tooltip title={inspectorEnabled ? 'Disable inspector (I)' : 'Enable inspector (I)'}>
+              <IconButton
+                onClick={toggleInspector}
+                size="small"
+                sx={{
+                  mr: 1,
+                  width: 36,
+                  height: 36,
+                  border: '1px solid',
+                  borderColor: inspectorEnabled ? 'primary.main' : 'divider',
+                  borderRadius: 2,
+                  bgcolor: inspectorEnabled ? (theme) => alpha(theme.palette.primary.main, 0.08) : 'transparent',
+                }}
+              >
+                <Icon name="select_all" size={18} />
+              </IconButton>
+            </Tooltip>
             <BrandSwitcher />
             <Tooltip title={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
               <IconButton
@@ -104,19 +151,22 @@ export function ShowcaseShell() {
           </Toolbar>
         </AppBar>
 
-        {/* ── Main content ── */}
-        <Box
-          ref={mainRef}
-          component="main"
-          sx={{
-            flex: 1,
-            overflow: 'auto',
-            px: { xs: 3, md: 6 },
-            py: 5,
-            maxWidth: 960,
-          }}
-        >
-          <Outlet />
+        {/* ── Main content + Inspector ── */}
+        <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+          <Box
+            ref={mainRef}
+            component="main"
+            sx={{
+              flex: 1,
+              overflow: 'auto',
+              px: { xs: 3, md: 6 },
+              py: 5,
+              minWidth: 0,
+            }}
+          >
+            <Outlet />
+          </Box>
+          <InspectorSidebar />
         </Box>
       </Box>
     </Box>

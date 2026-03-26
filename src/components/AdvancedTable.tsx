@@ -11,14 +11,10 @@ import {
   IconButton,
   Tooltip,
   Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
   Checkbox,
   Typography,
   TextField,
   InputAdornment,
-  Divider,
   Chip,
 } from '@mui/material';
 import { Icon } from './Icon';

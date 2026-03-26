@@ -44,7 +44,7 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
           fontFamily: brand.typography.bodyFont,
           minHeight: 44,
           borderRadius: PRIMITIVES.radius.md,
-          paddingLeft: 16,
+          paddingLeft: 12,
           paddingRight: 8,
           gap: 12,
           color: c.contentPrimary,
@@ -55,8 +55,8 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
           },
           '&.Mui-selected': {
             background: fx.gradients.secondary,
-            borderColor: c.borderDefault,
-            boxShadow: fx.shadows.secondaryButton,
+            borderColor: 'transparent',
+            boxShadow: 'none',
             color: c.contentPrimary,
             '&:hover': {
               background: fx.gradients.secondary,

@@ -9,12 +9,6 @@ const RADIUS_SCALE = Object.entries(PRIMITIVES.radius).map(([token, px]) => ({
   px: px as number,
 }));
 
-/* ── Breakpoint entries ── */
-const BREAKPOINT_SCALE = Object.entries(PRIMITIVES.breakpoints).map(([token, px]) => ({
-  token,
-  px: px as number,
-}));
-
 /* ── Component sizing entries ── */
 const COMPONENT_SIZES = Object.entries(PRIMITIVES.component).map(([token, px]) => ({
   token,

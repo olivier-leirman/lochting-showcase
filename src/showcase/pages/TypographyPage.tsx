@@ -1,4 +1,4 @@
-import { Box, Typography, Divider, useTheme, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
 import { CodeBlock } from '../blocks/CodeBlock';
 import { PRIMITIVES } from '../../theme/tokens/primitives';
@@ -112,7 +112,6 @@ function FontCard({ name, family, usage, strongWeight }: FontCardProps) {
 
 export function TypographyPage() {
   const { brand, fontPresetIndex, setFontPreset, fontPresets } = useBrand();
-  const theme = useTheme();
   const t = brand.typography;
   const p = PRIMITIVES;
   const sw = t.strongWeight ?? p.fontWeight.semibold;

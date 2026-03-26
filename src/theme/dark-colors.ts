@@ -106,6 +106,7 @@ export function deriveDarkColors(brand: BrandTokens): BrandColors {
     contentSecondary: light.contentInverseSecondary,
     contentTertiary: 'rgba(255, 255, 255, 0.45)',
     contentSpot: light.contentInverseSpot,
+    contentSpotWeak: `rgba(${r}, ${g}, ${b}, 0.6)`,
     contentStayLight: light.contentStayLight, // stays light in both modes
     contentStayDark: light.contentStayDark,   // stays dark in both modes
     contentInversePrimary: light.contentPrimary, // swap
@@ -117,6 +118,14 @@ export function deriveDarkColors(brand: BrandTokens): BrandColors {
     borderWeak: 'rgba(255, 255, 255, 0.06)',
     borderStrong: 'rgba(255, 255, 255, 0.18)',
     borderStrongest: 'rgba(255, 255, 255, 0.24)',
+
+    // Brand feedback — algorithmically derived (same pattern as system colors)
+    brand: {
+      contentStrong: light.brand200,
+      bgWeakest: `rgba(${r}, ${g}, ${b}, 0.12)`,
+      bgDefault: light.brand.bgDefault,
+      borderWeak: `rgba(${r}, ${g}, ${b}, 0.30)`,
+    },
 
     // Feedback — lighter text, semi-transparent tinted backgrounds
     error: {
