@@ -226,7 +226,7 @@ export function AppShell() {
                   onClick={() => { setPlatform(p.id); setAccountMenuAnchor(null); }}
                 >
                   <ListItemIcon>
-                    <Avatar sx={{ width: 24, height: 24, fontSize: '0.6rem', fontWeight: 700, bgcolor: p.id === platformId ? 'primary.main' : 'action.selected' }}>
+                    <Avatar sx={{ width: 28, height: 28, fontSize: '0.7rem', fontWeight: 700, bgcolor: 'primary.main', color: '#fff', opacity: p.id === platformId ? 1 : 0.5 }}>
                       {p.id === 'medipim' ? 'MP' : 'LO'}
                     </Avatar>
                   </ListItemIcon>
