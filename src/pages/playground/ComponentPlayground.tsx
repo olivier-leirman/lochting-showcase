@@ -13,11 +13,14 @@ import {
   Fab,
   Tooltip,
   InputAdornment,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { Icon } from '../../components/Icon';
 import { useBrand } from '../../theme/brand-context';
 import { COMPONENT_REGISTRY, type ComponentDoc } from '../../showcase/registry';
 import { config } from '../../config';
+import { AcceptToLibraryDialog } from './AcceptToLibraryDialog';
 
 /* ── Canvas background presets ── */
 
@@ -101,6 +104,8 @@ export function ComponentPlayground() {
   const [assetSearch, setAssetSearch] = useState('');
   const [promptText, setPromptText] = useState('');
   const [showGeneratedPrompt, setShowGeneratedPrompt] = useState(false);
+  const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
+  const [acceptSnack, setAcceptSnack] = useState(false);
 
   /* Derived */
   const activeComponent = useMemo(
@@ -227,6 +232,21 @@ export function ComponentPlayground() {
             <Icon name={BG_ICONS[canvasBg]} size={20} />
           </IconButton>
         </Tooltip>
+
+        {/* Accept to Library */}
+        {activeComponent && (
+          <Tooltip title="Accept to Library">
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<Icon name="library_add" size={18} />}
+              onClick={() => setAcceptDialogOpen(true)}
+              sx={{ textTransform: 'none', fontSize: '0.8125rem', borderRadius: 2, px: 1.5 }}
+            >
+              Accept
+            </Button>
+          </Tooltip>
+        )}
 
         {/* Variant generator toggle */}
         <Tooltip title="Variant Generator">
@@ -577,6 +597,28 @@ export function ComponentPlayground() {
           ))}
         </Box>
       </Drawer>
+
+      {/* Accept to Library dialog */}
+      {activeComponent && (
+        <AcceptToLibraryDialog
+          open={acceptDialogOpen}
+          onClose={() => setAcceptDialogOpen(false)}
+          component={activeComponent}
+          onAccepted={() => setAcceptSnack(true)}
+        />
+      )}
+
+      {/* Success snackbar */}
+      <Snackbar
+        open={acceptSnack}
+        autoHideDuration={4000}
+        onClose={() => setAcceptSnack(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity="success" onClose={() => setAcceptSnack(false)}>
+          Component accepted to Library! View it in Experimental Components.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

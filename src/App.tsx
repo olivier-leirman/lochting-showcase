@@ -25,6 +25,7 @@ import { ComponentPage } from './pages/library/ComponentPage';
 // New pages — Library
 import { LibraryOverview } from './pages/library/LibraryOverview';
 import { ComponentDetail } from './pages/library/ComponentDetail';
+import { ExperimentalReview } from './pages/library/ExperimentalReview';
 
 // New pages — Design System
 import { IconsPage } from './pages/design-system/IconsPage';
@@ -67,6 +68,7 @@ function ThemedApp() {
                 <Route path="library" element={<LibraryOverview />} />
                 <Route path="library/:id" element={<ComponentDetail />} />
                 <Route path="library/:id/explore" element={<ComponentPlayground />} />
+                <Route path="library/experimental" element={<ExperimentalReview />} />
 
                 {/* Design System — Tokens */}
                 <Route path="design-system/colors" element={<ColorsPage />} />

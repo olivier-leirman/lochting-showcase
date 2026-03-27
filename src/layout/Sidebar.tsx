@@ -28,6 +28,7 @@ function isGroup(entry: NavEntry): entry is NavGroup {
 
 const LIBRARY_SECTIONS: NavEntry[] = [
   { label: 'Overview', icon: 'grid_view', path: '/library' },
+  { label: 'Experimental', icon: 'science', path: '/library/experimental' },
 ];
 
 const DESIGN_SYSTEM_SECTIONS: NavEntry[] = [
