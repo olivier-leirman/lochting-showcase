@@ -1,0 +1,128 @@
+/* ── BwDialog — Base UI Dialog ──
+   Styled via CSS custom properties from BaseTokenProvider. */
+
+/* ── Trigger (render as-is, no extra styling) ── */
+.bw-dialog__trigger {
+  all: unset;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+/* ── Backdrop ── */
+.bw-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1299;
+  background: var(--bw-bg-overlay);
+  animation: bw-dialog-fade-in 0.2s ease;
+}
+
+/* ── Popup (the modal itself) ── */
+.bw-dialog__popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1300;
+  background: var(--bw-bg-elevated);
+  border: 1px solid var(--bw-border-default);
+  border-radius: var(--bw-radius-lg);
+  box-shadow: var(--bw-shadow-dialog);
+  font-family: var(--bw-font-body);
+  color: var(--bw-content-primary);
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 64px);
+  animation: bw-dialog-scale-in 0.2s ease;
+}
+
+.bw-dialog__popup--small { width: 400px; }
+.bw-dialog__popup--medium { width: 560px; }
+.bw-dialog__popup--large { width: 720px; }
+
+/* ── Header ── */
+.bw-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+
+/* ── Title ── */
+.bw-dialog__title {
+  font-size: 1.125rem;
+  font-weight: var(--bw-font-weight-semibold);
+  color: var(--bw-content-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── Close button ── */
+.bw-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--bw-radius-xs);
+  cursor: pointer;
+  color: var(--bw-content-secondary);
+  transition:
+    background var(--bw-transition-fast),
+    color var(--bw-transition-fast);
+}
+
+.bw-dialog__close:hover {
+  background: var(--bw-bg-sunken);
+  color: var(--bw-content-primary);
+}
+
+.bw-dialog__close:focus-visible {
+  outline: 2px solid var(--bw-brand-400);
+  outline-offset: 2px;
+}
+
+/* ── Description ── */
+.bw-dialog__description {
+  padding: 8px 24px 0;
+  font-size: 0.875rem;
+  color: var(--bw-content-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Content ── */
+.bw-dialog__content {
+  padding: 16px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ── Actions ── */
+.bw-dialog__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 24px 20px;
+}
+
+/* ── Animations ── */
+@keyframes bw-dialog-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bw-dialog-scale-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

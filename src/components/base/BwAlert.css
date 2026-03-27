@@ -1,0 +1,117 @@
+/* ── BwAlert — Base UI Alert ──
+   Styled via CSS custom properties from BaseTokenProvider. */
+
+.bw-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--bw-radius-md);
+  font-family: var(--bw-font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════
+   Soft variant (tinted background)
+   ══════════════════════════════════════ */
+.bw-alert--soft.bw-alert--info {
+  background: var(--bw-info-bg);
+  color: var(--bw-info-content);
+}
+.bw-alert--soft.bw-alert--success {
+  background: var(--bw-success-bg);
+  color: var(--bw-success-content);
+}
+.bw-alert--soft.bw-alert--warning {
+  background: var(--bw-warning-bg);
+  color: var(--bw-warning-content);
+}
+.bw-alert--soft.bw-alert--error {
+  background: var(--bw-error-bg);
+  color: var(--bw-error-content);
+}
+
+/* ══════════════════════════════════════
+   Filled variant
+   ══════════════════════════════════════ */
+.bw-alert--filled.bw-alert--info {
+  background: var(--bw-info-main);
+  color: #ffffff;
+}
+.bw-alert--filled.bw-alert--success {
+  background: var(--bw-success-main);
+  color: #ffffff;
+}
+.bw-alert--filled.bw-alert--warning {
+  background: var(--bw-warning-main);
+  color: #ffffff;
+}
+.bw-alert--filled.bw-alert--error {
+  background: var(--bw-error-main);
+  color: #ffffff;
+}
+
+/* ══════════════════════════════════════
+   Outlined variant
+   ══════════════════════════════════════ */
+.bw-alert--outlined {
+  background: transparent;
+  border: 1.5px solid;
+}
+.bw-alert--outlined.bw-alert--info {
+  border-color: var(--bw-info-border);
+  color: var(--bw-info-content);
+}
+.bw-alert--outlined.bw-alert--success {
+  border-color: var(--bw-success-border);
+  color: var(--bw-success-content);
+}
+.bw-alert--outlined.bw-alert--warning {
+  border-color: var(--bw-warning-border);
+  color: var(--bw-warning-content);
+}
+.bw-alert--outlined.bw-alert--error {
+  border-color: var(--bw-error-border);
+  color: var(--bw-error-content);
+}
+
+/* ── Icon ── */
+.bw-alert__icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Content ── */
+.bw-alert__content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Action ── */
+.bw-alert__action {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── Close button ── */
+.bw-alert__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--bw-radius-xs);
+  color: inherit;
+  opacity: 0.6;
+  flex-shrink: 0;
+  transition: opacity var(--bw-transition-fast);
+}
+
+.bw-alert__close:hover {
+  opacity: 1;
+}

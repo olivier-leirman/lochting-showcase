@@ -1,0 +1,96 @@
+/* ── BwSwitch — Base UI Switch ──
+   Styled via CSS custom properties from BaseTokenProvider. */
+
+.bw-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: var(--bw-font-body);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.bw-switch--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Track ── */
+.bw-switch__root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--bw-radius-round);
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  background: var(--bw-border-strong);
+  transition:
+    background var(--bw-transition-fast),
+    box-shadow var(--bw-transition-fast);
+}
+
+.bw-switch__root--medium {
+  width: 44px;
+  height: 24px;
+}
+
+.bw-switch__root--small {
+  width: 36px;
+  height: 20px;
+}
+
+.bw-switch__root:hover {
+  background: var(--bw-content-tertiary);
+}
+
+.bw-switch__root:focus-visible {
+  outline: 2px solid var(--bw-brand-400);
+  outline-offset: 2px;
+}
+
+/* Checked */
+.bw-switch__root[data-checked] {
+  background: var(--bw-brand-400);
+}
+
+.bw-switch__root[data-checked]:hover {
+  background: var(--bw-brand-450);
+}
+
+/* ── Thumb ── */
+.bw-switch__thumb {
+  display: block;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform var(--bw-transition-fast);
+}
+
+.bw-switch__root--medium .bw-switch__thumb {
+  width: 20px;
+  height: 20px;
+}
+
+.bw-switch__root--small .bw-switch__thumb {
+  width: 16px;
+  height: 16px;
+}
+
+/* Move thumb to right when checked */
+.bw-switch__root--medium[data-checked] .bw-switch__thumb {
+  transform: translateX(20px);
+}
+
+.bw-switch__root--small[data-checked] .bw-switch__thumb {
+  transform: translateX(16px);
+}
+
+/* ── Label ── */
+.bw-switch__label {
+  font-size: 0.875rem;
+  color: var(--bw-content-primary);
+  line-height: 1.5;
+}

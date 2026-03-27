@@ -1,0 +1,76 @@
+/* ── BwCheckbox — Base UI Checkbox ──
+   Styled via CSS custom properties from BaseTokenProvider. */
+
+.bw-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: var(--bw-font-body);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.bw-checkbox--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Checkbox root (the box) ── */
+.bw-checkbox__root {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--bw-radius-xs);
+  border: 1.5px solid var(--bw-border-strong);
+  background: var(--bw-surface-input-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition:
+    background var(--bw-transition-fast),
+    border-color var(--bw-transition-fast),
+    box-shadow var(--bw-transition-fast);
+}
+
+.bw-checkbox__root:hover {
+  border-color: var(--bw-brand-400);
+}
+
+.bw-checkbox__root:focus-visible {
+  outline: 2px solid var(--bw-brand-400);
+  outline-offset: 2px;
+}
+
+/* Checked state */
+.bw-checkbox__root[data-checked] {
+  background: var(--bw-brand-400);
+  border-color: var(--bw-brand-400);
+}
+
+.bw-checkbox__root[data-checked]:hover {
+  background: var(--bw-brand-450);
+  border-color: var(--bw-brand-450);
+}
+
+/* ── Indicator (checkmark) ── */
+.bw-checkbox__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+/* Hide when unchecked */
+.bw-checkbox__indicator[data-unchecked] {
+  display: none;
+}
+
+/* ── Label ── */
+.bw-checkbox__label {
+  font-size: 0.875rem;
+  color: var(--bw-content-primary);
+  line-height: 1.5;
+}

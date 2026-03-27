@@ -1,0 +1,155 @@
+/* ── BwChip — Base UI Chip ──
+   Styled via CSS custom properties from BaseTokenProvider. */
+
+.bw-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--bw-font-body);
+  font-weight: var(--bw-font-weight-medium);
+  white-space: nowrap;
+  border-radius: var(--bw-radius-round);
+  transition:
+    background var(--bw-transition-fast),
+    border-color var(--bw-transition-fast),
+    box-shadow var(--bw-transition-fast);
+}
+
+/* ── Sizes ── */
+.bw-chip--small {
+  height: 24px;
+  padding: 0 8px;
+  font-size: 0.75rem;
+}
+
+.bw-chip--medium {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 0.8125rem;
+}
+
+/* ── Clickable ── */
+.bw-chip--clickable {
+  cursor: pointer;
+}
+
+.bw-chip--clickable:focus-visible {
+  outline: 2px solid var(--bw-brand-400);
+  outline-offset: 2px;
+}
+
+/* ══════════════════════════════════════
+   Filled variant
+   ══════════════════════════════════════ */
+.bw-chip--filled.bw-chip--default {
+  background: var(--bw-bg-sunken);
+  color: var(--bw-content-primary);
+}
+.bw-chip--filled.bw-chip--primary {
+  background: var(--bw-brand-400);
+  color: #ffffff;
+}
+.bw-chip--filled.bw-chip--success {
+  background: var(--bw-success-main);
+  color: #ffffff;
+}
+.bw-chip--filled.bw-chip--warning {
+  background: var(--bw-warning-main);
+  color: #ffffff;
+}
+.bw-chip--filled.bw-chip--error {
+  background: var(--bw-error-main);
+  color: #ffffff;
+}
+
+/* Hover for filled clickable */
+.bw-chip--filled.bw-chip--clickable:hover {
+  opacity: 0.88;
+}
+
+/* ══════════════════════════════════════
+   Outlined variant
+   ══════════════════════════════════════ */
+.bw-chip--outlined {
+  background: transparent;
+  border: 1.5px solid;
+}
+.bw-chip--outlined.bw-chip--default {
+  border-color: var(--bw-border-default);
+  color: var(--bw-content-primary);
+}
+.bw-chip--outlined.bw-chip--primary {
+  border-color: var(--bw-brand-200);
+  color: var(--bw-brand-450);
+}
+.bw-chip--outlined.bw-chip--success {
+  border-color: var(--bw-success-border);
+  color: var(--bw-success-content);
+}
+.bw-chip--outlined.bw-chip--warning {
+  border-color: var(--bw-warning-border);
+  color: var(--bw-warning-content);
+}
+.bw-chip--outlined.bw-chip--error {
+  border-color: var(--bw-error-border);
+  color: var(--bw-error-content);
+}
+
+.bw-chip--outlined.bw-chip--clickable:hover {
+  background: var(--bw-bg-sunken);
+}
+
+/* ══════════════════════════════════════
+   Soft variant
+   ══════════════════════════════════════ */
+.bw-chip--soft.bw-chip--default {
+  background: var(--bw-bg-sunken);
+  color: var(--bw-content-secondary);
+}
+.bw-chip--soft.bw-chip--primary {
+  background: var(--bw-brand-50);
+  color: var(--bw-brand-450);
+}
+.bw-chip--soft.bw-chip--success {
+  background: var(--bw-success-bg);
+  color: var(--bw-success-content);
+}
+.bw-chip--soft.bw-chip--warning {
+  background: var(--bw-warning-bg);
+  color: var(--bw-warning-content);
+}
+.bw-chip--soft.bw-chip--error {
+  background: var(--bw-error-bg);
+  color: var(--bw-error-content);
+}
+
+.bw-chip--soft.bw-chip--clickable:hover {
+  filter: brightness(0.96);
+}
+
+/* ── Icon slot ── */
+.bw-chip__icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Delete button ── */
+.bw-chip__delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 2px;
+  border-radius: 50%;
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity var(--bw-transition-fast);
+}
+
+.bw-chip__delete:hover {
+  opacity: 1;
+}

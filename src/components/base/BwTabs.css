@@ -1,0 +1,118 @@
+/* ── BwTabs — Base UI Tabs ──
+   Styled via CSS custom properties from BaseTokenProvider. */
+
+.bw-tabs {
+  font-family: var(--bw-font-body);
+}
+
+/* ── Tab list ── */
+.bw-tabs__list {
+  display: flex;
+  gap: 0;
+  position: relative;
+}
+
+/* ── Tab button ── */
+.bw-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--bw-font-body);
+  font-size: 0.875rem;
+  font-weight: var(--bw-font-weight-medium);
+  color: var(--bw-content-secondary);
+  padding: 10px 16px;
+  white-space: nowrap;
+  transition:
+    color var(--bw-transition-fast),
+    background var(--bw-transition-fast);
+}
+
+.bw-tabs__tab:hover {
+  color: var(--bw-content-primary);
+}
+
+.bw-tabs__tab[data-selected] {
+  color: var(--bw-brand-450);
+  font-weight: var(--bw-font-weight-semibold);
+}
+
+.bw-tabs__tab:focus-visible {
+  outline: 2px solid var(--bw-brand-400);
+  outline-offset: -2px;
+  border-radius: var(--bw-radius-xs);
+}
+
+.bw-tabs__tab[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ══════════════════════════════════════
+   Underline variant
+   ══════════════════════════════════════ */
+.bw-tabs--underline .bw-tabs__list {
+  border-bottom: 1px solid var(--bw-border-default);
+}
+
+.bw-tabs--underline .bw-tabs__indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: var(--bw-brand-400);
+  border-radius: 1px;
+  transition:
+    left var(--bw-transition-normal),
+    width var(--bw-transition-normal);
+}
+
+/* ══════════════════════════════════════
+   Contained variant (segmented control)
+   ══════════════════════════════════════ */
+.bw-tabs--contained .bw-tabs__list {
+  background: var(--bw-bg-sunken);
+  border-radius: var(--bw-radius-sm);
+  padding: 4px;
+  gap: 4px;
+}
+
+.bw-tabs--contained .bw-tabs__tab {
+  border-radius: var(--bw-radius-xs);
+  padding: 8px 16px;
+}
+
+.bw-tabs--contained .bw-tabs__tab[data-selected] {
+  background: var(--bw-bg-elevated);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: var(--bw-content-primary);
+}
+
+/* ══════════════════════════════════════
+   Pills variant
+   ══════════════════════════════════════ */
+.bw-tabs--pills .bw-tabs__list {
+  gap: 4px;
+}
+
+.bw-tabs--pills .bw-tabs__tab {
+  border-radius: var(--bw-radius-round);
+  padding: 6px 16px;
+}
+
+.bw-tabs--pills .bw-tabs__tab[data-selected] {
+  background: var(--bw-brand-400);
+  color: #ffffff;
+}
+
+/* ── Panel ── */
+.bw-tabs__panel {
+  padding-top: 16px;
+  outline: none;
+}
+
+.bw-tabs__panel[hidden] {
+  display: none;
+}
