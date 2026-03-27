@@ -5,6 +5,7 @@ import { PRIMITIVES } from './tokens/primitives';
 import { createEffects, type Effects, type ColorMode } from './tokens/effects';
 import { buildAllOverrides } from './overrides';
 import { deriveDarkColors } from './dark-colors';
+import type { StyleDefinition } from '../styles/types';
 
 /** Merge partial styleProfile with defaults */
 export function resolveStyleProfile(brand: BrandTokens): StyleProfile {
@@ -19,12 +20,50 @@ export function resolveStyleProfile(brand: BrandTokens): StyleProfile {
   };
 }
 
+/**
+ * Convert a standalone StyleDefinition into a StyleProfile that the
+ * existing MUI override system understands.
+ */
+export function styleDefinitionToProfile(style: StyleDefinition): StyleProfile {
+  return {
+    label: style.name,
+    radius: {
+      sm: style.borderRadius.sm,
+      md: style.borderRadius.md,
+      lg: style.borderRadius.lg,
+    },
+    surface: {
+      blur: style.surface.blur,
+      cardBg: style.surface.cardBg,
+      cardBorder: style.surface.cardBorder,
+      inputBg: style.surface.inputBg,
+    },
+    shadows: {
+      useInset: style.shadows.useInset,
+      intensity: style.shadows.intensity,
+      brandTinted: style.shadows.brandTinted,
+    },
+    // Map extended button types back to the 3 types overrides understand
+    buttonPrimary: (['gradient', 'solid', 'glass'].includes(style.buttonPrimary)
+      ? style.buttonPrimary
+      : style.buttonPrimary === 'flat' ? 'solid' : 'solid') as 'gradient' | 'solid' | 'glass',
+    buttonSecondary: (['gradient', 'outlined-flat', 'glass'].includes(style.buttonSecondary)
+      ? style.buttonSecondary
+      : style.buttonSecondary === 'ghost' ? 'outlined-flat' : 'outlined-flat') as 'gradient' | 'outlined-flat' | 'glass',
+    cardExtra: style.cardExtra,
+    inputExtra: style.inputExtra,
+  };
+}
+
 export function createBrandTheme(
   brand: BrandTokens,
   mode: ColorMode = 'light',
-): { theme: Theme; effects: Effects; profile: StyleProfile } {
-  // Resolve the style profile
-  const profile = resolveStyleProfile(brand);
+  styleOverride?: StyleDefinition,
+): { theme: Theme; effects: Effects; profile: StyleProfile; styleDefinition?: StyleDefinition } {
+  // Resolve the style profile: use explicit StyleDefinition if provided, else fall back to brand's profile
+  const profile = styleOverride
+    ? styleDefinitionToProfile(styleOverride)
+    : resolveStyleProfile(brand);
 
   // Derive dark colors when in dark mode
   const colors = mode === 'dark' ? deriveDarkColors(brand) : brand.colors;
@@ -70,5 +109,5 @@ export function createBrandTheme(
     components: buildAllOverrides(effectiveBrand, effects, profile),
   });
 
-  return { theme, effects, profile };
+  return { theme, effects, profile, styleDefinition: styleOverride };
 }

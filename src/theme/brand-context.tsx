@@ -10,6 +10,7 @@ import { MEDIPIM_GLASS } from './tokens/medipim-glass';
 import { createBrandTheme } from './create-brand-theme';
 import { deriveDarkColors } from './dark-colors';
 import { FONT_PRESETS, type FontPreset } from './tokens/font-presets';
+import { ALL_STYLES, STYLES_BY_ID, type StyleDefinition } from '../styles';
 
 /* ── Platform → Style hierarchy ── */
 
@@ -85,6 +86,16 @@ interface BrandContextValue {
 
   /** Resolved style profile (shape, surface, shadow character) */
   styleProfile: StyleProfile;
+
+  /* ── Global Style Definition (independent axis) ── */
+  /** All available standalone style definitions */
+  availableStyleDefinitions: StyleDefinition[];
+  /** Currently active style definition (null = use brand's built-in profile) */
+  activeStyleDefinition: StyleDefinition | null;
+  /** ID of active style definition (null = brand default) */
+  activeStyleDefinitionId: string | null;
+  /** Set the global style override (null to revert to brand default) */
+  setStyleDefinition: (styleId: string | null) => void;
 }
 
 const BrandContext = createContext<BrandContextValue | null>(null);
@@ -94,6 +105,7 @@ export function BrandProvider({ children }: { children: ReactNode }) {
   const [styleId, setStyleIdRaw] = useState('lochting');
   const [colorMode, setColorMode] = useState<ColorMode>('light');
   const [fontPresetIndex, setFontPresetIndex] = useState(0);
+  const [styleDefinitionId, setStyleDefinitionId] = useState<string | null>(null);
 
   const setPlatform = useCallback((newPlatformId: string) => {
     const platform = PLATFORMS.find(p => p.id === newPlatformId);
@@ -122,6 +134,10 @@ export function BrandProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const setStyleDefinition = useCallback((id: string | null) => {
+    setStyleDefinitionId(id);
+  }, []);
+
   const value = useMemo(() => {
     const currentPlatform = PLATFORMS.find(p => p.id === platformId) ?? PLATFORMS[0];
     const currentStyle = currentPlatform.styles.find(s => s.id === styleId) ?? currentPlatform.styles[0];
@@ -133,7 +149,10 @@ export function BrandProvider({ children }: { children: ReactNode }) {
       ? { ...sourceBrand, typography: { ...sourceBrand.typography, ...fontPreset.typography } }
       : sourceBrand;
 
-    const { theme, effects, profile } = createBrandTheme(brandWithFonts, colorMode);
+    // Resolve global style definition override
+    const activeStyleDef = styleDefinitionId ? STYLES_BY_ID[styleDefinitionId] ?? null : null;
+
+    const { theme, effects, profile } = createBrandTheme(brandWithFonts, colorMode, activeStyleDef ?? undefined);
 
     const effectiveColors = colorMode === 'dark'
       ? deriveDarkColors(sourceBrand)
@@ -162,8 +181,12 @@ export function BrandProvider({ children }: { children: ReactNode }) {
       setFontPreset: setFontPresetIndex,
       fontPresets: presets,
       styleProfile: profile,
+      availableStyleDefinitions: ALL_STYLES,
+      activeStyleDefinition: activeStyleDef,
+      activeStyleDefinitionId: styleDefinitionId,
+      setStyleDefinition,
     };
-  }, [platformId, styleId, colorMode, fontPresetIndex, setBrand, setPlatform, setStyle]);
+  }, [platformId, styleId, colorMode, fontPresetIndex, styleDefinitionId, setBrand, setPlatform, setStyle, setStyleDefinition]);
 
   return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
 }
