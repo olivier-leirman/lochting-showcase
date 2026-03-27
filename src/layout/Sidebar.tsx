@@ -35,7 +35,7 @@ const DESIGN_SYSTEM_SECTIONS: NavEntry[] = [
   { label: 'Typography', icon: 'text_fields', path: '/design-system/typography' },
   { label: 'Spacing & Sizing', icon: 'space_bar', path: '/design-system/spacing' },
   { label: 'Effects', icon: 'auto_awesome', path: '/design-system/effects' },
-  { label: 'Icons', icon: 'symbols_rounded', path: '/design-system/icons' },
+  { label: 'Icons', icon: 'category', path: '/design-system/icons' },
   { label: 'Patterns', icon: 'pattern', path: '/design-system/patterns' },
   { label: 'Design Rules', icon: 'rule', path: '/design-system/rules' },
   { label: 'Style Variants', icon: 'style', path: '/design-system/styles' },

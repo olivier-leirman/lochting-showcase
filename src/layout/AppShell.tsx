@@ -1,10 +1,9 @@
-import { useRef, useEffect } from 'react';
-import { Box, AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Divider, Tooltip, alpha } from '@mui/material';
+import { useRef, useEffect, useState } from 'react';
+import { Box, AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Divider, Tooltip, alpha, Avatar, Menu, MenuItem, ListItemIcon, ListItemText, Switch } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { InspectorSidebar } from './InspectorSidebar';
 import { Icon } from '../components/Icon';
-import { BrandSwitcher } from '../showcase/blocks/BrandSwitcher';
 import { useBrand } from '../theme/brand-context';
 import { useInspector } from '../showcase/context/inspector-context';
 import { getComponent } from '../showcase/registry';
@@ -72,9 +71,10 @@ export function AppShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
-  const { colorMode, toggleColorMode } = useBrand();
+  const { colorMode, toggleColorMode, platforms, platformId, setPlatform, currentPlatform, currentStyle } = useBrand();
   const { inspectorEnabled, toggleInspector, selectedElement: _selectedElement, clearSelection } = useInspector();
   const mainRef = useRef<HTMLDivElement>(null);
+  const [accountMenuAnchor, setAccountMenuAnchor] = useState<null | HTMLElement>(null);
 
   // Scroll content area to top on route change
   useEffect(() => {
@@ -148,13 +148,13 @@ export function AppShell() {
               })}
             </Breadcrumbs>
 
-            {/* Right side: inspector toggle + brand switcher + dark mode */}
+            {/* Right side: inspector toggle + account switcher */}
             <Tooltip title={inspectorEnabled ? 'Disable inspector (I)' : 'Enable inspector (I)'}>
               <IconButton
                 onClick={toggleInspector}
                 size="small"
                 sx={{
-                  mr: 1,
+                  mr: 1.5,
                   width: 36,
                   height: 36,
                   border: '1px solid',
@@ -166,16 +166,111 @@ export function AppShell() {
                 <Icon name="select_all" size={18} />
               </IconButton>
             </Tooltip>
-            <BrandSwitcher />
-            <Tooltip title={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
-              <IconButton
-                onClick={toggleColorMode}
-                size="small"
-                sx={{ ml: 1, width: 36, height: 36, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}
+
+            {/* Account switcher */}
+            <Box
+              onClick={(e) => setAccountMenuAnchor(e.currentTarget)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                cursor: 'pointer',
+                px: 1.5,
+                py: 0.75,
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                transition: 'background 0.15s, border-color 0.15s',
+                '&:hover': {
+                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04),
+                  borderColor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                },
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 28,
+                  height: 28,
+                  fontSize: '0.7rem',
+                  fontWeight: 700,
+                  bgcolor: 'primary.main',
+                  color: '#fff',
+                }}
               >
-                <Icon name={colorMode === 'light' ? 'dark_mode' : 'light_mode'} size={18} />
-              </IconButton>
-            </Tooltip>
+                {platformId === 'medipim' ? 'MP' : 'LO'}
+              </Avatar>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, lineHeight: 1.2 }}>
+                  {currentPlatform.name}
+                </Typography>
+                <Typography sx={{ fontSize: '0.6875rem', color: 'text.secondary', lineHeight: 1.2 }}>
+                  {currentStyle.label}
+                </Typography>
+              </Box>
+              <Icon name="expand_more" size={18} sx={{ color: 'text.secondary', ml: 0.5 }} />
+            </Box>
+
+            <Menu
+              anchorEl={accountMenuAnchor}
+              open={Boolean(accountMenuAnchor)}
+              onClose={() => setAccountMenuAnchor(null)}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              slotProps={{ paper: { sx: { minWidth: 220, mt: 1 } } }}
+            >
+              {/* Platform switch */}
+              {platforms.map((p) => (
+                <MenuItem
+                  key={p.id}
+                  selected={p.id === platformId}
+                  onClick={() => { setPlatform(p.id); setAccountMenuAnchor(null); }}
+                >
+                  <ListItemIcon>
+                    <Avatar sx={{ width: 24, height: 24, fontSize: '0.6rem', fontWeight: 700, bgcolor: p.id === platformId ? 'primary.main' : 'action.selected' }}>
+                      {p.id === 'medipim' ? 'MP' : 'LO'}
+                    </Avatar>
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={p.name}
+                    primaryTypographyProps={{ fontSize: '0.8125rem', fontWeight: p.id === platformId ? 600 : 400 }}
+                  />
+                  {p.id === platformId && <Icon name="check" size={18} sx={{ color: 'primary.main' }} />}
+                </MenuItem>
+              ))}
+
+              <Divider sx={{ my: 0.5 }} />
+
+              {/* Style variants link */}
+              <MenuItem onClick={() => { navigate('/design-system/colors'); setAccountMenuAnchor(null); }}>
+                <ListItemIcon><Icon name="palette" size={20} /></ListItemIcon>
+                <ListItemText
+                  primary="Style Variants"
+                  secondary={currentStyle.label}
+                  primaryTypographyProps={{ fontSize: '0.8125rem' }}
+                  secondaryTypographyProps={{ fontSize: '0.6875rem' }}
+                />
+                <Icon name="arrow_forward" size={16} sx={{ color: 'text.disabled' }} />
+              </MenuItem>
+
+              <Divider sx={{ my: 0.5 }} />
+
+              {/* Dark mode toggle */}
+              <MenuItem onClick={(e) => { e.stopPropagation(); toggleColorMode(); }}>
+                <ListItemIcon>
+                  <Icon name={colorMode === 'light' ? 'dark_mode' : 'light_mode'} size={20} />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Dark Mode"
+                  primaryTypographyProps={{ fontSize: '0.8125rem' }}
+                />
+                <Switch
+                  size="small"
+                  checked={colorMode === 'dark'}
+                  onChange={toggleColorMode}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </MenuItem>
+            </Menu>
           </Toolbar>
         </AppBar>
 
