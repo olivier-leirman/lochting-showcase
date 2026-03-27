@@ -45,6 +45,7 @@ import { PrototypePage } from './pages/prototypes/PrototypePage';
 
 // Register all component docs
 import './showcase/register-components';
+import './showcase/register-base-components';
 
 function ThemedApp() {
   const { theme } = useBrand();

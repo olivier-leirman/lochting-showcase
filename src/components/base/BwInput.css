@@ -1,0 +1,115 @@
+/* ── BwInput — Base UI Input ──
+   Pure CSS text field consuming design tokens via custom properties. */
+
+.bw-input-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--bw-font-body);
+}
+
+.bw-input-wrapper--full-width {
+  width: 100%;
+}
+
+/* ── Label ── */
+.bw-input__label {
+  font-size: 0.8125rem;
+  font-weight: var(--bw-font-weight-medium);
+  color: var(--bw-content-primary);
+  cursor: pointer;
+}
+
+/* ── Field wrapper (holds input + adornments) ── */
+.bw-input__field-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bw-surface-input-bg);
+  border: 1.5px solid var(--bw-border-default);
+  border-radius: var(--bw-radius-sm);
+  box-shadow: var(--bw-shadow-input);
+  transition:
+    border-color var(--bw-transition-fast),
+    box-shadow var(--bw-transition-fast);
+}
+
+/* Sizes */
+.bw-input-wrapper--small .bw-input__field-wrapper {
+  height: 40px;
+  padding: 0 12px;
+}
+
+.bw-input-wrapper--medium .bw-input__field-wrapper {
+  height: 48px;
+  padding: 0 16px;
+}
+
+.bw-input-wrapper--large .bw-input__field-wrapper {
+  height: 56px;
+  padding: 0 20px;
+}
+
+/* ── The actual input ── */
+.bw-input__field {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--bw-font-body);
+  font-size: 0.875rem;
+  color: var(--bw-content-primary);
+  min-width: 0;
+}
+
+.bw-input__field::placeholder {
+  color: var(--bw-content-secondary);
+  opacity: 0.7;
+}
+
+/* ── Focus state ── */
+.bw-input__field-wrapper:focus-within {
+  border-color: var(--bw-brand-400);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bw-brand-400) 12%, transparent);
+}
+
+/* ── Error state ── */
+.bw-input-wrapper--error .bw-input__field-wrapper {
+  border-color: var(--bw-error-main);
+}
+
+.bw-input-wrapper--error .bw-input__field-wrapper:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bw-error-main) 12%, transparent);
+}
+
+.bw-input-wrapper--error .bw-input__label {
+  color: var(--bw-error-main);
+}
+
+/* ── Disabled state ── */
+.bw-input__field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bw-input__field:disabled ~ .bw-input__adornment {
+  opacity: 0.5;
+}
+
+/* ── Helper text ── */
+.bw-input__helper {
+  font-size: 0.75rem;
+  color: var(--bw-content-secondary);
+}
+
+.bw-input__helper--error {
+  color: var(--bw-error-main);
+}
+
+/* ── Adornments ── */
+.bw-input__adornment {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--bw-content-secondary);
+}

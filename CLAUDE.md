@@ -20,16 +20,22 @@ E-commerce (Magento/Hyva, Tailwind + Alpine) is BUITEN scope.
 
 ### Dual-Layer Components (MUI Core + Base UI)
 Twee component-lagen naast elkaar:
-- **Base UI** (`@base-ui/react`): Headless, 0 styling, 100% eigen CSS. Voor Style Variants, nieuwe components, Medipim redesign.
-- **MUI Core** (`@mui/material`): Pre-styled. Voor complexe components (DataGrid, DatePicker), Lochting backwards compat.
-- Tags: `[Base]`, `[MUI]`, `[Hybrid]`
-- Beide consumeren dezelfde tokens → visueel identiek bij zelfde Brand × Style.
+- **Base UI** (`@base-ui/react`): Headless, 0 styling, 100% eigen CSS via CSS custom properties. Voor Style Variants, nieuwe components, Medipim redesign.
+  - `BaseTokenProvider` injecteert brand tokens als CSS vars (`--bw-brand-400`, `--bw-radius-sm`, etc.)
+  - Initiële components: `BwButton`, `BwCard`, `BwInput` in `src/components/base/`
+- **MUI Core** (`@mui/material`): Pre-styled via `createTheme()` + `sx` overrides. Voor complexe components (DataGrid, DatePicker), Lochting backwards compat.
+  - 22 MUI component overrides in `src/theme/overrides/` (style-aware via StyleProfile)
+- Tags: `[Base]`, `[MUI]`, `[Hybrid]` — zichtbaar in Library component headers
+- Beide consumeren dezelfde brand tokens → visueel identiek bij zelfde Brand × Style.
 
 ### Brand × Style Model (twee assen)
 - **Brand** = kleuren, typography, spacing (Medipim, Medipim Glass, Lochting, Lochting Purple Forward, Lochting Soft Premium)
-- **Style** = visual treatment (Flat, Neumorphism, Glassmorphism, Brutalism, Soft/Minimal)
-- Actieve config = Brand × Style combinatie
-- Per-pattern style overrides mogelijk (bijv. sidebar nav = soft variant terwijl rest = glassmorphism)
+- **Style** = visual treatment via `StyleDefinition` interface in `src/styles/`:
+  - Flat, Neumorphism, Glassmorphism, Brutalism, Soft/Minimal
+  - Definieert: surface, elevation, interaction, borderRadius, shadows, button/card/input treatment
+- Actieve config = Brand × Style combinatie, onafhankelijk schakelbaar
+- `styleDefinitionToProfile()` in `create-brand-theme.ts` bridget StyleDefinition → StyleProfile voor backwards compatibility met 22 MUI overrides
+- `BrandProvider` beheert: platform → style variant + onafhankelijke StyleDefinition override + colorMode + fontPreset
 
 ### Token Resolution Flow
 ```
@@ -56,31 +62,49 @@ brand-tokens.ts (semantic mapping per brand)
 - **localStorage** → ephemeral UI state only
 
 ## Tech Stack
-- React 19 + TypeScript + Vite 7
-- MUI 7.x + Base UI 1.x (`@base-ui/react`)
-- Emotion (CSS-in-JS, MUI's engine)
-- React Router (BrowserRouter)
-- Material Symbols Rounded (icons)
+- React 19 + TypeScript 5.9 + Vite 7
+- MUI 7.x + Base UI 1.3 (`@base-ui/react`)
+- Emotion (CSS-in-JS, MUI's engine) — Base UI components use plain CSS
+- React Router v7 (BrowserRouter, NIET createBrowserRouter)
+- Material Symbols Rounded (icons, weight 300)
+- dayjs (date handling voor DatePicker)
 
 ## File Structuur
 ```
 src/
-├── components/base/       ← Base UI components
-├── components/mui/        ← MUI-wrapped components
-├── config/                ← JSON configs (workspace, rules, patterns, style-overrides)
+├── components/
+│   ├── base/              ← Base UI components (BwButton, BwCard, BwInput, BaseTokenProvider)
+│   ├── Icon.tsx           ← Material Symbols wrapper
+│   ├── StyleSwitcher.tsx  ← Visual style picker grid
+│   └── ...                ← Shared components (SearchField, ToggleChip, etc.)
 ├── data/                  ← Real data fixtures (Medipim, Lochting)
-├── inspiration/           ← Boards per stijl (images + style-direction.md)
+│   ├── types.ts           ← Product, Order, Customer, etc. interfaces
+│   ├── medipim/           ← products, categories, suppliers, users
+│   ├── lochting/          ← orders, customers, notifications, products
+│   └── hooks.ts           ← useMedipimProducts, useLochtingOrders, etc.
 ├── layout/                ← AppShell, Sidebar, TopBar
-├── pages/library/         ← LibraryOverview, ComponentDetail
-├── pages/design-system/   ← Token pages, rules, patterns, styles, identity
-├── pages/playground/      ← ComponentPlayground, ThemePlayground
-├── pages/prototypes/      ← Migrated prototypes
-├── styles/                ← Style definitions (flat.style.ts, glassmorphism.style.ts, etc.)
-├── theme/                 ← Brand tokens, overrides, BrandProvider
-│   ├── overrides/         ← 22 MUI component overrides (style-aware)
-│   └── tokens/            ← primitives.ts, brand token files, effects.ts
+├── pages/
+│   ├── library/           ← LibraryOverview, ComponentDetail (6 tabs incl. In Context)
+│   ├── design-system/     ← Token pages, rules, patterns, styles, identity, consistency
+│   ├── playground/        ← ComponentPlayground, ThemePlayground, Sessions
+│   ├── home/              ← HomePage with system health dashboard
+│   └── prototypes/        ← Migrated prototypes
+├── showcase/              ← Component registry, register-components.tsx, register-base-components.tsx
+├── styles/                ← StyleDefinition interface + 5 style files (flat, neumorphism, glassmorphism, brutalism, soft-minimal)
+├── theme/
+│   ├── brand-context.tsx  ← BrandProvider (platform/style/colorMode/fontPreset/styleDefinition state)
+│   ├── create-brand-theme.ts ← Theme factory + StyleDefinition→StyleProfile bridge
+│   ├── overrides/         ← 22 MUI component overrides (style-aware via StyleProfile)
+│   └── tokens/            ← primitives.ts, brand token files, effects.ts, font-presets.ts
 └── utils/                 ← Helpers, consistency-checker.ts
 ```
+
+## Component Library
+- **6 tabs** per component: Preview, Documentation, Examples, In Context, Code, Styles
+- **In Context tab** toont real-world case studies met Medipim/Lochting data fixtures
+- **Styles tab** toont component in alle 5 style definitions side by side
+- **Component registry** in `src/showcase/registry.ts` — components registreren via `registerComponent()`
+- MUI components: `register-components.tsx` | Base UI components: `register-base-components.tsx`
 
 ## Design Rules (VERPLICHT bij generatie)
 
