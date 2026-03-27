@@ -3,11 +3,11 @@ import { Box, AppBar, Toolbar, Breadcrumbs, Link, Typography, IconButton, Divide
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { InspectorSidebar } from './InspectorSidebar';
-import { Icon } from '../../components/Icon';
-import { BrandSwitcher } from '../blocks/BrandSwitcher';
-import { useBrand } from '../../theme/brand-context';
-import { useInspector } from '../context/inspector-context';
-import { getComponent } from '../registry';
+import { Icon } from '../components/Icon';
+import { BrandSwitcher } from '../showcase/blocks/BrandSwitcher';
+import { useBrand } from '../theme/brand-context';
+import { useInspector } from '../showcase/context/inspector-context';
+import { getComponent } from '../showcase/registry';
 
 /** Format a category slug into a display label */
 function formatCategory(category: string): string {
@@ -25,21 +25,50 @@ function useBreadcrumbs() {
   if (path === '/') return [{ label: 'Home' }];
   if (path === '/getting-started') return [{ label: 'Home', path: '/' }, { label: 'Getting Started' }];
   if (path === '/style-showcase') return [{ label: 'Home', path: '/' }, { label: 'Style Showcase' }];
+
+  // Design system pages
+  if (path.startsWith('/design-system/')) {
+    const segment = path.replace('/design-system/', '');
+    const label = segment.split('/')[0].split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    return [{ label: 'Home', path: '/' }, { label: 'Design System' }, { label }];
+  }
+
+  // Library pages
+  if (path === '/library') return [{ label: 'Home', path: '/' }, { label: 'Library' }];
+  if (path.startsWith('/library/')) {
+    const id = path.split('/')[2] ?? '';
+    const comp = getComponent(id);
+    return [{ label: 'Home', path: '/' }, { label: 'Library', path: '/library' }, { label: comp?.name ?? id }];
+  }
+
+  // Playground
+  if (path.startsWith('/playground')) return [{ label: 'Home', path: '/' }, { label: 'Playground' }];
+
+  // Prototypes
+  if (path.startsWith('/prototypes/')) {
+    const id = path.split('/').pop() ?? '';
+    return [{ label: 'Home', path: '/' }, { label: 'Prototypes' }, { label: id }];
+  }
+
+  // Legacy token routes
   if (path.startsWith('/tokens/')) {
     const token = path.split('/').pop() ?? '';
     const label = token.charAt(0).toUpperCase() + token.slice(1);
-    return [{ label: 'Home', path: '/' }, { label: 'Tokens' }, { label }];
+    return [{ label: 'Home', path: '/' }, { label: 'Design System' }, { label }];
   }
+
+  // Legacy component routes
   if (path.startsWith('/components/')) {
     const id = path.split('/').pop() ?? '';
     const comp = getComponent(id);
     const categoryLabel = comp ? formatCategory(comp.category) : 'Components';
     return [{ label: 'Home', path: '/' }, { label: categoryLabel }, { label: comp?.name ?? id }];
   }
+
   return [{ label: 'Home', path: '/' }];
 }
 
-export function ShowcaseShell() {
+export function AppShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
@@ -87,7 +116,6 @@ export function ShowcaseShell() {
                     </Typography>
                   );
                 }
-                // Clickable crumb (has a path)
                 if (crumb.path) {
                   return (
                     <Link
@@ -109,7 +137,6 @@ export function ShowcaseShell() {
                     </Link>
                   );
                 }
-                // Non-clickable crumb (category label, no path)
                 return (
                   <Typography
                     key={crumb.label}

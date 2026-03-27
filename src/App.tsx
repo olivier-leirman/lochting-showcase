@@ -1,19 +1,46 @@
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { BrandProvider, useBrand } from './theme/brand-context';
 import { InspectorProvider } from './showcase/context/inspector-context';
-import { ShowcaseShell } from './showcase/layout/ShowcaseShell';
-import { HomePage } from './showcase/pages/HomePage';
-import { GettingStartedPage } from './showcase/pages/GettingStartedPage';
-import { ComponentPage } from './showcase/pages/ComponentPage';
-import { ColorsPage } from './showcase/pages/ColorsPage';
-import { EffectsPage } from './showcase/pages/EffectsPage';
-import { TypographyPage } from './showcase/pages/TypographyPage';
-import { SpacingPage } from './showcase/pages/SpacingPage';
-import { SizingPage } from './showcase/pages/SizingPage';
-import { StyleShowcasePage } from './showcase/pages/StyleShowcasePage';
+import { ConfigProvider } from './config/use-config';
+import { AppShell } from './layout/AppShell';
+
+// Pages — Home
+import { HomePage } from './pages/home/HomePage';
+import { GettingStartedPage } from './pages/getting-started/GettingStartedPage';
+
+// Pages — Design System (existing, moved)
+import { ColorsPage } from './pages/design-system/ColorsPage';
+import { EffectsPage } from './pages/design-system/EffectsPage';
+import { TypographyPage } from './pages/design-system/TypographyPage';
+import { SpacingPage } from './pages/design-system/SpacingPage';
+import { SizingPage } from './pages/design-system/SizingPage';
+import { StyleShowcasePage } from './pages/design-system/StyleShowcasePage';
+
+// Pages — Library (existing, moved)
+import { ComponentPage } from './pages/library/ComponentPage';
+
+// New pages — Library
+import { LibraryOverview } from './pages/library/LibraryOverview';
+import { ComponentDetail } from './pages/library/ComponentDetail';
+
+// New pages — Design System
+import { IconsPage } from './pages/design-system/IconsPage';
+import { PatternsPage } from './pages/design-system/PatternsPage';
+import { DesignRulesPage } from './pages/design-system/DesignRulesPage';
+import { StyleVariantsPage } from './pages/design-system/StyleVariantsPage';
+import { InspirationBoardPage } from './pages/design-system/InspirationBoardPage';
+import { BrandIdentityPage } from './pages/design-system/BrandIdentityPage';
+import { ThemePlayground } from './pages/design-system/ThemePlayground';
+
+// New pages — Playground
+import { ComponentPlayground } from './pages/playground/ComponentPlayground';
+import { PlaygroundSession } from './pages/playground/PlaygroundSession';
+
+// New pages — Prototypes
+import { PrototypePage } from './pages/prototypes/PrototypePage';
 
 // Register all component docs
 import './showcase/register-components';
@@ -26,21 +53,54 @@ function ThemedApp() {
       <CssBaseline />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <InspectorProvider>
-          <HashRouter>
+          <BrowserRouter>
             <Routes>
-              <Route element={<ShowcaseShell />}>
+              <Route element={<AppShell />}>
+                {/* Home */}
                 <Route index element={<HomePage />} />
                 <Route path="getting-started" element={<GettingStartedPage />} />
+
+                {/* Library */}
+                <Route path="library" element={<LibraryOverview />} />
+                <Route path="library/:id" element={<ComponentDetail />} />
+                <Route path="library/:id/explore" element={<ComponentPlayground />} />
+
+                {/* Design System — Tokens */}
+                <Route path="design-system/colors" element={<ColorsPage />} />
+                <Route path="design-system/typography" element={<TypographyPage />} />
+                <Route path="design-system/spacing" element={<SpacingPage />} />
+                <Route path="design-system/sizing" element={<SizingPage />} />
+                <Route path="design-system/effects" element={<EffectsPage />} />
+
+                {/* Design System — New */}
+                <Route path="design-system/icons" element={<IconsPage />} />
+                <Route path="design-system/patterns" element={<PatternsPage />} />
+                <Route path="design-system/rules" element={<DesignRulesPage />} />
+                <Route path="design-system/styles" element={<StyleVariantsPage />} />
+                <Route path="design-system/styles/:style/board" element={<InspirationBoardPage />} />
+                <Route path="design-system/identity/:brand/:style" element={<BrandIdentityPage />} />
+                <Route path="design-system/playground" element={<ThemePlayground />} />
+
+                {/* Style showcase (legacy) */}
+                <Route path="style-showcase" element={<StyleShowcasePage />} />
+
+                {/* Playground */}
+                <Route path="playground" element={<ComponentPlayground />} />
+                <Route path="playground/:session" element={<PlaygroundSession />} />
+
+                {/* Prototypes */}
+                <Route path="prototypes/:id" element={<PrototypePage />} />
+
+                {/* Legacy routes (backwards compat) */}
                 <Route path="tokens/colors" element={<ColorsPage />} />
                 <Route path="tokens/effects" element={<EffectsPage />} />
                 <Route path="tokens/typography" element={<TypographyPage />} />
                 <Route path="tokens/spacing" element={<SpacingPage />} />
                 <Route path="tokens/sizing" element={<SizingPage />} />
-                <Route path="style-showcase" element={<StyleShowcasePage />} />
                 <Route path="components/:id" element={<ComponentPage />} />
               </Route>
             </Routes>
-          </HashRouter>
+          </BrowserRouter>
         </InspectorProvider>
       </LocalizationProvider>
     </ThemeProvider>
@@ -49,8 +109,10 @@ function ThemedApp() {
 
 export default function App() {
   return (
-    <BrandProvider>
-      <ThemedApp />
-    </BrandProvider>
+    <ConfigProvider>
+      <BrandProvider>
+        <ThemedApp />
+      </BrandProvider>
+    </ConfigProvider>
   );
 }

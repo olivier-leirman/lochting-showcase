@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Typography, Button, Chip, Avatar, alpha, LinearProgress, ToggleButton, ToggleButtonGroup, Tabs, Tab } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
 import { Icon } from '../../components/Icon';
-import { MedipimSaasShowcase } from './MedipimSaasShowcase';
+import { MedipimSaasShowcase } from '../prototypes/MedipimSaasShowcase';
 
 /* ──────────────────────────────────────────────────────────────────────────
    StyleShowcasePage — A SaaS landing page presented in a Landingfolio-style

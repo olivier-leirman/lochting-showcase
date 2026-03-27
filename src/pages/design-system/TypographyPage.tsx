@@ -1,6 +1,6 @@
 import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
-import { CodeBlock } from '../blocks/CodeBlock';
+import { CodeBlock } from '../../showcase/blocks/CodeBlock';
 import { PRIMITIVES } from '../../theme/tokens/primitives';
 
 /* ─── Type specimen row ─── */

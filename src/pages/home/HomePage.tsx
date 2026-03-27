@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { Icon } from '../../components/Icon';
 import { useBrand } from '../../theme/brand-context';
-import { getComponentsByCategory } from '../registry';
+import { getComponentsByCategory } from '../../showcase/registry';
 import type { BrandTokens } from '../../theme/types';
 
 function sw(brand: BrandTokens) { return brand.typography.strongWeight ?? 600; }

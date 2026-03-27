@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { CodeBlock } from '../blocks/CodeBlock';
+import { CodeBlock } from '../../showcase/blocks/CodeBlock';
 
 export function GettingStartedPage() {
   return (

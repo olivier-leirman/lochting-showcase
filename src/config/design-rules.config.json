@@ -1,0 +1,68 @@
+{
+  "rules": [
+    {
+      "id": "spacing-grid",
+      "category": "SPACING & SIZING",
+      "rule": "Always use the 4-8pt spacing grid",
+      "enforcement": "error",
+      "exceptions": []
+    },
+    {
+      "id": "button-heights",
+      "category": "SPACING & SIZING",
+      "rule": "Button heights: 40px (sm), 48px (default), 56px (lg) — no exceptions",
+      "enforcement": "error",
+      "exceptions": []
+    },
+    {
+      "id": "icon-default",
+      "category": "ICONS",
+      "rule": "Material Symbols: weight 300, outlined, rounded",
+      "enforcement": "warning",
+      "exceptions": [
+        { "component": "Checkbox", "override": "filled variant", "reason": "Visual clarity" },
+        { "component": "DatePicker arrows", "override": "weight 400", "reason": "Tap target visibility" }
+      ]
+    },
+    {
+      "id": "border-radius",
+      "category": "SPACING & SIZING",
+      "rule": "Use named radius tokens: xs=4, sm=8, md=12, lg=16, xl=24",
+      "enforcement": "warning",
+      "exceptions": []
+    },
+    {
+      "id": "primary-contrast",
+      "category": "COLOR & CONTRAST",
+      "rule": "Primary color contrast ratio ≥ 4.5:1 against white",
+      "enforcement": "error",
+      "exceptions": []
+    },
+    {
+      "id": "interactive-opacity",
+      "category": "COLOR & CONTRAST",
+      "rule": "Never use opacity < 0.6 for interactive elements",
+      "enforcement": "warning",
+      "exceptions": []
+    },
+    {
+      "id": "icon-weight-consistency",
+      "category": "ICONS",
+      "rule": "Never mix icon weights — no weight 400 or sharp unless in exception registry",
+      "enforcement": "error",
+      "exceptions": [
+        { "component": "DatePicker nav arrows", "override": "weight 400", "reason": "Tap target visibility" }
+      ]
+    },
+    {
+      "id": "icon-fill-variant",
+      "category": "ICONS",
+      "rule": "Fill variant ONLY for visual weight: active states, selected states",
+      "enforcement": "warning",
+      "exceptions": [
+        { "component": "Checkbox check icon", "override": "filled", "reason": "Standard pattern" },
+        { "component": "Check-circle icon", "override": "filled", "reason": "Standard pattern" }
+      ]
+    }
+  ]
+}

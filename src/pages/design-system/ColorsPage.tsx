@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup, Chip, Button, alpha } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
-import { CodeBlock } from '../blocks/CodeBlock';
+import { CodeBlock } from '../../showcase/blocks/CodeBlock';
 import type { BrandTokens, BrandScale } from '../../theme/types';
 import { generateHarmony, HARMONY_TYPES, HARMONY_LABELS, type HarmonyType, type AccentPalette } from '../../theme/color-harmony';
 

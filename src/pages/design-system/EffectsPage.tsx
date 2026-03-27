@@ -1,6 +1,6 @@
 import { Box, Typography, Divider, Paper } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
-import { CodeBlock } from '../blocks/CodeBlock';
+import { CodeBlock } from '../../showcase/blocks/CodeBlock';
 
 interface EffectCardProps {
   name: string;

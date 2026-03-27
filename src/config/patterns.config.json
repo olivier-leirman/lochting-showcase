@@ -1,0 +1,18 @@
+{
+  "actionHierarchy": {
+    "primary": { "variant": "contained", "color": "primary" },
+    "secondary": { "variant": "outlined", "color": "primary" },
+    "tertiary": { "variant": "text", "color": "primary" },
+    "destructive": { "variant": "contained", "color": "error" }
+  },
+  "states": {
+    "hover": "background-opacity-shift",
+    "active": "scale-down",
+    "focus": "ring-2px-brand",
+    "disabled": "opacity-0.4"
+  },
+  "loading": {
+    "content": "skeleton",
+    "actions": "spinner"
+  }
+}

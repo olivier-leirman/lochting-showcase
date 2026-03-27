@@ -1,7 +1,7 @@
 import { Box, Typography, Divider } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
 import { PRIMITIVES } from '../../theme/tokens/primitives';
-import { CodeBlock } from '../blocks/CodeBlock';
+import { CodeBlock } from '../../showcase/blocks/CodeBlock';
 
 /* ── Radius entries ── */
 const RADIUS_SCALE = Object.entries(PRIMITIVES.radius).map(([token, px]) => ({

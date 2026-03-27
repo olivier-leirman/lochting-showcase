@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { getComponent } from '../registry';
-import { PreviewCodeTabs } from '../blocks/PreviewCodeTabs';
-import { CodeBlock } from '../blocks/CodeBlock';
+import { getComponent } from '../../showcase/registry';
+import { PreviewCodeTabs } from '../../showcase/blocks/PreviewCodeTabs';
+import { CodeBlock } from '../../showcase/blocks/CodeBlock';
 import { useBrand } from '../../theme/brand-context';
 
 export function ComponentPage() {

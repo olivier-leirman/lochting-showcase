@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Box, Typography, IconButton, Collapse, Slide, Divider, alpha } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
-import { useInspector, type InspectedGroup, type InspectedProperty } from '../context/inspector-context';
-import { formatColor } from '../utils/style-extraction';
+import { useInspector, type InspectedGroup, type InspectedProperty } from '../showcase/context/inspector-context';
+import { formatColor } from '../showcase/utils/style-extraction';
 
 const SIDEBAR_WIDTH = 300;
 
