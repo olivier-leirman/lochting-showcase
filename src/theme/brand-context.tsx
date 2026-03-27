@@ -10,7 +10,8 @@ import { MEDIPIM_GLASS } from './tokens/medipim-glass';
 import { createBrandTheme } from './create-brand-theme';
 import { deriveDarkColors } from './dark-colors';
 import { FONT_PRESETS, type FontPreset } from './tokens/font-presets';
-import { ALL_STYLES, STYLES_BY_ID, type StyleDefinition } from '../styles';
+import { ALL_STYLES, type StyleDefinition } from '../styles';
+import { getAllStyles, getAllStylesById } from '../styles/custom-styles';
 
 /* ── Platform → Style hierarchy ── */
 
@@ -96,6 +97,8 @@ interface BrandContextValue {
   activeStyleDefinitionId: string | null;
   /** Set the global style override (null to revert to brand default) */
   setStyleDefinition: (styleId: string | null) => void;
+  /** Re-read custom styles from localStorage (call after saving a new custom style) */
+  refreshStyles?: () => void;
 }
 
 const BrandContext = createContext<BrandContextValue | null>(null);
@@ -106,6 +109,8 @@ export function BrandProvider({ children }: { children: ReactNode }) {
   const [colorMode, setColorMode] = useState<ColorMode>('light');
   const [fontPresetIndex, setFontPresetIndex] = useState(0);
   const [styleDefinitionId, setStyleDefinitionId] = useState<string | null>(null);
+  const [customStylesVersion, setCustomStylesVersion] = useState(0);
+  const refreshStyles = useCallback(() => setCustomStylesVersion((v) => v + 1), []);
 
   const setPlatform = useCallback((newPlatformId: string) => {
     const platform = PLATFORMS.find(p => p.id === newPlatformId);
@@ -149,8 +154,9 @@ export function BrandProvider({ children }: { children: ReactNode }) {
       ? { ...sourceBrand, typography: { ...sourceBrand.typography, ...fontPreset.typography } }
       : sourceBrand;
 
-    // Resolve global style definition override
-    const activeStyleDef = styleDefinitionId ? STYLES_BY_ID[styleDefinitionId] ?? null : null;
+    // Resolve global style definition override (includes custom styles from localStorage)
+    const allStylesById = getAllStylesById();
+    const activeStyleDef = styleDefinitionId ? allStylesById[styleDefinitionId] ?? null : null;
 
     const { theme, effects, profile } = createBrandTheme(brandWithFonts, colorMode, activeStyleDef ?? undefined);
 
@@ -181,12 +187,13 @@ export function BrandProvider({ children }: { children: ReactNode }) {
       setFontPreset: setFontPresetIndex,
       fontPresets: presets,
       styleProfile: profile,
-      availableStyleDefinitions: ALL_STYLES,
+      availableStyleDefinitions: getAllStyles(),
       activeStyleDefinition: activeStyleDef,
       activeStyleDefinitionId: styleDefinitionId,
       setStyleDefinition,
+      refreshStyles,
     };
-  }, [platformId, styleId, colorMode, fontPresetIndex, styleDefinitionId, setBrand, setPlatform, setStyle, setStyleDefinition]);
+  }, [platformId, styleId, colorMode, fontPresetIndex, styleDefinitionId, customStylesVersion, setBrand, setPlatform, setStyle, setStyleDefinition, refreshStyles]);
 
   return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
 }

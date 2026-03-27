@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Card, Chip, Divider, alpha } from '@mui/material';
 import { Icon } from '../../components/Icon';
 import { useBrand } from '../../theme/brand-context';
@@ -17,6 +17,7 @@ const PLACEHOLDER_CARDS = [
 
 export function InspirationBoardPage() {
   const { style } = useParams();
+  const navigate = useNavigate();
   const { brand, effects } = useBrand();
   const c = brand.colors;
 
@@ -274,6 +275,7 @@ export function InspirationBoardPage() {
         size="large"
         startIcon={<Icon name="auto_awesome" size={18} />}
         sx={{ mb: 2 }}
+        onClick={() => navigate(style ? `/design-system/style-creator/${style}` : '/design-system/style-creator')}
       >
         Generate with AI
       </Button>
