@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup, Chip, Button } from '@mui/material';
+import { Box, Typography, Divider, ToggleButton, ToggleButtonGroup, Chip, Button, alpha } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
 import { CodeBlock } from '../blocks/CodeBlock';
 import type { BrandTokens, BrandScale } from '../../theme/types';
+import { generateHarmony, HARMONY_TYPES, HARMONY_LABELS, type HarmonyType, type AccentPalette } from '../../theme/color-harmony';
 
 /* ─── Color format conversion ─── */
 
@@ -269,6 +270,259 @@ function BrandScaleSwatch({ scale, brandName, brand }: { scale: BrandScale; bran
 
 /* ─── Dark Mode Preview ─── */
 
+/* ─── Accent Colors & Harmony Section ─── */
+
+function AccentSection({ brand }: { brand: BrandTokens }) {
+  const [activeHarmony, setActiveHarmony] = useState<HarmonyType>('complementary');
+  const primary = brand.colors.brand400;
+  const harmony = generateHarmony(primary, activeHarmony);
+  const hasCurated = !!brand.accents;
+
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Divider sx={{ my: 3 }} />
+      <Typography variant="h5" sx={{ mb: 0.5, fontFamily: 'inherit' }}>
+        Accent Colors
+      </Typography>
+      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+        Supplementary colors that complement the brand primary. Switch between curated accents and generated harmonies.
+      </Typography>
+
+      {/* ── Curated accents (if defined) ── */}
+      {hasCurated && (
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="overline" sx={{ display: 'block', mb: 1.5, letterSpacing: 1.2, color: 'text.secondary', fontSize: '0.65rem' }}>
+            Curated — {brand.accents!.label}
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            {Object.entries(brand.accents!.colors).map(([key, accent]) => (
+              <AccentCard key={key} name={key} light={accent.light} defaultColor={accent.default} dark={accent.dark} />
+            ))}
+          </Box>
+
+          {/* Usage example strip */}
+          <Box sx={{ mt: 2.5, display: 'flex', gap: 1.5, flexWrap: 'wrap', alignItems: 'center' }}>
+            {Object.entries(brand.accents!.colors).map(([key, accent]) => (
+              <Chip
+                key={key}
+                label={key.charAt(0).toUpperCase() + key.slice(1)}
+                size="small"
+                sx={{
+                  bgcolor: accent.light,
+                  color: accent.dark,
+                  fontWeight: 600,
+                  border: '1px solid',
+                  borderColor: alpha(accent.default, 0.2),
+                }}
+              />
+            ))}
+            <Typography variant="caption" sx={{ color: 'text.disabled', ml: 1 }}>
+              ← Example chip usage
+            </Typography>
+          </Box>
+        </Box>
+      )}
+
+      {/* ── Generated harmonies ── */}
+      <Box>
+        <Typography variant="overline" sx={{ display: 'block', mb: 1.5, letterSpacing: 1.2, color: 'text.secondary', fontSize: '0.65rem' }}>
+          Generated Harmonies
+        </Typography>
+
+        <ToggleButtonGroup
+          value={activeHarmony}
+          exclusive
+          onChange={(_, v) => v && setActiveHarmony(v)}
+          size="small"
+          sx={{ mb: 2.5 }}
+        >
+          {HARMONY_TYPES.map(h => (
+            <ToggleButton key={h} value={h} sx={{ px: 2, py: 0.5, fontSize: '0.8rem' }}>
+              {HARMONY_LABELS[h]}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+
+        {/* Harmony wheel visualization */}
+        <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          {/* Color wheel mini-viz */}
+          <HarmonyWheel palette={harmony} />
+
+          {/* Accent cards */}
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
+            {harmony.accents.map((accent) => (
+              <AccentCard
+                key={accent.label}
+                name={accent.label}
+                light={accent.light}
+                defaultColor={accent.default}
+                dark={accent.dark}
+              />
+            ))}
+          </Box>
+        </Box>
+
+        {/* Combined preview strip */}
+        <Box sx={{ mt: 2.5 }}>
+          <Typography variant="caption" sx={{ display: 'block', mb: 1, color: 'text.secondary', fontWeight: sw(brand) }}>
+            Combined palette preview
+          </Typography>
+          <Box sx={{ display: 'flex', borderRadius: 2, overflow: 'hidden', height: 48 }}>
+            {harmony.accents.map((accent) => (
+              <Box
+                key={accent.label}
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <Box sx={{ flex: 1, bgcolor: accent.light }} />
+                <Box sx={{ flex: 2, bgcolor: accent.default }} />
+                <Box sx={{ flex: 1, bgcolor: accent.dark }} />
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+/** Single accent color card with 3 shades */
+function AccentCard({ name, light, defaultColor, dark }: {
+  name: string;
+  light: string;
+  defaultColor: string;
+  dark: string;
+}) {
+  return (
+    <Box sx={{
+      border: '1px solid',
+      borderColor: 'divider',
+      borderRadius: 2,
+      overflow: 'hidden',
+      minWidth: 140,
+      flex: '1 1 140px',
+      maxWidth: 200,
+    }}>
+      {/* Main swatch */}
+      <Box sx={{ bgcolor: defaultColor, height: 56, position: 'relative' }}>
+        <Typography sx={{
+          position: 'absolute',
+          bottom: 6,
+          left: 8,
+          color: '#fff',
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+        }}>
+          {name.charAt(0).toUpperCase() + name.slice(1)}
+        </Typography>
+      </Box>
+      {/* Shade rows */}
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        {[
+          { label: 'Light', hex: light },
+          { label: 'Default', hex: defaultColor },
+          { label: 'Dark', hex: dark },
+        ].map(shade => (
+          <Box
+            key={shade.label}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              px: 1,
+              py: 0.5,
+              borderTop: '1px solid',
+              borderColor: 'divider',
+            }}
+          >
+            <Box sx={{ width: 16, height: 16, borderRadius: 0.5, bgcolor: shade.hex, border: '1px solid', borderColor: 'divider', flexShrink: 0 }} />
+            <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary', flex: 1 }}>{shade.label}</Typography>
+            <Typography sx={{ fontSize: '0.6rem', fontFamily: 'monospace', color: 'text.disabled' }}>{shade.hex}</Typography>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+/** Mini color wheel showing harmony angles */
+function HarmonyWheel({ palette }: { palette: AccentPalette }) {
+  const size = 120;
+  const center = size / 2;
+  const radius = 44;
+  const dotRadius = 8;
+
+  return (
+    <Box sx={{
+      width: size,
+      height: size,
+      flexShrink: 0,
+      position: 'relative',
+    }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {/* Hue ring */}
+        <defs>
+          <linearGradient id="hue-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ff0000" />
+            <stop offset="17%" stopColor="#ffff00" />
+            <stop offset="33%" stopColor="#00ff00" />
+            <stop offset="50%" stopColor="#00ffff" />
+            <stop offset="67%" stopColor="#0000ff" />
+            <stop offset="83%" stopColor="#ff00ff" />
+            <stop offset="100%" stopColor="#ff0000" />
+          </linearGradient>
+        </defs>
+        <circle
+          cx={center}
+          cy={center}
+          r={radius + 6}
+          fill="none"
+          stroke="url(#hue-grad)"
+          strokeWidth={10}
+          opacity={0.15}
+        />
+
+        {/* Connection lines */}
+        {palette.accents.length > 1 && palette.accents.map((accent, i) => {
+          if (i === 0) return null;
+          const source = palette.accents[0];
+          const angle1 = (source.hue - 90) * Math.PI / 180;
+          const angle2 = (accent.hue - 90) * Math.PI / 180;
+          return (
+            <line
+              key={i}
+              x1={center + radius * Math.cos(angle1)}
+              y1={center + radius * Math.sin(angle1)}
+              x2={center + radius * Math.cos(angle2)}
+              y2={center + radius * Math.sin(angle2)}
+              stroke="#ccc"
+              strokeWidth={1.5}
+              strokeDasharray="3,3"
+            />
+          );
+        })}
+
+        {/* Dots */}
+        {palette.accents.map((accent, i) => {
+          const angle = (accent.hue - 90) * Math.PI / 180;
+          const x = center + radius * Math.cos(angle);
+          const y = center + radius * Math.sin(angle);
+          return (
+            <g key={i}>
+              <circle cx={x} cy={y} r={dotRadius + 1} fill="#fff" />
+              <circle cx={x} cy={y} r={dotRadius} fill={accent.default} stroke="#fff" strokeWidth={2} />
+            </g>
+          );
+        })}
+      </svg>
+    </Box>
+  );
+}
+
 function DarkModePreview({ brand }: { brand: BrandTokens }) {
   const c = brand.colors;
   return (
@@ -449,6 +703,9 @@ export function ColorsPage() {
           ]}
         />
       </Box>
+
+      {/* ─── Accent Colors & Harmony Explorer ─── */}
+      <AccentSection brand={brand} />
 
       {/* ─── Dark Mode Preview — moved from HomePage ─── */}
       <Box sx={{ mb: 4 }}>

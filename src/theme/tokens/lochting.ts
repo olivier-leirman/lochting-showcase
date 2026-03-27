@@ -155,6 +155,35 @@ export const LOCHTING: BrandTokens = {
     '900': '#200845',   // brand/900
     '950': '#120428',   // extrapolated darker
   },
+  accents: {
+    label: 'Pharmacy Teal & Warm Gold',
+    colors: {
+      teal: {
+        light: '#e6f7f5',
+        default: '#2ab5a0',
+        dark: '#1a6e62',
+      },
+      gold: {
+        light: '#fef7e6',
+        default: '#e5a820',
+        dark: '#8a6412',
+      },
+      coral: {
+        light: '#fef0ec',
+        default: '#e8735a',
+        dark: '#933d28',
+      },
+    },
+  },
+  // StyleProfile: the original Lochting — gradient buttons, inset shadows, rounded
+  styleProfile: {
+    label: 'Classic Rounded',
+    radius: { sm: 8, md: 12, lg: 16 },
+    surface: { blur: 0, cardBg: '', cardBorder: '', inputBg: '' },
+    shadows: { useInset: true, intensity: 1, brandTinted: false },
+    buttonPrimary: 'gradient',
+    buttonSecondary: 'gradient',
+  },
   typography: {
     displayFont: '"Calibre", sans-serif',
     bodyFont: '"Calibre", sans-serif',

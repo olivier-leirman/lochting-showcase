@@ -4,8 +4,8 @@
     {
       "name": "showcase-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "autoPort": true
+      "runtimeArgs": ["run", "dev", "--", "--port", "5175"],
+      "port": 5175
     },
     {
       "name": "ux-prototypes",
@@ -13,6 +13,20 @@
       "runtimeArgs": ["run", "dev"],
       "cwd": "../ux-prototypes",
       "autoPort": true
+    },
+    {
+      "name": "medipim-newdesign",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5173"],
+      "cwd": "./medipim-newdesign-experiment",
+      "port": 5173
+    },
+    {
+      "name": "grainylabs",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--host", "--port", "5174"],
+      "cwd": "./grainylabs-landingpage-test",
+      "port": 5174
     }
   ]
 }

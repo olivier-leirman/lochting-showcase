@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
@@ -21,7 +22,11 @@ function msIcon(name: string, size: number, color: string) {
   }, name);
 }
 
-export function chipOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function chipOverrides(
+  brand: BrandTokens,
+  fx: Effects,
+  sp: StyleProfile = DEFAULT_STYLE_PROFILE,
+): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
   const secondaryHoverFilter = isDark ? 'brightness(1.12)' : 'brightness(0.97)';
@@ -34,7 +39,7 @@ export function chipOverrides(brand: BrandTokens, fx: Effects): Components<Theme
       },
       styleOverrides: {
         root: {
-          borderRadius: PRIMITIVES.radius.round,
+          borderRadius: sp.radius.sm >= 20 ? sp.radius.sm : PRIMITIVES.radius.round,
           fontFamily: brand.typography.bodyFont,
           letterSpacing: '0.16px',
           fontWeight: PRIMITIVES.fontWeight.regular,

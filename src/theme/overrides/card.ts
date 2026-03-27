@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
@@ -25,18 +26,38 @@ function msIcon(name: string, size = 20, color?: string) {
     }, name);
 }
 
-export function cardOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function cardOverrides(
+  brand: BrandTokens,
+  fx: Effects,
+  sp: StyleProfile = DEFAULT_STYLE_PROFILE,
+): Components<Theme> {
   const c = brand.colors;
   void fx; // preserve parameter for API parity
+  const profile = sp;
+
+  // Build card root styles from profile
+  const cardRoot: Record<string, unknown> = {
+    borderRadius: profile.radius.lg,
+    fontFamily: brand.typography.bodyFont,
+    backgroundImage: 'none',
+  };
+
+  // Surface treatment from profile
+  if (profile.surface.cardBg) {
+    cardRoot.backgroundColor = profile.surface.cardBg;
+  }
+  if (profile.surface.cardBorder) {
+    cardRoot.border = profile.surface.cardBorder;
+  }
+  // Extra CSS (backdrop-filter for glass, etc.)
+  if (profile.cardExtra) {
+    Object.assign(cardRoot, profile.cardExtra);
+  }
 
   return {
     MuiCard: {
       styleOverrides: {
-        root: {
-          borderRadius: PRIMITIVES.radius.md,
-          fontFamily: brand.typography.bodyFont,
-          backgroundImage: 'none', // Remove MUI default gradient overlay
-        },
+        root: cardRoot,
       },
     },
     MuiCardHeader: {

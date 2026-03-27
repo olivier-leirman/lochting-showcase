@@ -156,6 +156,15 @@ export const MEDIPIM: BrandTokens = {
     '900': '#04212a',   // mp-brand/900
     '950': '#021015',   // extrapolated darker
   },
+  // StyleProfile: Medipim Original — gradient buttons, inset shadows, standard radius
+  styleProfile: {
+    label: 'Classic Rounded',
+    radius: { sm: 8, md: 12, lg: 16 },
+    surface: { blur: 0, cardBg: '', cardBorder: '', inputBg: '' },
+    shadows: { useInset: true, intensity: 1, brandTinted: false },
+    buttonPrimary: 'gradient',
+    buttonSecondary: 'gradient',
+  },
   typography: {
     displayFont: '"Azo Sans", sans-serif',
     bodyFont: '"Azo Sans", sans-serif',

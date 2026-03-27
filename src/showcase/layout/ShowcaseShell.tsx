@@ -24,6 +24,7 @@ function useBreadcrumbs() {
 
   if (path === '/') return [{ label: 'Home' }];
   if (path === '/getting-started') return [{ label: 'Home', path: '/' }, { label: 'Getting Started' }];
+  if (path === '/style-showcase') return [{ label: 'Home', path: '/' }, { label: 'Style Showcase' }];
   if (path.startsWith('/tokens/')) {
     const token = path.split('/').pop() ?? '';
     const label = token.charAt(0).toUpperCase() + token.slice(1);
@@ -43,7 +44,7 @@ export function ShowcaseShell() {
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
   const { colorMode, toggleColorMode } = useBrand();
-  const { inspectorEnabled, toggleInspector, selectedElement, clearSelection } = useInspector();
+  const { inspectorEnabled, toggleInspector, selectedElement: _selectedElement, clearSelection } = useInspector();
   const mainRef = useRef<HTMLDivElement>(null);
 
   // Scroll content area to top on route change

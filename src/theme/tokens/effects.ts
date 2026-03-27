@@ -1,4 +1,5 @@
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 
 export interface EffectPreset {
   boxShadow: string;
@@ -40,83 +41,107 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
-export function createEffects(brand: BrandTokens, mode: ColorMode = 'light'): Effects {
+/** Scale shadow opacity values by an intensity multiplier */
+function scaleOpacity(baseOpacity: number, intensity: number): number {
+  return Math.min(1, baseOpacity * intensity);
+}
+
+export function createEffects(
+  brand: BrandTokens,
+  mode: ColorMode = 'light',
+  profile: StyleProfile = DEFAULT_STYLE_PROFILE,
+): Effects {
   const c = brand.colors;
   const isDark = mode === 'dark';
+  const { useInset, intensity, brandTinted } = profile.shadows;
 
   // Derive brand-tinted shadow colors from actual brand tokens
   const { r: br, g: bg, b: bb } = hexToRgb(c.brand200);       // chip inner shadows
   const { r: pr, g: pg, b: pb } = hexToRgb(c.contentPrimary);  // drop shadow tint
   const { r: dr, g: dg, b: db } = hexToRgb(c.bgBaseInverse);   // inner dark tint
+  const { r: b4r, g: b4g, b: b4b } = hexToRgb(c.brand400);     // brand accent for tinted drops
 
-  // Shadow ingredients adapt to mode — light mode uses brand-tinted values
-  const innerLight   = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(252, 252, 255, 0.12)';
-  const innerDark    = isDark ? 'rgba(0, 0, 0, 0.20)'       : `rgba(${dr},${dg},${db}, 0.08)`;
-  const dropPrimary  = isDark ? 'rgba(0, 0, 0, 0.30)'       : `rgba(${pr},${pg},${pb}, 0.08)`;
-  const dropSecondary = isDark ? 'rgba(0, 0, 0, 0.20)'      : 'rgba(233, 230, 237, 0.1)';
-  const innerSecDark = isDark ? 'rgba(0, 0, 0, 0.15)'       : 'rgba(158, 157, 160, 0.08)';
+  // Shadow ingredients adapt to mode AND intensity
+  const innerLight   = isDark
+    ? `rgba(255, 255, 255, ${scaleOpacity(0.06, intensity)})`
+    : `rgba(252, 252, 255, ${scaleOpacity(0.12, intensity)})`;
+  const innerDark    = isDark
+    ? `rgba(0, 0, 0, ${scaleOpacity(0.20, intensity)})`
+    : `rgba(${dr},${dg},${db}, ${scaleOpacity(0.08, intensity)})`;
+
+  // Drop shadow source: brand-tinted if profile says so, otherwise neutral
+  const dropR = brandTinted ? b4r : pr;
+  const dropG = brandTinted ? b4g : pg;
+  const dropB = brandTinted ? b4b : pb;
+
+  const dropPrimary  = isDark
+    ? `rgba(0, 0, 0, ${scaleOpacity(0.30, intensity)})`
+    : `rgba(${dropR},${dropG},${dropB}, ${scaleOpacity(0.08, intensity)})`;
+  const dropSecondary = isDark
+    ? `rgba(0, 0, 0, ${scaleOpacity(0.20, intensity)})`
+    : `rgba(233, 230, 237, ${scaleOpacity(0.1, intensity)})`;
+  const innerSecDark = isDark
+    ? `rgba(0, 0, 0, ${scaleOpacity(0.15, intensity)})`
+    : `rgba(158, 157, 160, ${scaleOpacity(0.08, intensity)})`;
   const chipInner    = isDark ? `rgba(${br},${bg},${bb}, 0.10)` : `rgba(${br},${bg},${bb}, 0.22)`;
   const chipInner2   = isDark ? `rgba(${br},${bg},${bb}, 0.14)` : `rgba(${br},${bg},${bb}, 0.32)`;
 
   // Hover-state shadow ingredients
-  const dropPrimaryHover   = isDark ? 'rgba(0, 0, 0, 0.40)'  : `rgba(${pr},${pg},${pb}, 0.16)`;
-  const dropSecondaryHover = isDark ? 'rgba(0, 0, 0, 0.30)'  : 'rgba(233, 230, 237, 0.2)';
+  const dropPrimaryHover   = isDark
+    ? `rgba(0, 0, 0, ${scaleOpacity(0.40, intensity)})`
+    : `rgba(${dropR},${dropG},${dropB}, ${scaleOpacity(0.16, intensity)})`;
+  const dropSecondaryHover = isDark
+    ? `rgba(0, 0, 0, ${scaleOpacity(0.30, intensity)})`
+    : `rgba(233, 230, 237, ${scaleOpacity(0.2, intensity)})`;
+
+  // Helper: build shadow with or without inset parts based on profile
+  const buttonShadow = (drop: string, insetA: string, insetB: string) => {
+    const parts = [`2px 2px 12px 0px ${drop}`];
+    if (useInset) {
+      parts.push(`inset 2px 2px 4px 0px ${insetA}`);
+      parts.push(`inset 2px -2px 4px 0px ${insetB}`);
+    }
+    return parts.join(', ');
+  };
+
+  const buttonHoverShadow = (drop: string, insetA: string, insetB: string) => {
+    const parts = [`2px 2px 16px 0px ${drop}`];
+    if (useInset) {
+      parts.push(`inset 2px 2px 4px 0px ${insetA}`);
+      parts.push(`inset 2px -2px 4px 0px ${insetB}`);
+    }
+    return parts.join(', ');
+  };
+
+  // If intensity is 0 → no shadows at all
+  const noShadow = intensity === 0;
 
   return {
     mode,
     gradients: {
-      // Primary gradient — brand colors, same in both modes
       primary: `linear-gradient(180deg, ${c.brand400}, ${c.brand450})`,
-      // Secondary gradient — adapts via the brand.colors (light or dark) passed in
       secondary: `linear-gradient(180deg, ${c.bgElevated}, ${c.bgBase})`,
-      // Inactive gradient — adapts via brand.colors
       inactive: `linear-gradient(180deg, ${c.bgSunken}, ${c.bgSunkenDeep})`,
     },
     shadows: {
-      // Primary button: drop shadow + light top-left inner + dark bottom-right inner
-      primaryButton: [
-        `2px 2px 12px 0px ${dropPrimary}`,
-        `inset 2px 2px 4px 0px ${innerLight}`,
-        `inset 2px -2px 4px 0px ${innerDark}`,
+      primaryButton: noShadow ? 'none' : buttonShadow(dropPrimary, innerLight, innerDark),
+      primaryButtonHover: noShadow ? 'none' : buttonHoverShadow(dropPrimaryHover, innerLight, innerDark),
+      secondaryButton: noShadow ? 'none' : buttonShadow(dropSecondary, innerLight, innerSecDark),
+      secondaryButtonHover: noShadow ? 'none' : buttonHoverShadow(dropSecondaryHover, innerLight, innerSecDark),
+      inactive: noShadow ? 'none' : (useInset
+        ? [`inset 0px 4px 4px 0px ${innerLight}`, `inset 0px -4px 4px 0px ${innerDark}`].join(', ')
+        : `0px 2px 8px 0px ${dropSecondary}`),
+      innerElement: noShadow ? 'none' : [
+        `2px 2px 8px 0px ${isDark ? `rgba(0, 0, 0, ${scaleOpacity(0.25, intensity)})` : `rgba(${dr},${dg},${db}, ${scaleOpacity(0.08, intensity)})`}`,
+        ...(useInset ? [`inset -1px -1px 2px 0px ${isDark ? `rgba(0, 0, 0, ${scaleOpacity(0.20, intensity)})` : `rgba(${dr},${dg},${db}, ${scaleOpacity(0.14, intensity)})`}`] : []),
       ].join(', '),
-      primaryButtonHover: [
-        `2px 2px 16px 0px ${dropPrimaryHover}`,
-        `inset 2px 2px 4px 0px ${innerLight}`,
-        `inset 2px -2px 4px 0px ${innerDark}`,
-      ].join(', '),
-      // Secondary button: subtle drop + light inner + grey inner
-      secondaryButton: [
-        `2px 2px 6px 0px ${dropSecondary}`,
-        `inset 2px 2px 4px 0px ${innerLight}`,
-        `inset 2px -2px 4px 0px ${innerSecDark}`,
-      ].join(', '),
-      secondaryButtonHover: [
-        `2px 2px 10px 0px ${dropSecondaryHover}`,
-        `inset 2px 2px 4px 0px ${innerLight}`,
-        `inset 2px -2px 4px 0px ${innerSecDark}`,
-      ].join(', '),
-      // Inactive/sunken: light top inner + dark bottom inner
-      inactive: [
-        `inset 0px 4px 4px 0px ${innerLight}`,
-        `inset 0px -4px 4px 0px ${innerDark}`,
-      ].join(', '),
-      // Inner element (switch/slider thumb): drop shadow + dark inner
-      innerElement: [
-        `2px 2px 8px 0px ${isDark ? 'rgba(0, 0, 0, 0.25)' : `rgba(${dr},${dg},${db}, 0.08)`}`,
-        `inset -1px -1px 2px 0px ${isDark ? 'rgba(0, 0, 0, 0.20)' : `rgba(${dr},${dg},${db}, 0.14)`}`,
-      ].join(', '),
-      // Textfield: symmetric inner light shadows
-      textfield: [
-        `inset 0px -4px 4px 0px ${innerLight}`,
-        `inset 0px 4px 4px 0px ${innerLight}`,
-      ].join(', '),
-      // Chip brand: brand-tinted inner shadows
-      chipBrand: [
-        `inset 0px 4px 4px 0px ${chipInner}`,
-        `inset 0px -4px 4px 0px ${chipInner2}`,
-      ].join(', '),
-      // Sidebar: subtle right-edge drop shadow
-      sidebar: `1px 0px 8px 0px ${isDark ? 'rgba(0, 0, 0, 0.20)' : `rgba(${pr},${pg},${pb}, 0.04)`}`,
+      textfield: noShadow ? 'none' : (useInset
+        ? [`inset 0px -4px 4px 0px ${innerLight}`, `inset 0px 4px 4px 0px ${innerLight}`].join(', ')
+        : 'none'),
+      chipBrand: noShadow ? 'none' : (useInset
+        ? [`inset 0px 4px 4px 0px ${chipInner}`, `inset 0px -4px 4px 0px ${chipInner2}`].join(', ')
+        : `0px 1px 4px 0px ${chipInner}`),
+      sidebar: noShadow ? 'none' : `1px 0px 8px 0px ${isDark ? `rgba(0, 0, 0, ${scaleOpacity(0.20, intensity)})` : `rgba(${pr},${pg},${pb}, ${scaleOpacity(0.04, intensity)})`}`,
     },
   };
 }

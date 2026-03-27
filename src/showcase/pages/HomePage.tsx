@@ -1,21 +1,16 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, Button, Chip, Avatar, Tabs, Tab,
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination,
+  Box, Typography, Button, Chip, Avatar, LinearProgress,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 } from '@mui/material';
 import { Icon } from '../../components/Icon';
-import { SearchField } from '../../components/SearchField';
-import { ToggleChip, ToggleChipGroup } from '../../components/ToggleChip';
 import { useBrand } from '../../theme/brand-context';
 import { getComponentsByCategory } from '../registry';
 import type { BrandTokens } from '../../theme/types';
 
-/** Resolve the strong font-weight for the current brand */
 function sw(brand: BrandTokens) { return brand.typography.strongWeight ?? 600; }
 
-/* ─── Component icon mapping ─── */
-
+/* ─── Component icon mapping (for component grid) ─── */
 const COMPONENT_ICONS: Record<string, string> = {
   button: 'smart_button', 'button-group': 'view_column', 'toggle-button': 'toggle_on', 'toggle-chip': 'filter_alt',
   textfield: 'text_fields', 'search-field': 'search', select: 'arrow_drop_down_circle', autocomplete: 'auto_awesome',
@@ -35,406 +30,591 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 const CATEGORY_ORDER = ['actions', 'inputs', 'data-display', 'feedback', 'surfaces', 'navigation'];
 
-/* ─── Mini stat card ─── */
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Hero
+   ════════════════════════════════════════════════════════════════════ */
 
-function StatCard({ icon, value, label, change, brand }: {
+function HeroSection({ brand }: { brand: BrandTokens }) {
+  const { effects } = useBrand();
+  const c = brand.colors;
+  const navigate = useNavigate();
+
+  return (
+    <Box sx={{ textAlign: 'center', py: 6, maxWidth: 680, mx: 'auto' }}>
+      <Chip
+        label="Design System v2.0"
+        size="small"
+        sx={{
+          mb: 3,
+          bgcolor: c.brand100,
+          color: c.brand450,
+          fontWeight: sw(brand),
+          fontSize: '0.75rem',
+          px: 1,
+        }}
+        icon={<Icon name="auto_awesome" size={14} color={c.brand400} />}
+      />
+      <Typography
+        variant="h1"
+        sx={{
+          fontSize: { xs: '2rem', md: '2.75rem' },
+          fontWeight: 700,
+          lineHeight: 1.15,
+          mb: 2,
+          color: c.contentPrimary,
+        }}
+      >
+        Build beautiful apps with{' '}
+        <Box
+          component="span"
+          sx={{
+            background: effects.gradients.primary,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          premium components
+        </Box>
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: c.contentSecondary, mb: 4, maxWidth: 520, mx: 'auto', lineHeight: 1.7 }}
+      >
+        A modern component library built on MUI with layered shadows, brand gradients, and a tactile feel.
+        Switch brands, toggle dark mode, inspect tokens.
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => navigate('/getting-started')}
+          endIcon={<Icon name="arrow_forward" size={18} />}
+        >
+          Get Started
+        </Button>
+        <Button
+          variant="outlined"
+          size="large"
+          onClick={() => navigate('/tokens/colors')}
+          startIcon={<Icon name="palette" size={18} />}
+        >
+          Explore Tokens
+        </Button>
+      </Box>
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Stats bar
+   ════════════════════════════════════════════════════════════════════ */
+
+function StatsBar({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  const stats = [
+    { value: '40+', label: 'Components' },
+    { value: '2', label: 'Brands' },
+    { value: '50+', label: 'Tokens' },
+    { value: '100%', label: 'Accessible' },
+  ];
+  return (
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 3,
+        py: 4,
+        borderTop: '1px solid',
+        borderBottom: '1px solid',
+        borderColor: c.borderDefault,
+      }}
+    >
+      {stats.map(s => (
+        <Box key={s.label} sx={{ textAlign: 'center' }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: c.brand400, lineHeight: 1.2 }}>
+            {s.value}
+          </Typography>
+          <Typography variant="caption" sx={{ color: c.contentTertiary }}>
+            {s.label}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Feature cards
+   ════════════════════════════════════════════════════════════════════ */
+
+function FeatureCards({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  const { effects } = useBrand();
+
+  const features = [
+    {
+      icon: 'palette',
+      title: 'Design Tokens',
+      desc: 'Semantic colors, spacing, typography, and effects — all from Figma, all brand-switchable.',
+    },
+    {
+      icon: 'layers',
+      title: 'Layered Shadows',
+      desc: 'Multi-layer box shadows with insets create depth and a premium tactile feel.',
+    },
+    {
+      icon: 'dark_mode',
+      title: 'Dark Mode Ready',
+      desc: 'Explicit dark overrides from Figma — no algorithmic guessing. Pixel-perfect in both modes.',
+    },
+  ];
+
+  return (
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 3 }}>
+      {features.map(f => (
+        <Box
+          key={f.title}
+          sx={{
+            bgcolor: c.bgElevated,
+            borderRadius: 3,
+            p: 3.5,
+            border: '1px solid',
+            borderColor: c.borderWeak,
+            boxShadow: effects.shadows.secondaryButton,
+            transition: 'border-color 0.2s, box-shadow 0.2s',
+            '&:hover': { borderColor: c.brand300, boxShadow: effects.shadows.secondaryButtonHover },
+          }}
+        >
+          <Box
+            sx={{
+              width: 44, height: 44, borderRadius: 2,
+              background: effects.gradients.primary,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              mb: 2.5,
+            }}
+          >
+            <Icon name={f.icon} size={22} color={c.contentStayLight} />
+          </Box>
+          <Typography variant="h6" sx={{ fontWeight: sw(brand), mb: 1, color: c.contentPrimary, fontSize: '1rem' }}>
+            {f.title}
+          </Typography>
+          <Typography variant="body2" sx={{ color: c.contentSecondary, lineHeight: 1.65 }}>
+            {f.desc}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Dashboard Preview (embedded mini-dashboard)
+   ════════════════════════════════════════════════════════════════════ */
+
+function MiniStatCard({ icon, value, label, change, brand }: {
   icon: string; value: string; label: string; change?: string; brand: BrandTokens;
 }) {
   const c = brand.colors;
   const isPositive = change?.startsWith('+');
   return (
-    <Box sx={{
-      bgcolor: c.bgElevated,
-      borderRadius: 2,
-      p: 2,
-      border: '1px solid',
-      borderColor: c.borderDefault,
-      flex: 1,
-      minWidth: 140,
-    }}>
+    <Box sx={{ bgcolor: c.bgElevated, borderRadius: 2, p: 2, border: '1px solid', borderColor: c.borderDefault, flex: 1, minWidth: 100 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-        <Box sx={{
-          width: 36, height: 36, borderRadius: 1.5,
-          bgcolor: c.brand100,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <Icon name={icon} size={18} color={c.brand400} />
+        <Box sx={{ width: 32, height: 32, borderRadius: 1.5, bgcolor: c.brand100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon name={icon} size={16} color={c.brand400} />
         </Box>
         {change && (
-          <Chip
-            label={change}
-            size="small"
-            sx={{
-              fontSize: '0.7rem',
-              height: 22,
-              bgcolor: isPositive ? c.success.bgWeakest : c.error.bgWeakest,
-              color: isPositive ? c.success.contentStrong : c.error.contentStrong,
-              fontWeight: sw(brand),
-            }}
-          />
+          <Chip label={change} size="small" sx={{
+            fontSize: '0.6rem', height: 18, fontWeight: sw(brand),
+            bgcolor: isPositive ? c.success.bgWeakest : c.error.bgWeakest,
+            color: isPositive ? c.success.contentStrong : c.error.contentStrong,
+          }} />
         )}
       </Box>
-      <Typography variant="h5" sx={{ fontWeight: 700, color: c.contentPrimary, fontFamily: 'inherit', lineHeight: 1.2 }}>
-        {value}
-      </Typography>
-      <Typography variant="caption" sx={{ color: c.contentTertiary }}>
-        {label}
-      </Typography>
+      <Typography variant="h6" sx={{ fontWeight: 700, color: c.contentPrimary, lineHeight: 1.2, fontSize: '1.1rem' }}>{value}</Typography>
+      <Typography variant="caption" sx={{ color: c.contentTertiary, fontSize: '0.65rem' }}>{label}</Typography>
     </Box>
   );
 }
 
-/* ─── Chart placeholder (decorative SVG) ─── */
-
-function ChartPlaceholder({ brand }: { brand: BrandTokens }) {
+function DashboardPreview({ brand }: { brand: BrandTokens }) {
   const c = brand.colors;
+  const { effects } = useBrand();
+
+  const rows = [
+    { name: 'Sarah Chen', avatar: 'SC', action: 'Updated product catalog', status: 'Completed' },
+    { name: 'Marcus Webb', avatar: 'MW', action: 'Created new campaign', status: 'Active' },
+    { name: 'Elena Rossi', avatar: 'ER', action: 'Submitted order #4821', status: 'Pending' },
+  ];
+
+  const statusColor = (s: string) => s === 'Completed' ? 'success' : s === 'Active' ? 'primary' : 'warning';
+
   return (
-    <Box sx={{
-      bgcolor: c.bgElevated,
-      borderRadius: 2,
-      border: '1px solid',
-      borderColor: c.borderDefault,
-      p: 3,
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, mb: 0.5 }}>
-        Revenue Overview
-      </Typography>
-      <Typography variant="caption" sx={{ color: c.contentTertiary, mb: 2, display: 'block' }}>
-        Monthly revenue for the current quarter
-      </Typography>
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end', height: 120, mt: 2 }}>
-        {[40, 65, 45, 80, 55, 90, 70, 95, 60, 85, 75, 100].map((h, i) => (
-          <Box
-            key={i}
-            sx={{
-              flex: 1,
-              height: `${h}%`,
-              borderRadius: '4px 4px 0 0',
-              background: i >= 10 ? c.brand200 : c.brand400,
-              opacity: i >= 10 ? 0.5 : 0.15 + (i * 0.07),
-              transition: 'opacity 0.2s',
-              '&:hover': { opacity: 1 },
-            }}
-          />
-        ))}
-      </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
-          <Typography key={m} variant="caption" sx={{ color: c.contentTertiary, fontSize: '0.6rem', flex: 1, textAlign: 'center' }}>
-            {m}
-          </Typography>
-        ))}
-      </Box>
-    </Box>
-  );
-}
-
-/* ─── Recent Activity Table ─── */
-
-const ACTIVITY_DATA = [
-  { name: 'Sarah Chen', avatar: 'SC', action: 'Updated product catalog', date: 'Mar 12, 2026', status: 'Completed' },
-  { name: 'Marcus Webb', avatar: 'MW', action: 'Created new campaign', date: 'Mar 11, 2026', status: 'Active' },
-  { name: 'Elena Rossi', avatar: 'ER', action: 'Submitted order #4821', date: 'Mar 11, 2026', status: 'Pending' },
-  { name: 'James Park', avatar: 'JP', action: 'Published blog post', date: 'Mar 10, 2026', status: 'Completed' },
-  { name: 'Aisha Patel', avatar: 'AP', action: 'Updated pricing tier', date: 'Mar 10, 2026', status: 'Active' },
-];
-
-function ActivityTable({ brand }: { brand: BrandTokens }) {
-  const c = brand.colors;
-  const statusColor = (s: string) => {
-    if (s === 'Completed') return 'success';
-    if (s === 'Active') return 'primary';
-    return 'warning';
-  };
-  return (
-    <Box sx={{
-      bgcolor: c.bgElevated,
-      borderRadius: 2,
-      border: '1px solid',
-      borderColor: c.borderDefault,
-    }}>
-      <Box sx={{ px: 3, py: 2 }}>
-        <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary }}>
-          Recent Activity
+    <Box sx={{ py: 2 }}>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+          Components in action
+        </Typography>
+        <Typography variant="body2" sx={{ color: c.contentSecondary, maxWidth: 480, mx: 'auto' }}>
+          See how stat cards, charts, tables, chips, and avatars come together in a real dashboard context.
         </Typography>
       </Box>
-      <TableContainer sx={{ borderRadius: 0, border: 'none' }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>User</TableCell>
-              <TableCell>Action</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ACTIVITY_DATA.map((row) => (
-              <TableRow key={row.name + row.action}>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Avatar sx={{ width: 28, height: 28, fontSize: '0.7rem', bgcolor: c.brand100, color: c.brand500 }}>{row.avatar}</Avatar>
-                    <Typography variant="body2">{row.name}</Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>{row.action}</TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: c.contentSecondary }}>{row.date}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip label={row.status} size="small" color={statusColor(row.status) as any} />
-                </TableCell>
-              </TableRow>
+
+      <Box
+        sx={{
+          bgcolor: c.bgBase,
+          borderRadius: 3,
+          border: '1px solid',
+          borderColor: c.borderDefault,
+          boxShadow: effects.shadows.sidebar,
+          overflow: 'hidden',
+          p: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2.5,
+        }}
+      >
+        {/* Stats row */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2 }}>
+          <MiniStatCard icon="trending_up" value="2,847" label="Active users" change="+12.5%" brand={brand} />
+          <MiniStatCard icon="inventory_2" value="14.2k" label="Products" change="+3.1%" brand={brand} />
+          <MiniStatCard icon="payments" value="$48.2k" label="Revenue" change="+8.7%" brand={brand} />
+          <MiniStatCard icon="shopping_cart" value="1,423" label="Orders" change="+5.2%" brand={brand} />
+        </Box>
+
+        {/* Chart bars */}
+        <Box sx={{ bgcolor: c.bgElevated, borderRadius: 2, border: '1px solid', borderColor: c.borderDefault, p: 2.5 }}>
+          <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, mb: 0.5, fontSize: '0.8rem' }}>
+            Revenue Overview
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-end', height: 80, mt: 1.5 }}>
+            {[40, 65, 45, 80, 55, 90, 70, 95, 60, 85, 75, 100].map((h, i) => (
+              <Box key={i} sx={{
+                flex: 1, height: `${h}%`, borderRadius: '3px 3px 0 0',
+                background: i >= 10 ? c.brand200 : c.brand400,
+                opacity: i >= 10 ? 0.5 : 0.2 + (i * 0.07),
+              }} />
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </Box>
+        </Box>
+
+        {/* Activity table */}
+        <Box sx={{ bgcolor: c.bgElevated, borderRadius: 2, border: '1px solid', borderColor: c.borderDefault }}>
+          <Box sx={{ px: 2.5, py: 1.5 }}>
+            <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.8rem' }}>
+              Recent Activity
+            </Typography>
+          </Box>
+          <TableContainer sx={{ border: 'none' }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontSize: '0.7rem' }}>User</TableCell>
+                  <TableCell sx={{ fontSize: '0.7rem' }}>Action</TableCell>
+                  <TableCell sx={{ fontSize: '0.7rem' }}>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map(r => (
+                  <TableRow key={r.name}>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Avatar sx={{ width: 24, height: 24, fontSize: '0.6rem', bgcolor: c.brand100, color: c.brand500 }}>{r.avatar}</Avatar>
+                        <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>{r.name}</Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell><Typography variant="body2" sx={{ fontSize: '0.75rem' }}>{r.action}</Typography></TableCell>
+                    <TableCell><Chip label={r.status} size="small" color={statusColor(r.status) as any} sx={{ fontSize: '0.6rem', height: 20 }} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Box>
     </Box>
   );
 }
 
-/* ─── Tasks Tab ─── */
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Testimonials
+   ════════════════════════════════════════════════════════════════════ */
 
-const TASKS_DATA = [
-  { task: 'Design checkout flow', assignee: 'Sarah Chen', avatar: 'SC', priority: 'High', due: 'Mar 15, 2026', status: 'In Progress' },
-  { task: 'Update product API', assignee: 'Marcus Webb', avatar: 'MW', priority: 'High', due: 'Mar 14, 2026', status: 'In Progress' },
-  { task: 'Write onboarding docs', assignee: 'Elena Rossi', avatar: 'ER', priority: 'Medium', due: 'Mar 18, 2026', status: 'To Do' },
-  { task: 'Fix cart calculations', assignee: 'James Park', avatar: 'JP', priority: 'High', due: 'Mar 13, 2026', status: 'In Review' },
-  { task: 'Add search filters', assignee: 'Aisha Patel', avatar: 'AP', priority: 'Medium', due: 'Mar 20, 2026', status: 'To Do' },
-  { task: 'Optimize image loading', assignee: 'Sarah Chen', avatar: 'SC', priority: 'Low', due: 'Mar 22, 2026', status: 'To Do' },
-  { task: 'Setup CI/CD pipeline', assignee: 'Marcus Webb', avatar: 'MW', priority: 'Medium', due: 'Mar 19, 2026', status: 'Completed' },
-  { task: 'Audit accessibility', assignee: 'Elena Rossi', avatar: 'ER', priority: 'Low', due: 'Mar 25, 2026', status: 'To Do' },
-];
-
-function TasksTab({ brand }: { brand: BrandTokens }) {
+function TestimonialSection({ brand }: { brand: BrandTokens }) {
   const c = brand.colors;
-  const [filter, setFilter] = useState<string | string[]>('all');
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 5;
+  const { effects } = useBrand();
 
-  const filteredTasks = filter === 'all'
-    ? TASKS_DATA
-    : TASKS_DATA.filter(t => t.status === filter);
-
-  const priorityColor = (p: string) => {
-    if (p === 'High') return 'error';
-    if (p === 'Medium') return 'warning';
-    return 'info';
-  };
-
-  const statusColor = (s: string) => {
-    if (s === 'Completed') return 'success';
-    if (s === 'In Progress') return 'primary';
-    if (s === 'In Review') return 'warning';
-    return 'default';
-  };
+  const testimonials = [
+    { quote: 'The token system made our design-dev handoff seamless. We ship UI 3x faster now.', name: 'Sarah Chen', role: 'Lead Designer', avatar: 'SC' },
+    { quote: 'Switching brands for our white-label product takes minutes, not weeks. Game changer.', name: 'Marcus Webb', role: 'CTO', avatar: 'MW' },
+    { quote: 'The layered shadows and gradients give our SaaS a premium feel our competitors lack.', name: 'Elena Rossi', role: 'Product Manager', avatar: 'ER' },
+  ];
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      {/* Toolbar */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-        <SearchField placeholder="Search tasks..." sx={{ width: 240 }} />
-        <ToggleChipGroup value={filter} exclusive onChange={setFilter}>
-          <ToggleChip value="all" label="All" count={TASKS_DATA.length} />
-          <ToggleChip value="In Progress" label="In Progress" icon="pending" count={TASKS_DATA.filter(t => t.status === 'In Progress').length} />
-          <ToggleChip value="Completed" label="Completed" icon="check_circle" count={TASKS_DATA.filter(t => t.status === 'Completed').length} />
-        </ToggleChipGroup>
-        <Box sx={{ flex: 1 }} />
-        <Button variant="contained" startIcon={<Icon name="add" size={20} />}>
-          Add Task
-        </Button>
+    <Box>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+          Loved by teams
+        </Typography>
+        <Typography variant="body2" sx={{ color: c.contentSecondary }}>
+          See what builders say about working with the design system.
+        </Typography>
       </Box>
-
-      {/* Table */}
-      <TableContainer sx={{
-        bgcolor: c.bgElevated,
-        borderRadius: 2,
-        border: '1px solid',
-        borderColor: c.borderDefault,
-      }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Task</TableCell>
-              <TableCell>Assignee</TableCell>
-              <TableCell>Priority</TableCell>
-              <TableCell>Due Date</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredTasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-              <TableRow key={row.task}>
-                <TableCell>
-                  <Typography variant="body2" sx={{ fontWeight: sw(brand) }}>{row.task}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Avatar sx={{ width: 28, height: 28, fontSize: '0.7rem', bgcolor: c.brand100, color: c.brand500 }}>{row.avatar}</Avatar>
-                    <Typography variant="body2">{row.assignee}</Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Chip label={row.priority} size="small" color={priorityColor(row.priority) as any} />
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: c.contentSecondary }}>{row.due}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip label={row.status} size="small" color={statusColor(row.status) as any} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <TablePagination
-          component="div"
-          count={filteredTasks.length}
-          page={page}
-          onPageChange={(_, p) => setPage(p)}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5]}
-        />
-      </TableContainer>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 3 }}>
+        {testimonials.map(t => (
+          <Box
+            key={t.name}
+            sx={{
+              bgcolor: c.bgElevated,
+              borderRadius: 3,
+              p: 3,
+              border: '1px solid',
+              borderColor: c.borderWeak,
+              boxShadow: effects.shadows.secondaryButton,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2.5,
+            }}
+          >
+            <Icon name="format_quote" size={24} color={c.brand300} />
+            <Typography variant="body2" sx={{ color: c.contentPrimary, lineHeight: 1.7, flex: 1 }}>
+              {t.quote}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Avatar sx={{ width: 36, height: 36, fontSize: '0.75rem', bgcolor: c.brand100, color: c.brand500 }}>{t.avatar}</Avatar>
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.8rem' }}>
+                  {t.name}
+                </Typography>
+                <Typography variant="caption" sx={{ color: c.contentTertiary, fontSize: '0.7rem' }}>
+                  {t.role}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 }
 
-/* ─── Components Tab ─── */
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Component Grid (condensed)
+   ════════════════════════════════════════════════════════════════════ */
 
-function ComponentsTab({ brand }: { brand: BrandTokens }) {
+function ComponentGrid({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  const { effects } = useBrand();
+  const navigate = useNavigate();
+
+  // Show top 3 categories only
+  const topCategories = CATEGORY_ORDER.slice(0, 3);
+
+  return (
+    <Box>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+          40+ production-ready components
+        </Typography>
+        <Typography variant="body2" sx={{ color: c.contentSecondary, maxWidth: 480, mx: 'auto' }}>
+          From buttons to advanced tables — every component follows the token system and supports brand switching.
+        </Typography>
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {topCategories.map(cat => {
+          const components = getComponentsByCategory(cat).slice(0, 4);
+          if (!components.length) return null;
+          return (
+            <Box key={cat}>
+              <Typography variant="caption" sx={{
+                fontWeight: sw(brand), mb: 2, display: 'block', color: c.contentTertiary,
+                letterSpacing: 1, textTransform: 'uppercase', fontSize: '0.65rem',
+              }}>
+                {CATEGORY_LABELS[cat]}
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' }, gap: 2 }}>
+                {components.map(comp => (
+                  <Box
+                    key={comp.id}
+                    onClick={() => navigate(`/components/${comp.id}`)}
+                    sx={{
+                      bgcolor: c.bgElevated,
+                      borderRadius: 2,
+                      p: 2,
+                      border: '1px solid',
+                      borderColor: c.borderWeak,
+                      cursor: 'pointer',
+                      transition: 'border-color 0.15s, box-shadow 0.15s',
+                      '&:hover': { borderColor: c.brand300, boxShadow: effects.shadows.secondaryButtonHover },
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                    }}
+                  >
+                    <Box sx={{
+                      width: 32, height: 32, borderRadius: 1.5,
+                      bgcolor: c.brand100,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      <Icon name={COMPONENT_ICONS[comp.id] ?? 'widgets'} size={16} color={c.brand400} />
+                    </Box>
+                    <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.8rem' }}>
+                      {comp.name}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          );
+        })}
+      </Box>
+
+      <Box sx={{ textAlign: 'center', mt: 4 }}>
+        <Button
+          variant="outlined"
+          onClick={() => navigate('/components/button')}
+          endIcon={<Icon name="arrow_forward" size={18} />}
+        >
+          View All Components
+        </Button>
+      </Box>
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Progress / Token coverage
+   ════════════════════════════════════════════════════════════════════ */
+
+function TokenCoverage({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+
+  const items = [
+    { label: 'Color tokens', value: 92 },
+    { label: 'Typography', value: 100 },
+    { label: 'Spacing', value: 100 },
+    { label: 'Effects', value: 85 },
+    { label: 'Dark mode', value: 95 },
+  ];
+
+  return (
+    <Box sx={{
+      bgcolor: c.bgElevated,
+      borderRadius: 3,
+      p: 4,
+      border: '1px solid',
+      borderColor: c.borderDefault,
+    }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 700, color: c.contentPrimary, fontSize: '1rem' }}>
+            Token Coverage
+          </Typography>
+          <Typography variant="caption" sx={{ color: c.contentTertiary }}>
+            Design system implementation progress
+          </Typography>
+        </Box>
+        <Chip label="94% overall" size="small" sx={{ bgcolor: c.success.bgWeakest, color: c.success.contentStrong, fontWeight: 600, fontSize: '0.7rem' }} />
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {items.map(item => (
+          <Box key={item.label}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+              <Typography variant="body2" sx={{ fontSize: '0.75rem', color: c.contentSecondary }}>{item.label}</Typography>
+              <Typography variant="body2" sx={{ fontSize: '0.75rem', fontWeight: 600, color: c.contentPrimary }}>{item.value}%</Typography>
+            </Box>
+            <LinearProgress
+              variant="determinate"
+              value={item.value}
+              sx={{ height: 6, borderRadius: 1 }}
+            />
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: CTA
+   ════════════════════════════════════════════════════════════════════ */
+
+function CTASection({ brand }: { brand: BrandTokens }) {
   const c = brand.colors;
   const { effects } = useBrand();
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {CATEGORY_ORDER.map(cat => {
-        const components = getComponentsByCategory(cat);
-        if (components.length === 0) return null;
-        return (
-          <Box key={cat}>
-            <Typography variant="caption" sx={{
-              fontWeight: sw(brand), mb: 2, display: 'block', color: 'text.secondary',
-              letterSpacing: 1, textTransform: 'uppercase', fontSize: '0.65rem',
-            }}>
-              {CATEGORY_LABELS[cat]}
-            </Typography>
-            <Box sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' },
-              gap: 2,
-            }}>
-              {components.map(comp => (
-                <Box
-                  key={comp.id}
-                  onClick={() => navigate(`/components/${comp.id}`)}
-                  sx={{
-                    bgcolor: c.bgElevated,
-                    borderRadius: 2,
-                    p: 2.5,
-                    border: '1px solid',
-                    borderColor: c.borderWeak,
-                    boxShadow: effects.shadows.secondaryButton,
-                    cursor: 'pointer',
-                    transition: 'border-color 0.15s, box-shadow 0.15s',
-                    '&:hover': {
-                      borderColor: c.brand300,
-                      boxShadow: effects.shadows.secondaryButtonHover,
-                    },
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1.5,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box sx={{
-                      width: 36, height: 36, borderRadius: 1.5,
-                      bgcolor: c.brand100,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      flexShrink: 0,
-                    }}>
-                      <Icon name={COMPONENT_ICONS[comp.id] ?? 'widgets'} size={18} color={c.brand400} />
-                    </Box>
-                    <Typography variant="body1" sx={{ fontWeight: sw(brand), color: c.contentPrimary }}>
-                      {comp.name}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" sx={{
-                    color: c.contentSecondary,
-                    fontSize: '0.8rem',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    minHeight: '2.4em',
-                  }}>
-                    {comp.description}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        );
-      })}
+    <Box
+      sx={{
+        textAlign: 'center',
+        py: 6,
+        px: 4,
+        borderRadius: 3,
+        background: effects.gradients.primary,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentStayLight, mb: 1 }}>
+        Ready to build?
+      </Typography>
+      <Typography variant="body2" sx={{ color: c.contentStayLight, opacity: 0.85, mb: 4, maxWidth: 420, mx: 'auto' }}>
+        Explore the full component library, switch brands, toggle dark mode, and inspect every token.
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => navigate('/components/button')}
+          sx={{
+            bgcolor: c.contentStayLight,
+            color: c.brand500,
+            '&:hover': { bgcolor: c.contentStayLight, filter: 'brightness(0.95)' },
+            boxShadow: 'none',
+          }}
+          endIcon={<Icon name="arrow_forward" size={18} />}
+        >
+          Browse Components
+        </Button>
+        <Button
+          variant="outlined"
+          size="large"
+          onClick={() => navigate('/tokens/colors')}
+          sx={{
+            borderColor: 'rgba(255,255,255,0.4)',
+            color: c.contentStayLight,
+            '&:hover': { borderColor: c.contentStayLight, bgcolor: 'rgba(255,255,255,0.08)' },
+          }}
+          startIcon={<Icon name="palette" size={18} />}
+        >
+          Design Tokens
+        </Button>
+      </Box>
     </Box>
   );
 }
 
-/* ─── Main Home Page ─── */
+/* ════════════════════════════════════════════════════════════════════
+   MAIN HOME PAGE
+   ════════════════════════════════════════════════════════════════════ */
 
 export function HomePage() {
   const { brand } = useBrand();
-  const [tab, setTab] = useState(0);
 
   return (
-    <Box>
-      <Typography variant="h1" sx={{ mb: 1, fontSize: '2.5rem' }}>
-        Design System
-      </Typography>
-      <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, maxWidth: 600 }}>
-        A modern component library built on MUI with gradients, layered shadows, and a premium tactile feel.
-      </Typography>
-
-      {/* ─── Tab Bar ─── */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-          <Tab label="Dashboard" icon={<Icon name="dashboard" size={18} />} iconPosition="start" />
-          <Tab label="Tasks" icon={<Icon name="task_alt" size={18} />} iconPosition="start" />
-          <Tab label="Components" icon={<Icon name="widgets" size={18} />} iconPosition="start" />
-        </Tabs>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <HeroSection brand={brand} />
+      <StatsBar brand={brand} />
+      <FeatureCards brand={brand} />
+      <DashboardPreview brand={brand} />
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3, alignItems: 'start' }}>
+        <TokenCoverage brand={brand} />
+        <TestimonialSection brand={brand} />
       </Box>
-
-      {/* ─── Dashboard Tab ─── */}
-      {tab === 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Stat Cards */}
-          <Box sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
-            gap: 2,
-          }}>
-            <StatCard icon="trending_up" value="2,847" label="Active users" change="+12.5%" brand={brand} />
-            <StatCard icon="inventory_2" value="14.2k" label="Products" change="+3.1%" brand={brand} />
-            <StatCard icon="payments" value="$48.2k" label="Revenue" change="+8.7%" brand={brand} />
-            <StatCard icon="shopping_cart" value="1,423" label="Orders" change="+5.2%" brand={brand} />
-          </Box>
-
-          {/* Chart */}
-          <ChartPlaceholder brand={brand} />
-
-          {/* Recent Activity */}
-          <ActivityTable brand={brand} />
-        </Box>
-      )}
-
-      {/* ─── Tasks Tab ─── */}
-      {tab === 1 && <TasksTab brand={brand} />}
-
-      {/* ─── Components Tab ─── */}
-      {tab === 2 && <ComponentsTab brand={brand} />}
+      <ComponentGrid brand={brand} />
+      <CTASection brand={brand} />
     </Box>
   );
 }

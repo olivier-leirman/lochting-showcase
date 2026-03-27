@@ -1,20 +1,35 @@
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function textFieldOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function textFieldOverrides(
+  brand: BrandTokens,
+  fx: Effects,
+  sp: StyleProfile = DEFAULT_STYLE_PROFILE,
+): Components<Theme> {
   const c = brand.colors;
-  const r = PRIMITIVES.radius.md;
+  const r = sp.radius.md;
+
+  // Input background from profile (empty = default bgSunken)
+  const inputBg = sp.surface.inputBg || c.bgSunken;
+
+  // Extra CSS props for glass-style inputs
+  const inputRootExtra: Record<string, unknown> = {};
+  if (sp.inputExtra) {
+    Object.assign(inputRootExtra, sp.inputExtra);
+  }
 
   return {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
           borderRadius: r,
-          backgroundColor: c.bgSunken,
+          backgroundColor: inputBg,
           boxShadow: fx.shadows.textfield,
           fontFamily: brand.typography.bodyFont,
+          ...inputRootExtra,
           '&:hover .MuiOutlinedInput-notchedOutline': {
             borderColor: c.brand300,
           },

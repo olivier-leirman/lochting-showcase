@@ -1,19 +1,36 @@
 import { createTheme, type Theme } from '@mui/material/styles';
-import type { BrandTokens } from './types';
+import type { BrandTokens, StyleProfile } from './types';
+import { DEFAULT_STYLE_PROFILE } from './types';
 import { PRIMITIVES } from './tokens/primitives';
 import { createEffects, type Effects, type ColorMode } from './tokens/effects';
 import { buildAllOverrides } from './overrides';
 import { deriveDarkColors } from './dark-colors';
 
+/** Merge partial styleProfile with defaults */
+export function resolveStyleProfile(brand: BrandTokens): StyleProfile {
+  const partial = brand.styleProfile;
+  if (!partial) return DEFAULT_STYLE_PROFILE;
+  return {
+    ...DEFAULT_STYLE_PROFILE,
+    ...partial,
+    radius: { ...DEFAULT_STYLE_PROFILE.radius, ...partial.radius },
+    surface: { ...DEFAULT_STYLE_PROFILE.surface, ...partial.surface },
+    shadows: { ...DEFAULT_STYLE_PROFILE.shadows, ...partial.shadows },
+  };
+}
+
 export function createBrandTheme(
   brand: BrandTokens,
   mode: ColorMode = 'light',
-): { theme: Theme; effects: Effects } {
+): { theme: Theme; effects: Effects; profile: StyleProfile } {
+  // Resolve the style profile
+  const profile = resolveStyleProfile(brand);
+
   // Derive dark colors when in dark mode
   const colors = mode === 'dark' ? deriveDarkColors(brand) : brand.colors;
   const effectiveBrand: BrandTokens = { ...brand, colors };
 
-  const effects = createEffects(effectiveBrand, mode);
+  const effects = createEffects(effectiveBrand, mode, profile);
   const c = colors;
   const p = PRIMITIVES;
   const t = brand.typography;
@@ -47,11 +64,11 @@ export function createBrandTheme(
       button: { textTransform: 'none' as const, fontWeight: sw },
     },
     shape: {
-      borderRadius: p.radius.sm,
+      borderRadius: profile.radius.sm,
     },
     spacing: p.spacing.base,
-    components: buildAllOverrides(effectiveBrand, effects),
+    components: buildAllOverrides(effectiveBrand, effects, profile),
   });
 
-  return { theme, effects };
+  return { theme, effects, profile };
 }

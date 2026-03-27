@@ -7,7 +7,7 @@ import { SearchField } from '../../components/SearchField';
 import { useBrand } from '../../theme/brand-context';
 
 const NAV_SECTIONS = [
-  { title: 'Overview', items: [{ label: 'Home', icon: 'home', path: '/' }, { label: 'Getting Started', icon: 'play_arrow', path: '/getting-started' }] },
+  { title: 'Overview', items: [{ label: 'Home', icon: 'home', path: '/' }, { label: 'Getting Started', icon: 'play_arrow', path: '/getting-started' }, { label: 'Style Showcase', icon: 'brush', path: '/style-showcase' }] },
   { title: 'Tokens', items: [{ label: 'Colors', icon: 'palette', path: '/tokens/colors' }, { label: 'Typography', icon: 'text_fields', path: '/tokens/typography' }, { label: 'Spacing', icon: 'space_bar', path: '/tokens/spacing' }, { label: 'Sizing', icon: 'straighten', path: '/tokens/sizing' }, { label: 'Effects', icon: 'auto_awesome', path: '/tokens/effects' }] },
 ];
 
