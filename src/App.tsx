@@ -34,6 +34,7 @@ import { StyleVariantsPage } from './pages/design-system/StyleVariantsPage';
 import { InspirationBoardPage } from './pages/design-system/InspirationBoardPage';
 import { BrandIdentityPage } from './pages/design-system/BrandIdentityPage';
 import { ThemePlayground } from './pages/design-system/ThemePlayground';
+import { ConsistencyPage } from './pages/design-system/ConsistencyPage';
 
 // New pages — Playground
 import { ComponentPlayground } from './pages/playground/ComponentPlayground';
@@ -80,6 +81,7 @@ function ThemedApp() {
                 <Route path="design-system/styles/:style/board" element={<InspirationBoardPage />} />
                 <Route path="design-system/identity/:brand/:style" element={<BrandIdentityPage />} />
                 <Route path="design-system/playground" element={<ThemePlayground />} />
+                <Route path="design-system/consistency" element={<ConsistencyPage />} />
 
                 {/* Style showcase (legacy) */}
                 <Route path="style-showcase" element={<StyleShowcasePage />} />

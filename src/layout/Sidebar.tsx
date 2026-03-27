@@ -41,6 +41,7 @@ const DESIGN_SYSTEM_SECTIONS: NavEntry[] = [
   { label: 'Style Variants', icon: 'style', path: '/design-system/styles' },
   { label: 'Brand Identity', icon: 'fingerprint', path: '/design-system/identity/medipim/flat' },
   { label: 'Theme Playground', icon: 'tune', path: '/design-system/playground' },
+  { label: 'Consistency', icon: 'verified', path: '/design-system/consistency' },
 ];
 
 /** Desired display order per category */
