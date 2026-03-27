@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Typography, Button, Chip, Avatar, LinearProgress,
@@ -6,6 +7,7 @@ import {
 import { Icon } from '../../components/Icon';
 import { useBrand } from '../../theme/brand-context';
 import { getComponentsByCategory } from '../../showcase/registry';
+import { runConsistencyCheck } from '../../utils/consistency-checker';
 import type { BrandTokens } from '../../theme/types';
 
 function sw(brand: BrandTokens) { return brand.typography.strongWeight ?? 600; }
@@ -597,6 +599,114 @@ function CTASection({ brand }: { brand: BrandTokens }) {
 }
 
 /* ════════════════════════════════════════════════════════════════════
+   SECTION: System Health
+   ════════════════════════════════════════════════════════════════════ */
+
+function SystemHealth({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  const { platforms, effects } = useBrand();
+
+  const healthData = useMemo(() => {
+    const results: { brandName: string; styleLabel: string; score: number; errors: number; warnings: number }[] = [];
+    for (const platform of platforms) {
+      for (const style of platform.styles) {
+        const report = runConsistencyCheck(style.tokens);
+        const errors = report.violations.filter(v => v.severity === 'error').length;
+        const warnings = report.violations.filter(v => v.severity === 'warning').length;
+        results.push({
+          brandName: platform.name,
+          styleLabel: style.label,
+          score: report.score,
+          errors,
+          warnings,
+        });
+      }
+    }
+    return results;
+  }, [platforms]);
+
+  const scoreColor = (score: number) =>
+    score >= 90 ? c.success.contentStrong : score >= 70 ? c.warning.contentStrong : c.error.contentStrong;
+
+  const progressColor = (score: number): 'success' | 'warning' | 'error' =>
+    score >= 90 ? 'success' : score >= 70 ? 'warning' : 'error';
+
+  return (
+    <Box>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+          System Health
+        </Typography>
+        <Typography variant="body2" sx={{ color: c.contentSecondary, maxWidth: 480, mx: 'auto' }}>
+          Real-time consistency checks across all brand styles — spacing, contrast, typography, and more.
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
+        {healthData.map((item) => (
+          <Box
+            key={`${item.brandName}-${item.styleLabel}`}
+            sx={{
+              bgcolor: c.bgElevated,
+              borderRadius: 3,
+              p: 3,
+              border: '1px solid',
+              borderColor: c.borderWeak,
+              boxShadow: effects.shadows.secondaryButton,
+              minWidth: 180,
+              flex: '1 1 180px',
+              maxWidth: 220,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1.5,
+            }}
+          >
+            <Typography variant="caption" sx={{ color: c.contentTertiary, fontSize: '0.65rem', letterSpacing: 0.5, textTransform: 'uppercase' }}>
+              {item.brandName}
+            </Typography>
+            <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.85rem' }}>
+              {item.styleLabel}
+            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: scoreColor(item.score), lineHeight: 1.2 }}>
+              {item.score}
+            </Typography>
+            <LinearProgress
+              variant="determinate"
+              value={item.score}
+              color={progressColor(item.score)}
+              sx={{ height: 6, borderRadius: 1 }}
+            />
+            <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
+              <Chip
+                label={`${item.errors} errors`}
+                size="small"
+                sx={{
+                  fontSize: '0.6rem',
+                  height: 20,
+                  bgcolor: item.errors > 0 ? c.error.bgWeakest : c.success.bgWeakest,
+                  color: item.errors > 0 ? c.error.contentStrong : c.success.contentStrong,
+                  fontWeight: 600,
+                }}
+              />
+              <Chip
+                label={`${item.warnings} warn`}
+                size="small"
+                sx={{
+                  fontSize: '0.6rem',
+                  height: 20,
+                  bgcolor: item.warnings > 0 ? c.warning.bgWeakest : c.success.bgWeakest,
+                  color: item.warnings > 0 ? c.warning.contentStrong : c.success.contentStrong,
+                  fontWeight: 600,
+                }}
+              />
+            </Box>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
    MAIN HOME PAGE
    ════════════════════════════════════════════════════════════════════ */
 
@@ -607,6 +717,7 @@ export function HomePage() {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <HeroSection brand={brand} />
       <StatsBar brand={brand} />
+      <SystemHealth brand={brand} />
       <FeatureCards brand={brand} />
       <DashboardPreview brand={brand} />
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3, alignItems: 'start' }}>
