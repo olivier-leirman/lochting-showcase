@@ -9,7 +9,7 @@ export const MEDIPIM: BrandTokens = {
     brand200: '#aae4f7',   // mp-brand/100
     brand300: '#7fd6f2',   // mp-brand/200
     brand400: '#2abbea',   // mp-brand/400 — primary gradient top
-    brand450: '#1183a7',   // mp-brand/600 — primary gradient bottom
+    brand450: '#0e7490',   // mp-brand/600 darkened — primary gradient bottom (WCAG AA 5.36:1 vs white)
     brand500: '#0c627e',   // mp-brand/700
 
     // Backgrounds — from Figma NeutralColor/modes mp-background-lm

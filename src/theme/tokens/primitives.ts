@@ -23,10 +23,14 @@ export const PRIMITIVES = {
   radius: {
     none: 0,
     xs: 4,
+    'xs-plus': 6,
     sm: 8,
+    'sm-plus': 10,
     md: 12,
     lg: 16,
+    'lg-plus': 20,
     xl: 24,
+    '2xl': 32,
     round: 1000,
   },
 

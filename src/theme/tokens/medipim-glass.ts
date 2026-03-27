@@ -30,7 +30,7 @@ export const MEDIPIM_GLASS: BrandTokens = {
     brand200: '#bae6fd',   // sky-200
     brand300: '#7dd3fc',   // sky-300
     brand400: '#38bdf8',   // sky-400 — primary / gradient top
-    brand450: '#0284c7',   // sky-600 — gradient bottom
+    brand450: '#0273ae',   // sky-600 darkened — gradient bottom (WCAG AA 5.16:1 vs white)
     brand500: '#0369a1',   // sky-700
 
     // Backgrounds — pure slate, no teal tint (from Variant body bg #f8fafc)

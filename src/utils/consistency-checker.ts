@@ -102,14 +102,14 @@ function checkColorContrast(brand: BrandTokens): Violation[] {
   const violations: Violation[] = [];
   const c = brand.colors;
 
-  // Primary brand color against white
-  const ratio = contrastRatio(c.brand400, '#ffffff');
+  // Primary interactive color against white (brand450 is used for button backgrounds, text-on-white)
+  const ratio = contrastRatio(c.brand450, '#ffffff');
   if (ratio !== null && ratio < 4.5) {
     violations.push({
-      component: 'BrandColors.brand400',
-      violation: `Primary color ${c.brand400} has contrast ratio ${ratio.toFixed(2)}:1 against white (minimum 4.5:1)`,
+      component: 'BrandColors.brand450',
+      violation: `Interactive color ${c.brand450} has contrast ratio ${ratio.toFixed(2)}:1 against white (minimum 4.5:1)`,
       severity: 'error',
-      suggestion: 'Darken brand400 to meet WCAG AA contrast requirements',
+      suggestion: 'Darken brand450 to meet WCAG AA contrast requirements',
       autoFixAvailable: false,
     });
   }
