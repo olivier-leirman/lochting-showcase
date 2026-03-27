@@ -69,7 +69,7 @@ export function dialogOverrides(
       styleOverrides: {
         root: {
           backgroundColor: isDark ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(4px)',
+          backdropFilter: sp.surface.blur > 0 ? `blur(${Math.max(4, sp.surface.blur * 0.5)}px)` : 'blur(4px)',
         },
       },
     },

@@ -19,7 +19,7 @@ export function tableOverrides(brand: BrandTokens, fx: Effects): Components<Them
     MuiTableHead: {
       styleOverrides: {
         root: {
-          backgroundColor: isDark ? c.bgSunken : c.bgSunken,
+          backgroundColor: c.bgSunken,
         },
       },
     },
@@ -37,7 +37,7 @@ export function tableOverrides(brand: BrandTokens, fx: Effects): Components<Them
           textTransform: 'uppercase' as const,
           letterSpacing: '0.06em',
           color: c.contentSecondary,
-          backgroundColor: isDark ? c.bgSunken : c.bgSunken,
+          backgroundColor: c.bgSunken,
         },
       },
     },

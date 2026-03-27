@@ -238,7 +238,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
       styleOverrides: {
         root: {
           fontFamily: brand.typography.bodyFont,
-          backgroundColor: isDark ? c.bgSunken : c.bgSunken,
+          backgroundColor: c.bgSunken,
           borderBottom: `1px solid ${c.borderWeak}`,
         },
       },

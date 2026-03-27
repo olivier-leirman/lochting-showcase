@@ -118,7 +118,7 @@ export function chipOverrides(
           backgroundColor: c.error.bgWeakest,
           color: c.error.contentStrong,
           border: `1px solid ${c.error.bgWeakest}`,
-          boxShadow: [
+          boxShadow: isDark ? 'none' : [
             'inset 0px 4px 4px 0px rgba(253,164,175,0.12)',
             'inset 0px -4px 4px 0px rgba(253,164,175,0.22)',
           ].join(', '),
@@ -127,7 +127,7 @@ export function chipOverrides(
           backgroundColor: c.warning.bgWeakest,
           color: c.warning.contentStrong,
           border: `1px solid ${c.warning.bgWeakest}`,
-          boxShadow: [
+          boxShadow: isDark ? 'none' : [
             'inset 0px 4px 4px 0px rgba(252,211,77,0.12)',
             'inset 0px -4px 4px 0px rgba(252,211,77,0.22)',
           ].join(', '),
@@ -136,7 +136,7 @@ export function chipOverrides(
           backgroundColor: c.success.bgWeakest,
           color: c.success.contentStrong,
           border: `1px solid ${c.success.bgWeakest}`,
-          boxShadow: [
+          boxShadow: isDark ? 'none' : [
             'inset 0px 4px 4px 0px rgba(110,231,183,0.12)',
             'inset 0px -4px 4px 0px rgba(110,231,183,0.22)',
           ].join(', '),
@@ -145,7 +145,7 @@ export function chipOverrides(
           backgroundColor: c.info.bgWeakest,
           color: c.info.contentStrong,
           border: `1px solid ${c.info.bgWeakest}`,
-          boxShadow: [
+          boxShadow: isDark ? 'none' : [
             'inset 0px 4px 4px 0px rgba(147,197,253,0.12)',
             'inset 0px -4px 4px 0px rgba(147,197,253,0.22)',
           ].join(', '),

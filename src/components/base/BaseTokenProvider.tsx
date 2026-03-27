@@ -9,8 +9,9 @@ import { useBrand } from '../../theme/brand-context';
  * alongside MUI's ThemeProvider).
  */
 export function BaseTokenProvider({ children }: { children: ReactNode }) {
-  const { brand, effects, styleProfile } = useBrand();
+  const { brand, effects, styleProfile, colorMode } = useBrand();
   const c = brand.colors;
+  const isDark = colorMode === 'dark';
 
   const vars = useMemo((): CSSProperties => ({
     // Brand colors
@@ -72,12 +73,17 @@ export function BaseTokenProvider({ children }: { children: ReactNode }) {
     '--bw-radius-lg': `${styleProfile.radius.lg}px`,
     '--bw-radius-round': '1000px',
 
-    // Shadows (from effects system)
+    // Shadows (from effects system — dark-adapted)
     '--bw-shadow-button': effects.shadows.primaryButton,
     '--bw-shadow-button-hover': effects.shadows.primaryButtonHover,
     '--bw-shadow-card': effects.shadows.innerElement,
     '--bw-shadow-input': effects.shadows.textfield,
-    '--bw-shadow-dialog': `0 8px 32px rgba(0,0,0,0.18), ${effects.shadows.innerElement}`,
+    '--bw-shadow-dialog': isDark
+      ? `0 8px 32px rgba(0,0,0,0.45), ${effects.shadows.innerElement}`
+      : `0 8px 32px rgba(0,0,0,0.18), ${effects.shadows.innerElement}`,
+
+    // Color scheme hint for native form elements
+    colorScheme: isDark ? 'dark' : 'light',
 
     // Surface (from style profile)
     '--bw-surface-card-bg': styleProfile.surface.cardBg || c.bgElevated,

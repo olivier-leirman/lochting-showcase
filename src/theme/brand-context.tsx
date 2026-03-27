@@ -106,11 +106,30 @@ const BrandContext = createContext<BrandContextValue | null>(null);
 export function BrandProvider({ children }: { children: ReactNode }) {
   const [platformId, setPlatformIdRaw] = useState('lochting');
   const [styleId, setStyleIdRaw] = useState('lochting');
-  const [colorMode, setColorMode] = useState<ColorMode>('light');
+  const [colorMode, setColorMode] = useState<ColorMode>(() => {
+    try {
+      const stored = localStorage.getItem('bw-color-mode');
+      if (stored === 'dark' || stored === 'light') return stored;
+    } catch { /* SSR / privacy mode */ }
+    // Respect OS preference as default
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  });
   const [fontPresetIndex, setFontPresetIndex] = useState(0);
   const [styleDefinitionId, setStyleDefinitionId] = useState<string | null>(null);
   const [customStylesVersion, setCustomStylesVersion] = useState(0);
   const refreshStyles = useCallback(() => setCustomStylesVersion((v) => v + 1), []);
+
+  // Persist color mode to localStorage
+  const setColorModeAndPersist = useCallback((mode: ColorMode | ((prev: ColorMode) => ColorMode)) => {
+    setColorMode(prev => {
+      const next = typeof mode === 'function' ? mode(prev) : mode;
+      try { localStorage.setItem('bw-color-mode', next); } catch { /* ignore */ }
+      return next;
+    });
+  }, []);
 
   const setPlatform = useCallback((newPlatformId: string) => {
     const platform = PLATFORMS.find(p => p.id === newPlatformId);
@@ -171,8 +190,8 @@ export function BrandProvider({ children }: { children: ReactNode }) {
       brandId: styleId,
       setBrand,
       colorMode,
-      setColorMode,
-      toggleColorMode: () => setColorMode(prev => prev === 'light' ? 'dark' : 'light'),
+      setColorMode: setColorModeAndPersist,
+      toggleColorMode: () => setColorModeAndPersist(prev => prev === 'light' ? 'dark' : 'light'),
       theme,
       effects,
       availableBrands: Object.values(ALL_TOKENS).map(b => ({ id: b.id, name: b.name })),
@@ -193,7 +212,7 @@ export function BrandProvider({ children }: { children: ReactNode }) {
       setStyleDefinition,
       refreshStyles,
     };
-  }, [platformId, styleId, colorMode, fontPresetIndex, styleDefinitionId, customStylesVersion, setBrand, setPlatform, setStyle, setStyleDefinition, refreshStyles]);
+  }, [platformId, styleId, colorMode, fontPresetIndex, styleDefinitionId, customStylesVersion, setBrand, setPlatform, setStyle, setStyleDefinition, setColorModeAndPersist, refreshStyles]);
 
   return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
 }

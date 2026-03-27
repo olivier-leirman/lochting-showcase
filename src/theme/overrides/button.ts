@@ -22,7 +22,7 @@ export function buttonOverrides(
       case 'solid':
         return c.brand400;
       case 'glass':
-        return isDark ? 'rgba(56, 189, 248, 0.20)' : `color-mix(in srgb, ${c.brand400} 85%, transparent)`;
+        return isDark ? `color-mix(in srgb, ${c.brand400} 20%, transparent)` : `color-mix(in srgb, ${c.brand400} 85%, transparent)`;
       case 'gradient':
       default:
         return fx.gradients.primary;
