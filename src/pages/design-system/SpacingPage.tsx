@@ -15,7 +15,7 @@ function SpacingRow({ token, px, brandColor }: { token: string; px: number; bran
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 0.75 }}>
       <Typography
         variant="body2"
-        sx={{ width: 56, fontFamily: 'monospace', fontWeight: 600, flexShrink: 0, textAlign: 'right' }}
+        sx={{ width: 56, fontFamily: 'monospace', fontWeight: 500, flexShrink: 0, textAlign: 'right' }}
       >
         {token}
       </Typography>
@@ -85,7 +85,7 @@ export function SpacingPage() {
           width: '100%',
           borderCollapse: 'collapse',
           '& th, & td': { textAlign: 'left', py: 1, px: 2, borderBottom: '1px solid', borderColor: 'divider', fontSize: '0.875rem' },
-          '& th': { fontWeight: 600, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
+          '& th': { fontWeight: 500, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
         }}
       >
         <thead>

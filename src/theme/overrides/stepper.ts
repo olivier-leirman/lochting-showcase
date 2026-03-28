@@ -22,7 +22,7 @@ function brandStepIcon(brand: BrandTokens, fx: Effects) {
       alignItems: 'center',
       justifyContent: 'center',
       fontSize: '0.75rem',
-      fontWeight: PRIMITIVES.fontWeight.semibold,
+      fontWeight: PRIMITIVES.fontWeight.medium,
       fontFamily: brand.typography.bodyFont,
       transition: 'all 0.2s ease',
     };
@@ -101,7 +101,7 @@ export function stepperOverrides(brand: BrandTokens, fx: Effects): Components<Th
           color: c.contentTertiary,
           '&.Mui-active': {
             color: c.contentPrimary,
-            fontWeight: PRIMITIVES.fontWeight.semibold,
+            fontWeight: PRIMITIVES.fontWeight.medium,
           },
           '&.Mui-completed': {
             color: c.contentSecondary,

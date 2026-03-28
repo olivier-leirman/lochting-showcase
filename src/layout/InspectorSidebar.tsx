@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Typography, IconButton, Collapse, Slide, Divider, alpha } from '@mui/material';
+import { Box, Typography, IconButton, Collapse, Slide, Divider, Tooltip, alpha } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import { useInspector, type InspectedGroup, type InspectedProperty } from '../showcase/context/inspector-context';
@@ -32,7 +32,7 @@ function TokenBadge({ name }: { name: string }) {
       sx={{
         fontSize: '0.675rem',
         fontFamily: 'monospace',
-        fontWeight: 600,
+        fontWeight: 500,
         color: 'primary.main',
         bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
         px: 0.75,
@@ -126,7 +126,7 @@ function Section({ group, defaultExpanded = true }: { group: InspectedGroup; def
           </Typography>
           <Typography
             variant="body2"
-            sx={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.3px' }}
+            sx={{ fontSize: '0.75rem', fontWeight: 500, letterSpacing: '0.3px' }}
           >
             {group.label}
           </Typography>
@@ -188,7 +188,7 @@ export function InspectorSidebar() {
             <Typography
               variant="body2"
               sx={{
-                fontWeight: 600,
+                fontWeight: 500,
                 fontFamily: 'monospace',
                 fontSize: '0.8rem',
                 overflow: 'hidden',
@@ -199,9 +199,11 @@ export function InspectorSidebar() {
               {selectedLabel ?? 'Inspector'}
             </Typography>
           </Box>
-          <IconButton size="small" onClick={clearSelection} sx={{ ml: 1 }}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
+          <Tooltip title="Clear selection">
+            <IconButton size="small" onClick={clearSelection} aria-label="Clear selection" sx={{ ml: 1 }}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Box>
 
         {/* Sections */}

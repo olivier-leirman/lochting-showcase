@@ -34,7 +34,7 @@ export function chipOverrides(
   return {
     MuiChip: {
       defaultProps: {
-        deleteIcon: msIcon('close', 16, `${c.contentPrimary}66`),  // contentPrimary at ~40%
+        deleteIcon: msIcon('close', 16, `${c.contentPrimary}B3`),  // contentPrimary at ~70%
         size: 'small',
       },
       styleOverrides: {
@@ -99,13 +99,31 @@ export function chipOverrides(
           },
         },
         colorPrimary: {
+          // Non-clickable: subtle brand tint (status chips, badges)
           backgroundColor: isDark ? c.brand500 : c.brand100,
           color: isDark ? c.brand200 : c.brand450,
           border: `1px solid ${isDark ? c.brand500 : c.brand100}`,
           boxShadow: fx.shadows.chipBrand,
-          // Override MUI's default clickable hover bg to keep our custom color
           '&.MuiChip-clickable:hover': {
             backgroundColor: isDark ? c.brand500 : c.brand100,
+          },
+          // Clickable primary: strong brand treatment (toggle chips selected state)
+          '&.MuiChip-clickable': {
+            backgroundColor: c.brand400,
+            color: c.contentStayLight,
+            border: `1px solid ${c.brand400}`,
+            boxShadow: fx.shadows.primaryButton,
+            '& .MuiChip-icon, & > .MuiBox-root:first-child': {
+              color: c.contentStayLight,
+            },
+            '& .MuiChip-deleteIcon': {
+              color: `${c.contentStayLight}B3`,
+              '&:hover': { color: c.contentStayLight },
+            },
+          },
+          '&.MuiChip-clickable:hover': {
+            backgroundColor: c.brand400,
+            filter: 'brightness(1.08)',
           },
         },
         colorSecondary: {

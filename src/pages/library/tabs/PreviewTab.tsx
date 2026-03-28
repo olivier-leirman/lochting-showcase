@@ -46,7 +46,7 @@ function CanvasPanel({
       {label && (
         <Typography
           variant="caption"
-          sx={{ mb: 0.5, display: 'block', fontWeight: 600, color: 'text.secondary', textAlign: 'center' }}
+          sx={{ mb: 0.5, display: 'block', fontWeight: 500, color: 'text.secondary', textAlign: 'center' }}
         >
           {label}
         </Typography>
@@ -86,7 +86,7 @@ function CanvasPanel({
               <Box sx={{
                 position: 'absolute', top: -20, left: 0, px: 0.75, py: 0.125,
                 bgcolor: 'primary.main', color: 'primary.contrastText',
-                fontSize: '0.6rem', fontFamily: 'monospace', fontWeight: 600,
+                fontSize: '0.6rem', fontFamily: 'monospace', fontWeight: 500,
                 borderRadius: '3px 3px 0 0', whiteSpace: 'nowrap', lineHeight: 1.5,
               }}>
                 {hoverLabel}

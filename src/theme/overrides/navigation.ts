@@ -1,9 +1,10 @@
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function navigationOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function navigationOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
 
@@ -12,10 +13,14 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: c.bgElevated,
+          backgroundColor: sp.surface.cardBg || c.bgElevated,
           borderRight: `1px solid ${c.borderWeak}`,
           boxShadow: fx.shadows.sidebar,
           backgroundImage: 'none',
+          ...(sp.surface.blur ? {
+            backdropFilter: `blur(${sp.surface.blur}px)`,
+            WebkitBackdropFilter: `blur(${sp.surface.blur}px)`,
+          } : {}),
         },
       },
     },
@@ -26,7 +31,7 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
         root: {
           fontFamily: brand.typography.bodyFont,
           fontSize: PRIMITIVES.fontSize.sm,
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           letterSpacing: '1.1px',
           textTransform: 'uppercase' as const,
           color: c.contentTertiary,
@@ -43,7 +48,7 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
         root: {
           fontFamily: brand.typography.bodyFont,
           minHeight: 44,
-          borderRadius: PRIMITIVES.radius.md,
+          borderRadius: sp.radius.md,
           paddingLeft: 12,
           paddingRight: 8,
           gap: 12,
@@ -54,13 +59,16 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
             backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : c.bgSunken,
           },
           '&.Mui-selected': {
-            background: fx.gradients.secondary,
+            backgroundColor: isDark ? c.brand500 : c.brand100,
             borderColor: 'transparent',
             boxShadow: 'none',
-            color: c.contentPrimary,
+            color: isDark ? c.brand200 : c.brand450,
             '&:hover': {
-              background: fx.gradients.secondary,
-              filter: isDark ? 'brightness(1.08)' : 'brightness(0.98)',
+              backgroundColor: isDark ? c.brand500 : c.brand100,
+              filter: isDark ? 'brightness(1.12)' : 'brightness(0.97)',
+            },
+            '& .MuiListItemIcon-root': {
+              color: isDark ? c.brand200 : c.brand450,
             },
           },
         },
@@ -134,7 +142,7 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
       styleOverrides: {
         root: {
           fontFamily: brand.typography.bodyFont,
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.sm,
         },
         colorDefault: {

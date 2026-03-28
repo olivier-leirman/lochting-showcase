@@ -1,9 +1,10 @@
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function tableOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function tableOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
 
@@ -11,8 +12,13 @@ export function tableOverrides(brand: BrandTokens, fx: Effects): Components<Them
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          borderRadius: PRIMITIVES.radius.md,
+          borderRadius: sp.radius.md,
           border: `1px solid ${c.borderWeak}`,
+          ...(sp.surface.cardBg ? { backgroundColor: sp.surface.cardBg } : {}),
+          ...(sp.surface.blur ? {
+            backdropFilter: `blur(${sp.surface.blur}px)`,
+            WebkitBackdropFilter: `blur(${sp.surface.blur}px)`,
+          } : {}),
         },
       },
     },
@@ -32,7 +38,7 @@ export function tableOverrides(brand: BrandTokens, fx: Effects): Components<Them
           padding: '12px 16px',
         },
         head: {
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.xs,
           textTransform: 'uppercase' as const,
           letterSpacing: '0.06em',
@@ -83,7 +89,7 @@ export function tableOverrides(brand: BrandTokens, fx: Effects): Components<Them
           fontFamily: brand.typography.bodyFont,
           fontSize: PRIMITIVES.fontSize.sm,
           fontWeight: PRIMITIVES.fontWeight.medium,
-          borderRadius: PRIMITIVES.radius.sm,
+          borderRadius: sp.radius.sm,
           '&.Mui-selected': {
             background: fx.gradients.primary,
             color: '#fff',

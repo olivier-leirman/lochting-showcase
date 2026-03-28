@@ -1,13 +1,20 @@
 import { createElement } from 'react';
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function radioOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function radioOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
+  const isDark = fx.mode === 'dark';
   const size = PRIMITIVES.component.checkboxSize;
   const dotSize = PRIMITIVES.component.radioDotSize;
+
+  // Primary background based on style profile
+  const primaryBg = sp.buttonPrimary === 'solid' ? c.brand400
+    : sp.buttonPrimary === 'glass' ? (isDark ? `color-mix(in srgb, ${c.brand400} 20%, transparent)` : `color-mix(in srgb, ${c.brand400} 85%, transparent)`)
+    : fx.gradients.primary;
 
   const uncheckedIcon = createElement('span', {
     style: {
@@ -27,7 +34,7 @@ export function radioOverrides(brand: BrandTokens, fx: Effects): Components<Them
       width: size,
       height: size,
       borderRadius: '50%',
-      background: fx.gradients.primary,
+      background: primaryBg,
       boxShadow: fx.shadows.primaryButton,
       boxSizing: 'border-box' as const,
       display: 'flex',

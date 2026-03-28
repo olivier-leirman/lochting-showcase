@@ -17,7 +17,7 @@ export function BrandIdentityPage() {
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
           <Icon name="palette" size={28} color="inherit" />
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={500}>
             {brandName} &mdash; {styleLabel}
           </Typography>
         </Box>
@@ -55,7 +55,7 @@ export function BrandIdentityPage() {
           />
           <Typography
             variant="h2"
-            sx={{ fontWeight: 700, mb: 1, color: 'inherit', position: 'relative' }}
+            sx={{ fontWeight: 500, mb: 1, color: 'inherit', position: 'relative' }}
           >
             Welcome to {brandName}
           </Typography>
@@ -73,7 +73,7 @@ export function BrandIdentityPage() {
                 bgcolor: '#fff',
                 color: c.brand450,
                 '&:hover': { bgcolor: 'rgba(255,255,255,0.9)' },
-                fontWeight: 600,
+                fontWeight: 500,
               }}
             >
               Get Started
@@ -138,7 +138,7 @@ export function BrandIdentityPage() {
           </Card>
 
           {/* Notification Card */}
-          <Card sx={{ p: 2.5 }}>
+          <Card sx={{ p: 2 }}>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
               <Box
                 sx={{
@@ -155,7 +155,7 @@ export function BrandIdentityPage() {
                 <Icon name="notifications" size={22} color={c.info.bgDefault} />
               </Box>
               <Box sx={{ flex: 1 }}>
-                <Typography variant="body2" fontWeight={600} sx={{ mb: 0.5 }}>
+                <Typography variant="body2" fontWeight={500} sx={{ mb: 0.5 }}>
                   New order received
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
@@ -173,11 +173,11 @@ export function BrandIdentityPage() {
           </Card>
 
           {/* Stats Card */}
-          <Card sx={{ p: 2.5 }}>
+          <Card sx={{ p: 2 }}>
             <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ mb: 1, display: 'block' }}>
               Monthly Revenue
             </Typography>
-            <Typography variant="h3" fontWeight={700} sx={{ mb: 1 }}>
+            <Typography variant="h3" fontWeight={500} sx={{ mb: 1 }}>
               &euro;42,850
             </Typography>
             <Chip
@@ -214,7 +214,7 @@ export function BrandIdentityPage() {
         <SectionHeader icon="format_paint" label="Color Usage" />
 
         {/* Brand scale */}
-        <Typography variant="body2" fontWeight={600} sx={{ mb: 1.5 }}>
+        <Typography variant="body2" fontWeight={500} sx={{ mb: 1.5 }}>
           Brand Scale
         </Typography>
         <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
@@ -233,7 +233,7 @@ export function BrandIdentityPage() {
         </Box>
 
         {/* Background colors */}
-        <Typography variant="body2" fontWeight={600} sx={{ mb: 1.5 }}>
+        <Typography variant="body2" fontWeight={500} sx={{ mb: 1.5 }}>
           Backgrounds
         </Typography>
         <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
@@ -243,7 +243,7 @@ export function BrandIdentityPage() {
         </Box>
 
         {/* Content colors */}
-        <Typography variant="body2" fontWeight={600} sx={{ mb: 1.5 }}>
+        <Typography variant="body2" fontWeight={500} sx={{ mb: 1.5 }}>
           Content
         </Typography>
         <Box sx={{ display: 'flex', gap: 1, mb: 1, flexWrap: 'wrap' }}>
@@ -320,7 +320,7 @@ function SectionHeader({ icon, label }: { icon: string; label: string }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
       <Icon name={icon} size={20} />
-      <Typography variant="h5" fontWeight={600}>
+      <Typography variant="h5" fontWeight={500}>
         {label}
       </Typography>
     </Box>

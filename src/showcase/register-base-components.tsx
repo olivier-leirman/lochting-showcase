@@ -641,15 +641,15 @@ registerComponent({
           <BaseTokenProvider>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
               <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--bw-content-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Underline</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--bw-content-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Underline</div>
                 <BwTabs variant="underline" tabs={sampleTabs} />
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--bw-content-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contained</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--bw-content-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contained</div>
                 <BwTabs variant="contained" tabs={sampleTabs} />
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--bw-content-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pills</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--bw-content-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pills</div>
                 <BwTabs variant="pills" tabs={sampleTabs} />
               </div>
             </div>

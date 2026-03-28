@@ -30,6 +30,7 @@ export function CodeBlock({ code, language = 'tsx' }: CodeBlockProps) {
         <IconButton
           size="small"
           onClick={handleCopy}
+          aria-label={copied ? 'Copied' : 'Copy code'}
           sx={{
             position: 'absolute',
             top: 8,

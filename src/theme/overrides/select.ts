@@ -1,10 +1,10 @@
 import { createElement } from 'react';
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
-import { PRIMITIVES } from '../tokens/primitives';
 
-export function selectOverrides(brand: BrandTokens, _fx: Effects): Components<Theme> {
+export function selectOverrides(brand: BrandTokens, _fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
 
   const iconStyle = {
@@ -35,7 +35,7 @@ export function selectOverrides(brand: BrandTokens, _fx: Effects): Components<Th
       },
       styleOverrides: {
         root: {
-          borderRadius: PRIMITIVES.radius.md,
+          borderRadius: sp.radius.md,
         },
         icon: {
           top: 'calc(50% - 10px)',
@@ -50,11 +50,15 @@ export function selectOverrides(brand: BrandTokens, _fx: Effects): Components<Th
     MuiMenu: {
       styleOverrides: {
         paper: {
-          backgroundColor: c.bgElevated,
-          border: `1px solid ${c.borderDefault}`,
-          borderRadius: 16,
+          backgroundColor: sp.surface.cardBg || c.bgElevated,
+          border: sp.surface.cardBorder || `1px solid ${c.borderDefault}`,
+          borderRadius: sp.radius.lg,
           boxShadow: '4px 6px 18px 0px rgba(84, 84, 84, 0.14)',
           marginTop: 4,
+          ...(sp.surface.blur ? {
+            backdropFilter: `blur(${sp.surface.blur}px)`,
+            WebkitBackdropFilter: `blur(${sp.surface.blur}px)`,
+          } : {}),
         },
         list: {
           padding: '8px 0',

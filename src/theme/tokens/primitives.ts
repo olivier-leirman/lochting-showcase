@@ -60,8 +60,6 @@ export const PRIMITIVES = {
   fontWeight: {
     regular: 400,
     medium: 500,
-    semibold: 600,
-    bold: 700,
   },
 
   /* ── Component sizing ── */

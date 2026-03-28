@@ -1,12 +1,36 @@
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
-import { PRIMITIVES } from '../tokens/primitives';
 
-export function buttonGroupOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function buttonGroupOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
   const secondaryHoverFilter = isDark ? 'brightness(1.12)' : 'brightness(0.98)';
+
+  // Primary button background based on style profile
+  const primaryBg = (() => {
+    switch (sp.buttonPrimary) {
+      case 'solid': return c.brand400;
+      case 'glass': return isDark ? `color-mix(in srgb, ${c.brand400} 20%, transparent)` : `color-mix(in srgb, ${c.brand400} 85%, transparent)`;
+      case 'gradient': default: return fx.gradients.primary;
+    }
+  })();
+
+  const primaryExtra: Record<string, unknown> = {};
+  if (sp.buttonPrimary === 'glass') {
+    primaryExtra.backdropFilter = `blur(${sp.surface.blur || 12}px)`;
+    primaryExtra.WebkitBackdropFilter = `blur(${sp.surface.blur || 12}px)`;
+  }
+
+  // Secondary button background based on style profile
+  const secondaryBg = (() => {
+    switch (sp.buttonSecondary) {
+      case 'outlined-flat': return 'transparent';
+      case 'glass': return isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.50)';
+      case 'gradient': default: return fx.gradients.secondary;
+    }
+  })();
 
   return {
     MuiButtonGroup: {
@@ -18,51 +42,49 @@ export function buttonGroupOverrides(brand: BrandTokens, fx: Effects): Component
           },
         },
 
-        // ── Contained (primary gradient) ──
+        // ── Contained (primary) ──
         contained: {
-          borderRadius: PRIMITIVES.radius.md,
+          borderRadius: sp.radius.md,
           overflow: 'hidden',
           boxShadow: fx.shadows.primaryButton,
+          ...primaryExtra,
           '& .MuiButton-root': {
-            background: fx.gradients.primary,
+            background: primaryBg,
             color: c.contentStayLight,
             border: 'none',
-            boxShadow: 'none',            // shadow lives on the group wrapper
-            borderRadius: '0 !important', // let the group clip corners
+            boxShadow: 'none',
+            borderRadius: '0 !important',
             '&:hover': {
-              background: fx.gradients.primary,
+              background: primaryBg,
               filter: 'brightness(1.1)',
             },
           },
-          // Dark brand divider between grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
             borderRight: `1px solid ${c.brand450} !important`,
           },
         },
 
-        // ── Outlined (secondary gradient) ──
+        // ── Outlined (secondary) ──
         outlined: {
-          borderRadius: PRIMITIVES.radius.md,
+          borderRadius: sp.radius.md,
           overflow: 'hidden',
           border: `1px solid ${c.borderWeak}`,
-          boxShadow: fx.shadows.secondaryButton,
+          boxShadow: sp.buttonSecondary === 'outlined-flat' ? 'none' : fx.shadows.secondaryButton,
           '& .MuiButton-root': {
-            background: fx.gradients.secondary,
+            background: secondaryBg,
             color: c.contentSecondary,
-            border: 'none',               // no per-button border, group owns it
+            border: 'none',
             boxShadow: 'none',
             borderRadius: '0 !important',
             '&:hover': {
-              background: fx.gradients.secondary,
+              background: secondaryBg,
               border: 'none',
-              filter: secondaryHoverFilter,
+              filter: sp.buttonSecondary === 'gradient' ? secondaryHoverFilter : undefined,
             },
           },
-          // Reset MUI's default -1px margin that hides the divider
           '& .MuiButtonGroup-grouped': {
             marginLeft: '0 !important',
           },
-          // Inner divider between outlined grouped buttons
           '& .MuiButtonGroup-grouped:not(:last-of-type)': {
             borderRight: `1px solid ${c.borderWeak} !important`,
           },

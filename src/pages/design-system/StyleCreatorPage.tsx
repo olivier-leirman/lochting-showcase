@@ -99,7 +99,7 @@ export function StyleCreatorPage() {
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
       {/* Header */}
-      <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+      <Typography variant="h4" sx={{ fontWeight: 500, color: c.contentPrimary, mb: 1 }}>
         Style Creator
       </Typography>
       <Typography variant="body1" sx={{ color: c.contentSecondary, mb: 4, maxWidth: 600 }}>
@@ -109,7 +109,7 @@ export function StyleCreatorPage() {
 
       {/* ── Generate from prompt ── */}
       <Card sx={{ p: 3, mb: 4, border: '1px solid', borderColor: 'divider' }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '0.9375rem', mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 500, fontSize: '0.9375rem', mb: 2 }}>
           <Icon name="auto_awesome" size={18} sx={{ mr: 1, verticalAlign: 'text-bottom' }} />
           Generate from Prompt
         </Typography>
@@ -236,7 +236,7 @@ export function StyleCreatorPage() {
           <Box sx={{ position: 'sticky', top: 24 }}>
             <Card sx={{ p: 3, mb: 3, border: '1px solid', borderColor: 'divider' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '0.9375rem' }}>
+                <Typography variant="h6" sx={{ fontWeight: 500, fontSize: '0.9375rem' }}>
                   <Icon name="preview" size={18} sx={{ mr: 1, verticalAlign: 'text-bottom' }} />
                   Live Preview
                 </Typography>
@@ -256,7 +256,7 @@ export function StyleCreatorPage() {
                 }}>
                   {/* Buttons */}
                   <Box>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary', mb: 1, display: 'block' }}>
                       BUTTONS
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
@@ -271,11 +271,11 @@ export function StyleCreatorPage() {
 
                   {/* Card */}
                   <Box>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary', mb: 1, display: 'block' }}>
                       CARD
                     </Typography>
-                    <Card sx={{ p: 2.5 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>Product Card</Typography>
+                    <Card sx={{ p: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>Product Card</Typography>
                       <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                         Paracetamol 500mg — CNK 0012345
                       </Typography>
@@ -290,7 +290,7 @@ export function StyleCreatorPage() {
 
                   {/* Input */}
                   <Box>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary', mb: 1, display: 'block' }}>
                       INPUT
                     </Typography>
                     <TextField
@@ -302,7 +302,7 @@ export function StyleCreatorPage() {
 
                   {/* Alert */}
                   <Box>
-                    <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary', mb: 1, display: 'block' }}>
                       ALERTS
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -329,7 +329,7 @@ export function StyleCreatorPage() {
                 Export TypeScript
               </Button>
               <Button
-                variant="text" onClick={() => navigate('/design-system/styles')}
+                variant="text" onClick={() => navigate('/theme/styles')}
                 startIcon={<Icon name="arrow_back" size={18} />}
               >
                 Back to Styles
@@ -353,8 +353,8 @@ export function StyleCreatorPage() {
 
 function Section({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (
-    <Card sx={{ p: 2.5, border: '1px solid', borderColor: 'divider' }}>
-      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Card sx={{ p: 2, border: '1px solid', borderColor: 'divider' }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: 500, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
         <Icon name={icon} size={18} /> {title}
       </Typography>
       {children}

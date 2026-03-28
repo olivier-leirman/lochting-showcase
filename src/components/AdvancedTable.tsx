@@ -149,7 +149,7 @@ function ColumnFilter({
               ),
               endAdornment: filterValue ? (
                 <InputAdornment position="end">
-                  <IconButton size="small" onClick={() => onFilterChange('')}>
+                  <IconButton size="small" onClick={() => onFilterChange('')} aria-label="Clear filter">
                     <Icon name="close" size={14} />
                   </IconButton>
                 </InputAdornment>
@@ -345,6 +345,7 @@ export function AdvancedTable<T extends Record<string, unknown>>({
                         <IconButton
                           size="small"
                           onClick={() => handleSort(col.id)}
+                          aria-label={`Sort by ${col.label}`}
                           sx={{
                             width: 24,
                             height: 24,
@@ -382,6 +383,7 @@ export function AdvancedTable<T extends Record<string, unknown>>({
                         <IconButton
                           size="small"
                           onClick={e => handleFilterClick(e, col.id)}
+                          aria-label={`Filter ${col.label}`}
                           sx={{
                             width: 24,
                             height: 24,
@@ -466,12 +468,13 @@ export function AdvancedTable<T extends Record<string, unknown>>({
                         borderLeftColor: 'divider',
                       }}
                     >
-                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.25 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
                         {actions.map(action => (
                           <Tooltip key={action.label} title={action.label}>
                             <IconButton
                               size="small"
                               onClick={() => action.onClick(row)}
+                              aria-label={action.label}
                               sx={{ width: 32, height: 32, color: action.color }}
                             >
                               <Icon name={action.icon} size={18} />

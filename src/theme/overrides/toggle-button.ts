@@ -1,9 +1,10 @@
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function toggleButtonOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
   const secondaryHoverFilter = isDark ? 'brightness(1.12)' : 'brightness(0.98)';
@@ -16,16 +17,16 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           backgroundColor: c.bgSunken,
           border: 'none',
           boxShadow: 'none',
-          borderRadius: 12,
+          borderRadius: sp.radius.md,
           padding: 4,
           gap: 2,
           // Size-specific group styling via :has() (MUI doesn't add size classes to the group)
           '&:has(.MuiToggleButton-sizeSmall)': {
-            borderRadius: 8,
+            borderRadius: sp.radius.sm,
             padding: 2,
           },
           '&:has(.MuiToggleButton-sizeLarge)': {
-            borderRadius: 14,
+            borderRadius: sp.radius.md + 2,
             padding: 4,
           },
         },
@@ -41,7 +42,7 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
       styleOverrides: {
         root: {
           // Default = medium
-          borderRadius: '8px !important',
+          borderRadius: `${sp.radius.sm}px !important`,
           border: '1px solid transparent !important',
           textTransform: 'none' as const,
           fontFamily: brand.typography.bodyFont,
@@ -54,15 +55,23 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           lineHeight: 1,
           transition: 'all 0.15s ease',
           '&.Mui-selected': {
-            background: fx.gradients.secondary,
+            background: sp.buttonSecondary === 'gradient' ? fx.gradients.secondary
+              : sp.buttonSecondary === 'glass' ? (isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.50)')
+              : 'transparent',
             color: c.contentSecondary,
             border: `1px solid ${c.borderDefault} !important`,
-            boxShadow: fx.shadows.secondaryButton,
+            boxShadow: sp.buttonSecondary === 'outlined-flat' ? 'none' : fx.shadows.secondaryButton,
+            ...(sp.buttonSecondary === 'glass' ? {
+              backdropFilter: `blur(${sp.surface.blur || 12}px)`,
+              WebkitBackdropFilter: `blur(${sp.surface.blur || 12}px)`,
+            } : {}),
             '&:hover': {
-              background: fx.gradients.secondary,
-              filter: secondaryHoverFilter,
+              background: sp.buttonSecondary === 'gradient' ? fx.gradients.secondary
+                : sp.buttonSecondary === 'glass' ? (isDark ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.65)')
+                : `color-mix(in srgb, ${c.brand400} 4%, transparent)`,
+              filter: sp.buttonSecondary === 'gradient' ? secondaryHoverFilter : undefined,
               borderColor: `${c.borderDefault} !important`,
-              boxShadow: fx.shadows.secondaryButtonHover,
+              boxShadow: sp.buttonSecondary === 'outlined-flat' ? 'none' : fx.shadows.secondaryButtonHover,
             },
           },
           '&:hover': {
@@ -70,13 +79,13 @@ export function toggleButtonOverrides(brand: BrandTokens, fx: Effects): Componen
           },
         },
         sizeSmall: {
-          borderRadius: '6px !important',
+          borderRadius: `${sp.radius.sm - 2}px !important`,
           height: 24,
           padding: '0 12px',
           fontSize: PRIMITIVES.fontSize.xs,        // 12px
         },
         sizeLarge: {
-          borderRadius: '10px !important',
+          borderRadius: `${sp.radius.sm + 2}px !important`,
           height: 40,
           padding: '0 16px',
           fontSize: PRIMITIVES.fontSize.md,        // 16px

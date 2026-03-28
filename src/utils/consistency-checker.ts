@@ -1,10 +1,13 @@
 import { PRIMITIVES } from '../theme/tokens/primitives';
 import type { BrandTokens } from '../theme/types';
 import { DEFAULT_STYLE_PROFILE } from '../theme/types';
+import { getUnifiedRegistry } from '../showcase/registry';
+import { config } from '../config';
 
 /* ── Violation types ── */
 
-export type ViolationSeverity = 'error' | 'warning';
+export type ViolationSeverity = 'error' | 'warning' | 'suggestion';
+export type ViolationCategory = 'consistency' | 'patterns' | 'parity' | 'ux';
 
 export interface Violation {
   component: string;
@@ -12,12 +15,24 @@ export interface Violation {
   severity: ViolationSeverity;
   suggestion: string;
   autoFixAvailable: boolean;
+  category: ViolationCategory;
+  claudeCodePrompt?: string;
+}
+
+export interface CategorySummary {
+  category: ViolationCategory;
+  label: string;
+  total: number;
+  errors: number;
+  warnings: number;
+  suggestions: number;
 }
 
 export interface ConsistencyReport {
   brand: string;
   violations: Violation[];
   score: number; // 0–100
+  categories: CategorySummary[];
   checkedAt: string;
 }
 
@@ -91,6 +106,7 @@ function checkSpacingGrid(brand: BrandTokens): Violation[] {
         severity: 'warning',
         suggestion: `Use ${nearest}px (nearest named token)`,
         autoFixAvailable: true,
+        category: 'consistency',
       });
     }
   }
@@ -159,6 +175,7 @@ function checkButtonHeights(_brand: BrandTokens): Violation[] {
         severity: 'error',
         suggestion: `Use 40px (sm), 48px (default), or 56px (lg)`,
         autoFixAvailable: true,
+        category: 'consistency',
       });
     }
   }
@@ -220,6 +237,7 @@ function checkStyleProfile(brand: BrandTokens): Violation[] {
         severity: 'warning',
         suggestion: 'Keep blur between 0–40px for best performance',
         autoFixAvailable: false,
+        category: 'consistency',
       });
     }
   }
@@ -248,7 +266,198 @@ function checkStyleProfile(brand: BrandTokens): Violation[] {
   return violations;
 }
 
+/* ── Pattern checks ── */
+
+function checkPatterns(_brand: BrandTokens): Violation[] {
+  const violations: Violation[] = [];
+  const rules = config.patterns.rules ?? [];
+
+  // Report the number of pattern rules defined
+  const categoryCount: Record<string, number> = {};
+  for (const rule of rules) {
+    categoryCount[rule.category] = (categoryCount[rule.category] ?? 0) + 1;
+  }
+
+  // Check that critical categories have rules
+  const requiredCategories = ['buttons', 'selection', 'icons', 'navigation'];
+  for (const cat of requiredCategories) {
+    if (!categoryCount[cat]) {
+      violations.push({
+        component: `PatternRules.${cat}`,
+        violation: `No pattern rules defined for category "${cat}"`,
+        severity: 'warning',
+        suggestion: `Add enforceable rules for ${cat} patterns in patterns.config.json`,
+        autoFixAvailable: false,
+        category: 'patterns',
+      });
+    }
+  }
+
+  // Check icon containers guideline exists
+  const iconContainers = config.patterns.iconContainers;
+  if (!iconContainers) {
+    violations.push({
+      component: 'PatternGuidelines.iconContainers',
+      violation: 'Icon container guidelines are not defined',
+      severity: 'warning',
+      suggestion: 'Add iconContainers section to patterns.config.json',
+      autoFixAvailable: false,
+      category: 'patterns',
+    });
+  }
+
+  // Check toggle selection guideline exists
+  const toggleSelection = config.patterns.toggleSelection;
+  if (!toggleSelection) {
+    violations.push({
+      component: 'PatternGuidelines.toggleSelection',
+      violation: 'Toggle selection guidelines are not defined',
+      severity: 'warning',
+      suggestion: 'Add toggleSelection section to patterns.config.json',
+      autoFixAvailable: false,
+      category: 'patterns',
+    });
+  }
+
+  // Check action hierarchy is complete
+  const hierarchy = config.patterns.actionHierarchy;
+  const requiredActions = ['primary', 'secondary', 'tertiary', 'destructive'];
+  for (const action of requiredActions) {
+    if (!hierarchy?.[action]) {
+      violations.push({
+        component: `ActionHierarchy.${action}`,
+        violation: `Action hierarchy missing "${action}" level`,
+        severity: 'error',
+        suggestion: `Define ${action} action pattern in actionHierarchy config`,
+        autoFixAvailable: false,
+        category: 'patterns',
+      });
+    }
+  }
+
+  return violations;
+}
+
+/* ── Parity checks (MUI ↔ Base UI) ── */
+
+function checkParity(): Violation[] {
+  const violations: Violation[] = [];
+  const unified = getUnifiedRegistry();
+
+  // Count implementation coverage
+  const muiOnly = unified.filter(c => c.layers.length === 1 && c.layers[0] === 'mui');
+  const baseOnly = unified.filter(c => c.layers.length === 1 && c.layers[0] === 'base');
+  const both = unified.filter(c => c.layers.length === 2);
+
+  // Report components that only have one implementation
+  if (muiOnly.length > 0 && both.length > 0) {
+    // Only flag if some components have both — meaning parity is a goal
+    const highPriority = muiOnly.filter(c => ['button', 'text-field', 'select', 'card', 'checkbox'].includes(c.id));
+    for (const comp of highPriority) {
+      violations.push({
+        component: `Parity.${comp.id}`,
+        violation: `"${comp.name}" only has MUI implementation — Base UI variant missing`,
+        severity: 'suggestion',
+        suggestion: `Create Base UI implementation for ${comp.name} in src/components/base/`,
+        autoFixAvailable: false,
+        category: 'parity',
+        claudeCodePrompt: `Create a Base UI implementation for ${comp.name}. Follow the pattern in src/components/base/BwButton.tsx. Register it in src/showcase/register-base-components.tsx.`,
+      });
+    }
+  }
+
+  // Report parity stats as a suggestion
+  if (unified.length > 0) {
+    const parityPercent = Math.round((both.length / unified.length) * 100);
+    if (parityPercent < 30) {
+      violations.push({
+        component: 'Parity.coverage',
+        violation: `Only ${parityPercent}% of components have both MUI and Base UI implementations (${both.length}/${unified.length})`,
+        severity: 'suggestion',
+        suggestion: 'Increase Base UI coverage for core components (Button, Input, Card, Checkbox, Select)',
+        autoFixAvailable: false,
+        category: 'parity',
+      });
+    }
+  }
+
+  return violations;
+}
+
+/* ── UX checks ── */
+
+function checkUX(brand: BrandTokens): Violation[] {
+  const violations: Violation[] = [];
+  const c = brand.colors;
+
+  // Check that error/warning/success colors exist and have contrast
+  const systemColors = [
+    { name: 'error', color: c.error },
+    { name: 'warning', color: c.warning },
+    { name: 'success', color: c.success },
+    { name: 'info', color: c.info },
+  ];
+
+  for (const { name, color } of systemColors) {
+    if (!color?.contentStrong) {
+      violations.push({
+        component: `SystemColors.${name}`,
+        violation: `System color "${name}" is missing contentStrong value`,
+        severity: 'error',
+        suggestion: `Define ${name}.contentStrong in brand tokens`,
+        autoFixAvailable: false,
+        category: 'ux',
+      });
+    }
+    if (!color?.bgWeakest) {
+      violations.push({
+        component: `SystemColors.${name}`,
+        violation: `System color "${name}" is missing bgWeakest value`,
+        severity: 'warning',
+        suggestion: `Define ${name}.bgWeakest for chip/badge backgrounds`,
+        autoFixAvailable: false,
+        category: 'ux',
+      });
+    }
+  }
+
+  // Check accent colors availability
+  if (!brand.accents) {
+    violations.push({
+      component: 'AccentColors',
+      violation: 'No curated accent colors defined — using generated harmonies only',
+      severity: 'suggestion',
+      suggestion: 'Add curated accent colors (e.g. teal, gold, coral) for dashboard and data visualization use cases',
+      autoFixAvailable: false,
+      category: 'ux',
+    });
+  }
+
+  return violations;
+}
+
 /* ── Main scan function ── */
+
+function buildCategories(violations: Violation[]): CategorySummary[] {
+  const cats: ViolationCategory[] = ['consistency', 'patterns', 'parity', 'ux'];
+  const labels: Record<ViolationCategory, string> = {
+    consistency: 'Consistency',
+    patterns: 'Patterns',
+    parity: 'MUI ↔ Base UI Parity',
+    ux: 'UX Quality',
+  };
+  return cats.map(cat => {
+    const catViolations = violations.filter(v => v.category === cat);
+    return {
+      category: cat,
+      label: labels[cat],
+      total: catViolations.length,
+      errors: catViolations.filter(v => v.severity === 'error').length,
+      warnings: catViolations.filter(v => v.severity === 'warning').length,
+      suggestions: catViolations.filter(v => v.severity === 'suggestion').length,
+    };
+  });
+}
 
 export function runConsistencyCheck(brand: BrandTokens): ConsistencyReport {
   const violations = [
@@ -257,13 +466,17 @@ export function runConsistencyCheck(brand: BrandTokens): ConsistencyReport {
     ...checkButtonHeights(brand),
     ...checkTypography(brand),
     ...checkStyleProfile(brand),
+    ...checkPatterns(brand),
+    ...checkParity(),
+    ...checkUX(brand),
   ];
 
   // Calculate health score: start at 100, deduct per violation
   const errorDeduction = 10;
   const warningDeduction = 3;
+  const suggestionDeduction = 0; // suggestions don't affect score
   const totalDeduction = violations.reduce(
-    (sum, v) => sum + (v.severity === 'error' ? errorDeduction : warningDeduction),
+    (sum, v) => sum + (v.severity === 'error' ? errorDeduction : v.severity === 'warning' ? warningDeduction : suggestionDeduction),
     0,
   );
   const score = Math.max(0, 100 - totalDeduction);
@@ -272,6 +485,7 @@ export function runConsistencyCheck(brand: BrandTokens): ConsistencyReport {
     brand: brand.name,
     violations,
     score,
+    categories: buildCategories(violations),
     checkedAt: new Date().toISOString(),
   };
 }

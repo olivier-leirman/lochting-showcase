@@ -147,6 +147,7 @@ function OptionItem({ option, selected, onToggle, depth, search }: OptionItemPro
         {hasChildren && (
           <IconButton
             size="small"
+            aria-label={open ? 'Collapse' : 'Expand'}
             onClick={(e) => {
               e.stopPropagation();
               setOpen(!open);

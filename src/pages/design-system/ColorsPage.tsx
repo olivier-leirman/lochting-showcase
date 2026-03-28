@@ -242,7 +242,7 @@ function SwatchStrip({ items, label, brand }: { items: SwatchItem[]; label: stri
                 '&:hover': { flex: 1.6 },
               }}
             >
-              <Typography sx={{ color: textColor, fontSize: '0.7rem', fontWeight: 600, lineHeight: 1 }}>
+              <Typography sx={{ color: textColor, fontSize: '0.7rem', fontWeight: 500, lineHeight: 1 }}>
                 {item.name}
               </Typography>
               <Box>
@@ -310,7 +310,7 @@ function AccentSection({ brand }: { brand: BrandTokens }) {
                 sx={{
                   bgcolor: accent.light,
                   color: accent.dark,
-                  fontWeight: 600,
+                  fontWeight: 500,
                   border: '1px solid',
                   borderColor: alpha(accent.default, 0.2),
                 }}
@@ -414,7 +414,7 @@ function AccentCard({ name, light, defaultColor, dark }: {
           left: 8,
           color: '#fff',
           fontSize: '0.75rem',
-          fontWeight: 600,
+          fontWeight: 500,
           textShadow: '0 1px 2px rgba(0,0,0,0.3)',
         }}>
           {name.charAt(0).toUpperCase() + name.slice(1)}

@@ -22,7 +22,7 @@ function RadiusSwatch({ token, px, brandColor }: { token: string; px: number; br
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 0.75 }}>
       <Typography
         variant="body2"
-        sx={{ width: 64, fontFamily: 'monospace', fontWeight: 600, flexShrink: 0, textAlign: 'right' }}
+        sx={{ width: 64, fontFamily: 'monospace', fontWeight: 500, flexShrink: 0, textAlign: 'right' }}
       >
         {token}
       </Typography>
@@ -54,7 +54,7 @@ function SizeRow({ token, px, brandColor }: { token: string; px: number; brandCo
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 0.75 }}>
       <Typography
         variant="body2"
-        sx={{ width: 160, fontFamily: 'monospace', fontWeight: 600, flexShrink: 0, textAlign: 'right', fontSize: '0.75rem' }}
+        sx={{ width: 160, fontFamily: 'monospace', fontWeight: 500, flexShrink: 0, textAlign: 'right', fontSize: '0.75rem' }}
       >
         {token}
       </Typography>
@@ -124,7 +124,7 @@ export function SizingPage() {
           width: '100%',
           borderCollapse: 'collapse',
           '& th, & td': { textAlign: 'left', py: 1, px: 2, borderBottom: '1px solid', borderColor: 'divider', fontSize: '0.875rem' },
-          '& th': { fontWeight: 600, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
+          '& th': { fontWeight: 500, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
           mb: 4,
         }}
       >
@@ -169,7 +169,7 @@ export function SizingPage() {
           width: '100%',
           borderCollapse: 'collapse',
           '& th, & td': { textAlign: 'left', py: 1, px: 2, borderBottom: '1px solid', borderColor: 'divider', fontSize: '0.875rem' },
-          '& th': { fontWeight: 600, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
+          '& th': { fontWeight: 500, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
           mb: 4,
         }}
       >
@@ -233,7 +233,7 @@ export function SizingPage() {
           width: '100%',
           borderCollapse: 'collapse',
           '& th, & td': { textAlign: 'left', py: 1, px: 2, borderBottom: '1px solid', borderColor: 'divider', fontSize: '0.875rem' },
-          '& th': { fontWeight: 600, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
+          '& th': { fontWeight: 500, color: 'text.secondary', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' },
         }}
       >
         <thead>

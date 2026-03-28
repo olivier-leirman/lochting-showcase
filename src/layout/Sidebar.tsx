@@ -49,22 +49,23 @@ interface SearchableItem {
 const STATIC_ITEMS: SearchableItem[] = [
   { label: 'Home', path: '/', icon: 'home' },
   { label: 'Getting Started', path: '/getting-started', icon: 'play_arrow' },
-  { label: 'All Components', path: '/library', icon: 'grid_view' },
-  { label: 'Experimental', path: '/library/experimental', icon: 'new_releases' },
-  { label: 'Colors & Palettes', path: '/design-system/colors', icon: 'palette' },
-  { label: 'Typography', path: '/design-system/typography', icon: 'text_fields' },
-  { label: 'Spacing & Sizing', path: '/design-system/spacing', icon: 'space_bar' },
-  { label: 'Effects', path: '/design-system/effects', icon: 'auto_awesome' },
-  { label: 'Icons', path: '/design-system/icons', icon: 'category' },
+  { label: 'All Components', path: '/components', icon: 'grid_view' },
+  { label: 'Experimental', path: '/components/experimental', icon: 'new_releases' },
+  { label: 'Colors & Palettes', path: '/theme/colors', icon: 'palette' },
+  { label: 'Typography', path: '/theme/typography', icon: 'text_fields' },
+  { label: 'Spacing & Sizing', path: '/theme/spacing', icon: 'space_bar' },
+  { label: 'Effects', path: '/theme/effects', icon: 'auto_awesome' },
+  { label: 'Icons', path: '/theme/icons', icon: 'category' },
   { label: 'Design Rules', path: '/design-system/rules', icon: 'rule' },
   { label: 'Patterns', path: '/design-system/patterns', icon: 'pattern' },
-  { label: 'Style Variants', path: '/design-system/styles', icon: 'style' },
-  { label: 'Style Creator', path: '/design-system/style-creator', icon: 'brush' },
-  { label: 'Brand Identity', path: '/design-system/identity/medipim/flat', icon: 'fingerprint' },
-  { label: 'Theme Playground', path: '/design-system/playground', icon: 'tune' },
+  { label: 'Style Variants', path: '/theme/styles', icon: 'style' },
+  { label: 'Style Creator', path: '/theme/styles/creator', icon: 'brush' },
+  { label: 'Brand Identity', path: '/theme/identity/medipim/flat', icon: 'fingerprint' },
   { label: 'Consistency', path: '/design-system/consistency', icon: 'verified' },
-  { label: 'Component Playground', path: '/playground', icon: 'science' },
-  { label: 'Style Showcase', path: '/style-showcase', icon: 'brush' },
+  { label: 'QA Report', path: '/design-system/qa', icon: 'bug_report' },
+  { label: 'Component Playground', path: '/playground/component', icon: 'science' },
+  { label: 'Theme Playground', path: '/playground/theme', icon: 'tune' },
+  { label: 'Style Showcase', path: '/playground/showcase', icon: 'brush' },
   { label: 'Medipim SaaS', path: '/prototypes/medipim-saas', icon: 'desktop_windows' },
 ];
 
@@ -159,8 +160,8 @@ export function Sidebar() {
 
     // ── Components section ──
     const componentItems: SidebarItem[] = [
-      { label: 'All Components', icon: 'grid_view', active: isActive('/library'), onClick: () => go('/library') },
-      { label: 'Experimental', icon: 'new_releases', active: isActive('/library/experimental'), onClick: () => go('/library/experimental') },
+      { label: 'All Components', icon: 'grid_view', active: isActive('/components'), onClick: () => go('/components') },
+      { label: 'Experimental', icon: 'new_releases', active: isActive('/components/experimental'), onClick: () => go('/components/experimental') },
       ...CATEGORIES.map(cat => {
         const items = sortByOrder(
           COMPONENT_REGISTRY.filter(c => c.category === cat.key),
@@ -181,28 +182,29 @@ export function Sidebar() {
 
     // ── Theme section ──
     const themeItems: SidebarItem[] = [
-      { label: 'Colors & Palettes', icon: 'palette', active: isActive('/design-system/colors'), onClick: () => go('/design-system/colors') },
-      { label: 'Typography', icon: 'text_fields', active: isActive('/design-system/typography'), onClick: () => go('/design-system/typography') },
-      { label: 'Spacing & Sizing', icon: 'space_bar', active: isActive('/design-system/spacing'), onClick: () => go('/design-system/spacing') },
-      { label: 'Effects', icon: 'auto_awesome', active: isActive('/design-system/effects'), onClick: () => go('/design-system/effects') },
-      { label: 'Icons', icon: 'category', active: isActive('/design-system/icons'), onClick: () => go('/design-system/icons') },
+      { label: 'Colors & Palettes', icon: 'palette', active: isActive('/theme/colors'), onClick: () => go('/theme/colors') },
+      { label: 'Typography', icon: 'text_fields', active: isActive('/theme/typography'), onClick: () => go('/theme/typography') },
+      { label: 'Spacing & Sizing', icon: 'space_bar', active: isActive('/theme/spacing'), onClick: () => go('/theme/spacing') },
+      { label: 'Effects', icon: 'auto_awesome', active: isActive('/theme/effects'), onClick: () => go('/theme/effects') },
+      { label: 'Icons', icon: 'category', active: isActive('/theme/icons'), onClick: () => go('/theme/icons') },
+      { label: 'Brand Identity', icon: 'fingerprint', active: location.pathname.startsWith('/theme/identity'), onClick: () => go('/theme/identity/medipim/flat') },
     ];
 
     // ── Design System section ──
     const dsItems: SidebarItem[] = [
       { label: 'Design Rules', icon: 'rule', active: isActive('/design-system/rules'), onClick: () => go('/design-system/rules') },
       { label: 'Patterns', icon: 'pattern', active: isActive('/design-system/patterns'), onClick: () => go('/design-system/patterns') },
-      { label: 'Style Variants', icon: 'style', active: isActive('/design-system/styles'), onClick: () => go('/design-system/styles') },
-      { label: 'Style Creator', icon: 'brush', active: isActive('/design-system/style-creator'), onClick: () => go('/design-system/style-creator') },
-      { label: 'Brand Identity', icon: 'fingerprint', active: location.pathname.startsWith('/design-system/identity'), onClick: () => go('/design-system/identity/medipim/flat') },
-      { label: 'Theme Playground', icon: 'tune', active: isActive('/design-system/playground'), onClick: () => go('/design-system/playground') },
+      { label: 'Style Variants', icon: 'style', active: isActive('/theme/styles'), onClick: () => go('/theme/styles') },
+      { label: 'Style Creator', icon: 'brush', active: isActive('/theme/styles/creator'), onClick: () => go('/theme/styles/creator') },
       { label: 'Consistency', icon: 'verified', active: isActive('/design-system/consistency'), onClick: () => go('/design-system/consistency') },
+      { label: 'QA Report', icon: 'bug_report', active: isActive('/design-system/qa'), onClick: () => go('/design-system/qa') },
     ];
 
     // ── Playground section ──
     const playgroundItems: SidebarItem[] = [
-      { label: 'Component Playground', icon: 'science', active: isActive('/playground'), onClick: () => go('/playground') },
-      { label: 'Style Showcase', icon: 'brush', active: isActive('/style-showcase'), onClick: () => go('/style-showcase') },
+      { label: 'Component Playground', icon: 'science', active: isActive('/playground/component'), onClick: () => go('/playground/component') },
+      { label: 'Theme Playground', icon: 'tune', active: isActive('/playground/theme'), onClick: () => go('/playground/theme') },
+      { label: 'Style Showcase', icon: 'brush', active: isActive('/playground/showcase'), onClick: () => go('/playground/showcase') },
     ];
 
     // ── Prototypes section ──

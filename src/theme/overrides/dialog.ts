@@ -41,7 +41,7 @@ export function dialogOverrides(
       styleOverrides: {
         root: {
           fontFamily: brand.typography.bodyFont,
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.lg,
           padding: '20px 24px 12px',
         },

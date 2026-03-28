@@ -61,7 +61,7 @@ export function ComponentDetail() {
       {/* Header */}
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={500}>
             {doc.name}
           </Typography>
           <Chip

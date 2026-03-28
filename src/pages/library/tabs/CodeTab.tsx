@@ -12,7 +12,7 @@ export function CodeTab({ doc }: { doc: ComponentDoc }) {
       {/* Import Statement */}
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>Import</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 500 }}>Import</Typography>
           <Button
             size="small"
             startIcon={<Icon name="content_copy" size={16} />}
@@ -29,7 +29,7 @@ export function CodeTab({ doc }: { doc: ComponentDoc }) {
       {basicUsage && (
         <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Basic Usage</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 500 }}>Basic Usage</Typography>
             <Button
               size="small"
               startIcon={<Icon name="content_copy" size={16} />}
@@ -46,7 +46,7 @@ export function CodeTab({ doc }: { doc: ComponentDoc }) {
       {/* TypeScript Props Interface */}
       {doc.props.length > 0 && (
         <Box>
-          <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>TypeScript Interface</Typography>
+          <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>TypeScript Interface</Typography>
           <CodeBlock
             code={generatePropsInterface(doc)}
             language="tsx"

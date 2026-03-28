@@ -50,9 +50,9 @@ export type BrandScale = Record<'50' | '100' | '200' | '300' | '400' | '500' | '
 export interface BrandTypography {
   displayFont: string;
   bodyFont: string;
-  /** Override heading weight (h4–h6). Falls back to primitives.fontWeight.semibold */
+  /** Override heading weight (h4–h6). Falls back to primitives.fontWeight.medium (500) */
   headingWeight?: number;
-  /** Override body-strong / label weight. Falls back to primitives.fontWeight.semibold */
+  /** Override body-strong / label weight. Falls back to primitives.fontWeight.medium (500) */
   strongWeight?: number;
 }
 

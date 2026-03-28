@@ -34,7 +34,7 @@ export function PlaygroundSession() {
         }}
       >
         <Icon name="error_outline" size={48} color="text.secondary" />
-        <Typography variant="h5" fontWeight={700}>
+        <Typography variant="h5" fontWeight={500}>
           Session not found
         </Typography>
         <Typography color="text.secondary">
@@ -43,7 +43,7 @@ export function PlaygroundSession() {
         <Button
           variant="contained"
           startIcon={<Icon name="arrow_back" size={20} />}
-          onClick={() => navigate('/playground')}
+          onClick={() => navigate('/playground/component')}
           sx={{ mt: 2 }}
         >
           Back to Playground
@@ -70,7 +70,7 @@ export function PlaygroundSession() {
       return;
     }
     deleteSession(session.id);
-    navigate('/playground');
+    navigate('/playground/component');
   };
 
   return (
@@ -78,7 +78,7 @@ export function PlaygroundSession() {
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 3 }}>
         <Box>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={500}>
             {session.name}
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 0.5 }}>
@@ -88,7 +88,7 @@ export function PlaygroundSession() {
         <Button
           variant="text"
           startIcon={<Icon name="arrow_back" size={20} />}
-          onClick={() => navigate('/playground')}
+          onClick={() => navigate('/playground/component')}
         >
           All Sessions
         </Button>
@@ -142,7 +142,7 @@ export function PlaygroundSession() {
             <Typography variant="subtitle2" color="text.secondary" gutterBottom>
               Active Component
             </Typography>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
+            <Typography variant="h6" fontWeight={500} gutterBottom>
               {activeComponent.name}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -188,7 +188,7 @@ export function PlaygroundSession() {
         <Button
           variant="contained"
           startIcon={<Icon name="play_arrow" size={20} />}
-          onClick={() => navigate(`/playground?resume=${session.id}`)}
+          onClick={() => navigate(`/playground/component?resume=${session.id}`)}
         >
           Continue in Playground
         </Button>

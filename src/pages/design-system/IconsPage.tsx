@@ -7,6 +7,8 @@ import {
   Card,
   Chip,
   Divider,
+  ToggleButtonGroup,
+  ToggleButton,
   alpha,
 } from '@mui/material';
 import { Icon } from '../../components/Icon';
@@ -14,13 +16,52 @@ import { config } from '../../config';
 
 /* ── Icon grid data ── */
 const ICON_NAMES = [
-  'home', 'search', 'settings', 'person', 'favorite', 'star', 'edit', 'delete',
-  'add', 'close', 'check', 'arrow_back', 'arrow_forward', 'menu', 'more_vert',
-  'visibility', 'notifications', 'email', 'phone', 'calendar_today', 'schedule',
-  'place', 'shopping_cart', 'payment', 'inventory', 'category', 'local_pharmacy',
-  'medical_services', 'health_and_safety', 'science', 'palette', 'code',
-  'bug_report', 'speed', 'tune', 'filter_list', 'sort', 'download', 'upload',
-  'share', 'link',
+  // Navigation & Layout
+  'home', 'menu', 'close', 'arrow_back', 'arrow_forward', 'chevron_left', 'chevron_right',
+  'expand_less', 'expand_more', 'keyboard_arrow_down', 'keyboard_arrow_left', 'keyboard_arrow_up',
+  'side_navigation', 'subdirectory_arrow_right',
+  // ModeStrip & Sidebar
+  'widgets', 'palette', 'design_services', 'science', 'article', 'settings', 'dashboard',
+  'grid_view', 'new_releases',
+  // Actions
+  'add', 'add_box', 'edit', 'edit_note', 'delete', 'save', 'close', 'check', 'search',
+  'search_off', 'filter_list', 'filter_alt', 'sort', 'more_vert', 'content_copy',
+  'download', 'upload', 'file_upload', 'share', 'link', 'open_in_new', 'send',
+  'restart_alt', 'play_arrow', 'preview',
+  // Status & Feedback
+  'check_circle', 'error', 'error_outline', 'warning', 'info', 'block', 'cancel',
+  'notifications', 'mark_email_unread', 'visibility', 'hourglass_empty', 'hourglass_top',
+  // People & Communication
+  'person', 'person_add', 'group', 'email', 'mail', 'phone', 'support_agent',
+  // Commerce & Data
+  'shopping_cart', 'payment', 'inventory', 'inventory_2', 'local_offer', 'local_shipping',
+  'storefront', 'receipt_long', 'percent', 'trending_up',
+  // Content & Media
+  'favorite', 'star', 'label', 'description', 'draft', 'note_add', 'rate_review',
+  'format_align_left', 'format_align_center', 'format_align_right', 'format_quote',
+  'translate', 'emoji_symbols',
+  // Design System
+  'category', 'layers', 'style', 'brush', 'tune', 'rule', 'pattern', 'verified',
+  'checklist', 'playlist_remove', 'compare', 'grid_on',
+  'line_weight', 'check_box', 'check_box_outline_blank', 'rounded_corner',
+  'smart_button', 'tab', 'view_carousel', 'view_list', 'slideshow',
+  // Scheduling & Time
+  'calendar_today', 'schedule', 'event', 'history',
+  // Location & Maps
+  'place', 'public',
+  // Pharmacy & Health
+  'local_pharmacy', 'medical_services', 'health_and_safety', 'medication',
+  'allergy', 'dermatology', 'gastroenterology', 'nutrition', 'pulmonology',
+  // Tech & Dev
+  'code', 'bug_report', 'speed', 'engineering', 'integration_instructions',
+  'system_update', 'web', 'web_asset', 'mouse', 'dark_mode', 'light_mode',
+  'admin_panel_settings', 'lock',
+  // Data Display
+  'table_chart', 'table_view', 'insights', 'analytics', 'stat_minus_1',
+  // Other
+  'campaign', 'bolt', 'auto_awesome', 'lightbulb', 'fingerprint', 'library_add',
+  'center_focus_strong', 'desktop_windows', 'inbox', 'input', 'touch_app',
+  'feedback', 'space_bar', 'text_fields',
 ];
 
 /* ── Icon rules from design-rules config ── */
@@ -28,6 +69,7 @@ const ICON_RULES = config.designRules.rules.filter((r) => r.category.includes('I
 
 export function IconsPage() {
   const [search, setSearch] = useState('');
+  const [filled, setFilled] = useState(false);
   const [copiedIcon, setCopiedIcon] = useState<string | null>(null);
 
   const filteredIcons = useMemo(
@@ -51,7 +93,7 @@ export function IconsPage() {
       {/* ══════════════════════════════════════════════════
           Section 1: Configuration
          ══════════════════════════════════════════════════ */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
         <Icon name="tune" size={20} sx={{ mr: 1, verticalAlign: 'text-bottom' }} />
         Default Configuration
       </Typography>
@@ -79,7 +121,7 @@ export function IconsPage() {
             }}
           >
             <Icon name={item.icon} size={32} />
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
               {item.label}
             </Typography>
             <Chip label={item.value} size="small" color="primary" variant="outlined" sx={{ fontFamily: 'monospace' }} />
@@ -115,7 +157,7 @@ export function IconsPage() {
       {/* ══════════════════════════════════════════════════
           Section 2: Icon Browser
          ══════════════════════════════════════════════════ */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
         <Icon name="grid_view" size={20} sx={{ mr: 1, verticalAlign: 'text-bottom' }} />
         Icon Browser
       </Typography>
@@ -123,22 +165,37 @@ export function IconsPage() {
         Common icons used across Medipim and Lochting. Click to copy the icon name.
       </Typography>
 
-      <TextField
-        placeholder="Search icons..."
-        size="small"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start">
-                <Icon name="search" size={20} color="text.secondary" />
-              </InputAdornment>
-            ),
-          },
-        }}
-        sx={{ mb: 3, maxWidth: 360, width: '100%' }}
-      />
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
+        <TextField
+          placeholder="Search icons..."
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Icon name="search" size={20} color="text.secondary" />
+                </InputAdornment>
+              ),
+            },
+          }}
+          sx={{ maxWidth: 360, width: '100%' }}
+        />
+        <ToggleButtonGroup
+          value={filled ? 'filled' : 'outlined'}
+          exclusive
+          onChange={(_, v) => { if (v) setFilled(v === 'filled'); }}
+          size="small"
+        >
+          <ToggleButton value="outlined" sx={{ textTransform: 'none', gap: 0.75, px: 1.5 }}>
+            <Icon name="check_box_outline_blank" size={18} /> Outlined
+          </ToggleButton>
+          <ToggleButton value="filled" sx={{ textTransform: 'none', gap: 0.75, px: 1.5 }}>
+            <Icon name="check_box" size={18} filled /> Filled
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
 
       <Box
         sx={{
@@ -160,14 +217,14 @@ export function IconsPage() {
               alignItems: 'center',
               gap: 1,
               cursor: 'pointer',
-              transition: 'all 0.15s ease',
+              transition: 'border-color 0.2s ease-out, background-color 0.2s ease-out',
               '&:hover': {
                 bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
                 borderColor: 'primary.main',
               },
             }}
           >
-            <Icon name={name} size={24} />
+            <Icon name={name} size={24} filled={filled} />
             <Typography
               variant="caption"
               sx={{
@@ -175,7 +232,7 @@ export function IconsPage() {
                 textAlign: 'center',
                 lineHeight: 1.3,
                 color: copiedIcon === name ? 'primary.main' : 'text.secondary',
-                fontWeight: copiedIcon === name ? 700 : 400,
+                fontWeight: copiedIcon === name ? 500 : 400,
                 wordBreak: 'break-all',
               }}
             >
@@ -199,7 +256,7 @@ export function IconsPage() {
       {/* ══════════════════════════════════════════════════
           Section 3: Exception Registry
          ══════════════════════════════════════════════════ */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
         <Icon name="rule" size={20} sx={{ mr: 1, verticalAlign: 'text-bottom' }} />
         Exception Registry
       </Typography>
@@ -218,7 +275,7 @@ export function IconsPage() {
                   color={rule.enforcement === 'error' ? 'error' : 'warning'}
                   sx={{ fontFamily: 'monospace', fontSize: '0.7rem', textTransform: 'uppercase' }}
                 />
-                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
                   {rule.rule}
                 </Typography>
               </Box>
@@ -239,7 +296,7 @@ export function IconsPage() {
                       borderColor: 'divider',
                     },
                     '& th': {
-                      fontWeight: 600,
+                      fontWeight: 500,
                       color: 'text.secondary',
                       fontSize: '0.7rem',
                       textTransform: 'uppercase',
@@ -282,7 +339,7 @@ export function IconsPage() {
       {/* ══════════════════════════════════════════════════
           Section 4: Do's and Don'ts
          ══════════════════════════════════════════════════ */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
         <Icon name="checklist" size={20} sx={{ mr: 1, verticalAlign: 'text-bottom' }} />
         Do's and Don'ts
       </Typography>
@@ -303,7 +360,7 @@ export function IconsPage() {
           <Box sx={{ p: 2.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
               <Icon name="check_circle" size={20} filled color="success.main" />
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'success.main' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'success.main' }}>
                 Do
               </Typography>
             </Box>
@@ -340,7 +397,7 @@ export function IconsPage() {
           <Box sx={{ p: 2.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
               <Icon name="cancel" size={20} filled color="error.main" />
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'error.main' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'error.main' }}>
                 Don't
               </Typography>
             </Box>

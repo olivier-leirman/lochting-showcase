@@ -1,10 +1,11 @@
 import { createElement } from 'react';
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function autocompleteOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function autocompleteOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
 
@@ -67,8 +68,13 @@ export function autocompleteOverrides(brand: BrandTokens, fx: Effects): Componen
           },
         },
         paper: {
-          borderRadius: PRIMITIVES.radius.md,
-          border: `1px solid ${c.borderDefault}`,
+          borderRadius: sp.radius.md,
+          backgroundColor: sp.surface.cardBg || undefined,
+          border: sp.surface.cardBorder || `1px solid ${c.borderDefault}`,
+          ...(sp.surface.blur ? {
+            backdropFilter: `blur(${sp.surface.blur}px)`,
+            WebkitBackdropFilter: `blur(${sp.surface.blur}px)`,
+          } : {}),
           boxShadow: [
             `0 4px 16px 0 ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.08)'}`,
             `0 1px 4px 0 ${isDark ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.04)'}`,
@@ -78,7 +84,7 @@ export function autocompleteOverrides(brand: BrandTokens, fx: Effects): Componen
         listbox: {
           padding: 4,
           '& .MuiAutocomplete-option': {
-            borderRadius: PRIMITIVES.radius.sm,
+            borderRadius: sp.radius.sm,
             minHeight: 36,
             fontSize: PRIMITIVES.fontSize.sm,
             fontFamily: brand.typography.bodyFont,

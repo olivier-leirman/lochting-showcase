@@ -114,8 +114,8 @@ export function TypographyPage() {
   const { brand, fontPresetIndex, setFontPreset, fontPresets } = useBrand();
   const t = brand.typography;
   const p = PRIMITIVES;
-  const sw = t.strongWeight ?? p.fontWeight.semibold;
-  const hw = t.headingWeight ?? p.fontWeight.semibold;
+  const sw = t.strongWeight ?? p.fontWeight.medium;
+  const hw = t.headingWeight ?? p.fontWeight.medium;
 
   const displayFont = t.displayFont.split(',')[0].replace(/"/g, '');
   const bodyFont = t.bodyFont.split(',')[0].replace(/"/g, '');
@@ -297,9 +297,7 @@ export function TypographyPage() {
         <tbody>
           {([
             { token: 'regular', value: p.fontWeight.regular, usage: 'Body text, display headings (h1–h3)' },
-            { token: 'medium', value: p.fontWeight.medium, usage: 'Available for subtle emphasis' },
-            { token: 'semibold', value: p.fontWeight.semibold, usage: `UI headings (h4–h6), strong text, buttons` },
-            { token: 'bold', value: p.fontWeight.bold, usage: 'Available for heavy emphasis' },
+            { token: 'medium', value: p.fontWeight.medium, usage: 'UI headings (h4–h6), strong text, buttons, labels' },
           ] as const).map(row => (
             <tr key={row.token}>
               <td><Typography variant="body2" sx={{ fontFamily: 'monospace', color: 'primary.main' }}>fontWeight.{row.token}</Typography></td>

@@ -228,7 +228,7 @@ export function AppSidebar({
         >
           {collapsed ? (
             <Tooltip title="Expand sidebar" placement="right">
-              <IconButton size="small" onClick={handleToggleCollapse}>
+              <IconButton size="small" onClick={handleToggleCollapse} aria-label="Expand sidebar">
                 <Icon name="left_panel_open" size={20} />
               </IconButton>
             </Tooltip>
@@ -236,7 +236,7 @@ export function AppSidebar({
             <>
               {logo ?? <Box sx={{ flex: 1 }} />}
               <Tooltip title="Collapse sidebar">
-                <IconButton size="small" onClick={handleToggleCollapse} sx={{ ml: 'auto' }}>
+                <IconButton size="small" onClick={handleToggleCollapse} aria-label="Collapse sidebar" sx={{ ml: 'auto' }}>
                   <Icon name="left_panel_close" size={20} />
                 </IconButton>
               </Tooltip>
@@ -307,7 +307,7 @@ export function AppSidebar({
                           height: 22,
                           minWidth: 22,
                           fontSize: '0.7rem',
-                          fontWeight: 600,
+                          fontWeight: 500,
                         }}
                         color="primary"
                         variant="outlined"
@@ -406,13 +406,16 @@ function ExtraNavPanel({ width, parentLabel, items, onCollapse, onItemClick }: E
               }}
             >
               {parentLabel}
-              <IconButton
-                size="small"
-                onClick={onCollapse}
-                sx={{ width: 28, height: 28 }}
-              >
-                <Icon name="keyboard_arrow_left" size={18} />
-              </IconButton>
+              <Tooltip title="Collapse">
+                <IconButton
+                  size="small"
+                  onClick={onCollapse}
+                  aria-label="Collapse section"
+                  sx={{ width: 28, height: 28 }}
+                >
+                  <Icon name="keyboard_arrow_left" size={18} />
+                </IconButton>
+              </Tooltip>
             </ListSubheader>
           }
         >
@@ -437,7 +440,7 @@ function ExtraNavPanel({ width, parentLabel, items, onCollapse, onItemClick }: E
                     height: 22,
                     minWidth: 22,
                     fontSize: '0.7rem',
-                    fontWeight: 600,
+                    fontWeight: 500,
                   }}
                   color="primary"
                   variant="outlined"

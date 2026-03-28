@@ -15,7 +15,7 @@ export function ExamplesTab({ doc }: { doc: ComponentDoc }) {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {doc.examples.map((ex, i) => (
         <Box key={i}>
-          <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>
+          <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
             {ex.name}
           </Typography>
           <PreviewCodeTabs preview={ex.render()} code={ex.code} />

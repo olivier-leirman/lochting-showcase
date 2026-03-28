@@ -17,7 +17,7 @@ function ScoreGauge({ score }: { score: number }) {
   const color = score >= 90 ? 'success' : score >= 70 ? 'warning' : 'error';
   return (
     <Box sx={{ textAlign: 'center' }}>
-      <Typography variant="h2" sx={{ fontWeight: 700, fontSize: '3.5rem' }}>
+      <Typography variant="h2" sx={{ fontWeight: 500, fontSize: '3.5rem' }}>
         {score}
       </Typography>
       <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
@@ -64,7 +64,7 @@ function ViolationCard({ violation }: { violation: Violation }) {
                   borderRadius: 0.5,
                   bgcolor: 'action.hover',
                   fontFamily: 'monospace',
-                  fontWeight: 600,
+                  fontWeight: 500,
                 }}
               >
                 {violation.component}
@@ -92,7 +92,7 @@ function ViolationCard({ violation }: { violation: Violation }) {
             size="small"
             color={isError ? 'error' : 'warning'}
             variant={isError ? 'filled' : 'outlined'}
-            sx={{ height: 22, fontSize: '0.7rem', fontWeight: 600, flexShrink: 0 }}
+            sx={{ height: 22, fontSize: '0.7rem', fontWeight: 500, flexShrink: 0 }}
           />
         </Box>
       </CardContent>
@@ -110,7 +110,7 @@ function BrandReport({ report }: { report: ConsistencyReport }) {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <ScoreGauge score={report.score} />
           <Box sx={{ flex: 1 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            <Typography variant="h6" sx={{ fontWeight: 500 }}>
               {report.brand}
             </Typography>
             <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
@@ -214,7 +214,7 @@ export function ConsistencyPage() {
         <Card variant="outlined" sx={{ flex: '1 1 140px', maxWidth: 200 }}>
           <CardContent sx={{ textAlign: 'center', py: 3 }}>
             <Icon name="error" size={28} filled color="error.main" />
-            <Typography variant="h4" sx={{ fontWeight: 700, mt: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 500, mt: 1 }}>
               {totalErrors}
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -226,7 +226,7 @@ export function ConsistencyPage() {
         <Card variant="outlined" sx={{ flex: '1 1 140px', maxWidth: 200 }}>
           <CardContent sx={{ textAlign: 'center', py: 3 }}>
             <Icon name="warning" size={28} filled color="warning.main" />
-            <Typography variant="h4" sx={{ fontWeight: 700, mt: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 500, mt: 1 }}>
               {totalWarnings}
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -238,7 +238,7 @@ export function ConsistencyPage() {
         <Card variant="outlined" sx={{ flex: '1 1 140px', maxWidth: 200 }}>
           <CardContent sx={{ textAlign: 'center', py: 3 }}>
             <Icon name="check_circle" size={28} filled color="success.main" />
-            <Typography variant="h4" sx={{ fontWeight: 700, mt: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 500, mt: 1 }}>
               {reports.filter((r) => r.violations.length === 0).length}
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -251,7 +251,7 @@ export function ConsistencyPage() {
       <Divider sx={{ my: 4 }} />
 
       {/* Per-brand reports */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="h5" sx={{ fontWeight: 500, mb: 1 }}>
         <Icon name="analytics" size={20} sx={{ mr: 1, verticalAlign: 'text-bottom' }} />
         Brand Reports
       </Typography>

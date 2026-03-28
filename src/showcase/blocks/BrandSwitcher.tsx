@@ -1,5 +1,6 @@
-import { Box, ToggleButton, ToggleButtonGroup, Typography, Chip, alpha } from '@mui/material';
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useBrand } from '../../theme/brand-context';
+import { ToggleChip, ToggleChipGroup } from '../../components/ToggleChip';
 
 /**
  * Two-level brand switcher:
@@ -38,30 +39,15 @@ export function BrandSwitcher() {
       {hasMultipleStyles && (
         <>
           <Typography variant="caption" sx={{ color: 'text.disabled', mx: 0.5 }}>/</Typography>
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <ToggleChipGroup value={styleId} exclusive onChange={(val) => setStyle(val as string)}>
             {currentPlatform.styles.map(s => (
-              <Chip
+              <ToggleChip
                 key={s.id}
+                value={s.id}
                 label={s.label}
-                size="small"
-                variant={s.id === styleId ? 'filled' : 'outlined'}
-                color={s.id === styleId ? 'primary' : 'default'}
-                onClick={() => setStyle(s.id)}
-                sx={{
-                  fontSize: '0.75rem',
-                  height: 26,
-                  cursor: 'pointer',
-                  ...(s.id === styleId
-                    ? {}
-                    : {
-                        '&:hover': {
-                          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-                        },
-                      }),
-                }}
               />
             ))}
-          </Box>
+          </ToggleChipGroup>
         </>
       )}
     </Box>

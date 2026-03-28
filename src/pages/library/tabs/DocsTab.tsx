@@ -15,13 +15,13 @@ export function DocsTab({ doc }: { doc: ComponentDoc }) {
       </Typography>
 
       {/* Import */}
-      <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>Import</Typography>
+      <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>Import</Typography>
       <CodeBlock code={doc.importStatement} language="tsx" />
 
       {/* Props Table */}
       {doc.props.length > 0 && (
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>Props</Typography>
+          <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>Props</Typography>
           <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
             <Table size="small">
               <TableHead>

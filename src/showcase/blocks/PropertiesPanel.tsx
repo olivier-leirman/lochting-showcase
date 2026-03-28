@@ -306,11 +306,12 @@ function ElementCard({ element, defaultExpanded }: { element: ExtractedElement; 
           transition: 'background-color 0.15s',
         }}
       >
-        <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: 'monospace', fontSize: '0.8rem' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, fontFamily: 'monospace', fontSize: '0.8rem' }}>
           {element.label}
         </Typography>
         <IconButton
           size="small"
+          aria-label={expanded ? 'Collapse' : 'Expand'}
           sx={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}
         >
           <ExpandMoreIcon fontSize="small" />

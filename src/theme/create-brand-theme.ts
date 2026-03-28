@@ -73,8 +73,8 @@ export function createBrandTheme(
   const c = colors;
   const p = PRIMITIVES;
   const t = brand.typography;
-  const hw = t.headingWeight ?? p.fontWeight.semibold;
-  const sw = t.strongWeight ?? p.fontWeight.semibold;
+  const hw = t.headingWeight ?? p.fontWeight.medium;
+  const sw = t.strongWeight ?? p.fontWeight.medium;
 
   const theme = createTheme({
     palette: {
@@ -102,6 +102,33 @@ export function createBrandTheme(
       caption: { fontSize: p.fontSize.xs },
       button: { textTransform: 'none' as const, fontWeight: sw },
     },
+    shadows: [
+      'none',
+      '0 1px 2px 0 rgba(0,0,0,0.04)',
+      '0 1px 4px 0 rgba(0,0,0,0.06)',
+      '0 2px 6px 0 rgba(0,0,0,0.06)',
+      '0 2px 8px 0 rgba(0,0,0,0.07)',
+      '0 3px 10px 0 rgba(0,0,0,0.07)',
+      '0 4px 12px 0 rgba(0,0,0,0.08)',
+      '0 4px 16px 0 rgba(0,0,0,0.08)',
+      '0 6px 20px 0 rgba(0,0,0,0.08)',
+      '0 8px 24px 0 rgba(0,0,0,0.08)',
+      '0 10px 28px 0 rgba(0,0,0,0.08)',
+      '0 12px 32px 0 rgba(0,0,0,0.08)',
+      '0 14px 36px 0 rgba(0,0,0,0.08)',
+      '0 16px 40px 0 rgba(0,0,0,0.08)',
+      '0 18px 44px 0 rgba(0,0,0,0.08)',
+      '0 20px 48px 0 rgba(0,0,0,0.08)',
+      '0 22px 52px 0 rgba(0,0,0,0.08)',
+      '0 24px 56px 0 rgba(0,0,0,0.08)',
+      '0 26px 60px 0 rgba(0,0,0,0.08)',
+      '0 28px 64px 0 rgba(0,0,0,0.08)',
+      '0 30px 68px 0 rgba(0,0,0,0.08)',
+      '0 32px 72px 0 rgba(0,0,0,0.08)',
+      '0 34px 76px 0 rgba(0,0,0,0.08)',
+      '0 36px 80px 0 rgba(0,0,0,0.08)',
+      '0 38px 84px 0 rgba(0,0,0,0.08)',
+    ] as unknown as Theme['shadows'],
     shape: {
       borderRadius: profile.radius.sm,
     },

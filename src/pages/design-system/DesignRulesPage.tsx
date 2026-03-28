@@ -34,7 +34,7 @@ export function DesignRulesPage() {
   return (
     <Box sx={{ p: 4, maxWidth: 960, mx: 'auto' }}>
       {/* Page header */}
-      <Typography variant="h4" fontWeight={700}>
+      <Typography variant="h4" fontWeight={500}>
         Design Rules
       </Typography>
       <Typography color="text.secondary" sx={{ mt: 1, mb: 4 }}>
@@ -77,6 +77,8 @@ const categoryIcons: Record<string, string> = {
   'SPACING & SIZING': 'straighten',
   ICONS: 'emoji_symbols',
   'COLOR & CONTRAST': 'palette',
+  INTERACTIONS: 'touch_app',
+  COMPONENTS: 'widgets',
 };
 
 // ── CategoryGroup ──
@@ -99,8 +101,8 @@ function CategoryGroup({
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: 1.5,
-          mb: 2,
+          gap: 2,
+          mb: 1.5,
         }}
       >
         <Box
@@ -118,7 +120,7 @@ function CategoryGroup({
           <Icon name={iconName} size={22} />
         </Box>
         <Box sx={{ flex: 1 }}>
-          <Typography variant="subtitle1" fontWeight={700} letterSpacing={0.5}>
+          <Typography variant="subtitle1" fontWeight={500} letterSpacing={0.5} sx={{ mb: 0.25 }}>
             {category}
           </Typography>
           <Typography variant="caption" color="text.secondary">
@@ -153,17 +155,9 @@ function RuleCard({ rule }: { rule: DesignRule }) {
           rule.enforcement === 'error'
             ? alpha(theme.palette.error.main, 0.25)
             : alpha(theme.palette.divider, 1),
-        transition: 'box-shadow 0.2s, border-color 0.2s',
-        '&:hover': {
-          borderColor:
-            rule.enforcement === 'error'
-              ? alpha(theme.palette.error.main, 0.5)
-              : alpha(theme.palette.primary.main, 0.3),
-          boxShadow: `0 2px 8px ${alpha(theme.palette.common.black, 0.06)}`,
-        },
       })}
     >
-      <CardContent sx={{ py: 2, px: 2.5, '&:last-child': { pb: 2 } }}>
+      <CardContent sx={{ py: 2, px: 2, '&:last-child': { pb: 2 } }}>
         {/* Rule row */}
         <Box
           sx={{
@@ -198,7 +192,7 @@ function RuleCard({ rule }: { rule: DesignRule }) {
             size="small"
             color={rule.enforcement === 'error' ? 'error' : 'warning'}
             variant={rule.enforcement === 'error' ? 'filled' : 'outlined'}
-            sx={{ height: 24, fontSize: 12, fontWeight: 600 }}
+            sx={{ height: 24, fontSize: 12, fontWeight: 500 }}
           />
 
           {/* Expand exceptions button */}
@@ -206,6 +200,7 @@ function RuleCard({ rule }: { rule: DesignRule }) {
             <IconButton
               size="small"
               onClick={() => setOpen((prev) => !prev)}
+              aria-label={open ? 'Collapse exceptions' : 'Expand exceptions'}
               sx={{
                 ml: 0.5,
                 transition: 'transform 0.2s',
@@ -235,7 +230,7 @@ function RuleCard({ rule }: { rule: DesignRule }) {
           <Divider sx={{ my: 1.5 }} />
           <Typography
             variant="caption"
-            fontWeight={600}
+            fontWeight={500}
             color="text.secondary"
             sx={{ ml: 1, mb: 0.5, display: 'block', textTransform: 'uppercase', letterSpacing: 0.8 }}
           >

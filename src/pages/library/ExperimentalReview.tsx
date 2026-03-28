@@ -84,19 +84,12 @@ function ExperimentalCard({
   return (
     <Card
       variant="outlined"
-      sx={{
-        transition: 'border-color 0.2s, box-shadow 0.2s',
-        '&:hover': {
-          borderColor: c.brand300,
-          boxShadow: `0 4px 20px ${alpha(c.brand400, 0.1)}`,
-        },
-      }}
     >
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {/* Header */}
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Box sx={{ flex: 1 }}>
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography variant="subtitle1" fontWeight={500}>
               {experiment.name}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
@@ -159,7 +152,7 @@ function ExperimentalCard({
           <>
             <Divider />
             <Box>
-              <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              <Typography variant="caption" fontWeight={500} color="text.secondary" sx={{ mb: 1, display: 'block' }}>
                 Notes
               </Typography>
               {experiment.notes.map((note, idx) => (
@@ -283,7 +276,7 @@ export function ExperimentalReview() {
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
           <Icon name="science" size={28} />
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={500}>
             Experimental Components
           </Typography>
         </Box>
@@ -333,7 +326,7 @@ export function ExperimentalReview() {
             <Button
               variant="contained"
               startIcon={<Icon name="science" size={18} />}
-              href="/playground"
+              href="/playground/component"
               sx={{ mt: 3, textTransform: 'none' }}
             >
               Open Playground

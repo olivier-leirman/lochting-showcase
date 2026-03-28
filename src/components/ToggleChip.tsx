@@ -27,9 +27,10 @@ export function ToggleChip({ label, value, count, icon, selected, onClick, sx }:
   return (
     <Chip
       label={displayLabel}
-      size="medium"
+      size="small"
       clickable
       color={selected ? 'primary' : 'secondary'}
+      variant="filled"
       icon={icon ? <Icon name={icon} size={18} /> : undefined}
       onClick={() => onClick?.(value)}
       role="option"

@@ -1,4 +1,73 @@
 {
+  "spacing": {
+    "grid": 4,
+    "allowedMultiples": [0, 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, 80, 96],
+    "sectionGap": 32,
+    "componentGap": 16
+  },
+  "buttons": {
+    "heights": { "sm": 40, "md": 48, "lg": 56 },
+    "maxPrimaryPerView": 1,
+    "touchTarget": 44,
+    "destructiveRequiresConfirmation": true,
+    "iconOnlyMinSize": 36,
+    "borderRadius": "sm"
+  },
+  "borderRadius": {
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "full": 9999
+  },
+  "icons": {
+    "library": "Google Material Symbols",
+    "defaultWeight": 300,
+    "defaultStyle": "outlined",
+    "defaultOpticalSize": 24,
+    "grade": 0,
+    "fillOnlyFor": ["active states", "selected states"],
+    "exceptions": [
+      { "component": "Checkbox check icon", "override": "filled", "reason": "Standard pattern" },
+      { "component": "Check-circle icon", "override": "filled", "reason": "Standard pattern" },
+      { "component": "DatePicker nav arrows", "override": "weight 400", "reason": "Tap target visibility" }
+    ]
+  },
+  "contrast": {
+    "minRatio": 4.5,
+    "minLargeTextRatio": 3,
+    "minInteractiveOpacity": 0.6,
+    "minFocusContrast": 3
+  },
+  "cards": {
+    "padding": { "compact": 12, "medium": 16, "large": 24 },
+    "radius": { "compact": 8, "medium": 12, "large": 16 },
+    "gap": { "compact": 8, "medium": 12, "large": 16 },
+    "minClickTarget": 44
+  },
+  "shadows": {
+    "principle": "Subtle, high-blur, low-opacity. Never harsh or black.",
+    "resting": "0 1px 4px rgba(0,0,0,0.06)",
+    "hover": "0 4px 16px rgba(0,0,0,0.08)",
+    "elevated": "0 8px 24px rgba(0,0,0,0.08)",
+    "maxOpacity": 0.12,
+    "minBlur": 4,
+    "colorRule": "Use rgba(0,0,0) — never solid black or high-opacity shadows"
+  },
+  "focus": {
+    "width": 2,
+    "offset": 2,
+    "style": "solid",
+    "color": "brand",
+    "minContrast": 3
+  },
+  "hover": {
+    "transitionMin": 150,
+    "transitionMax": 300,
+    "easing": "ease-out",
+    "backgroundShift": 0.04
+  },
   "rules": [
     {
       "id": "spacing-grid",
@@ -15,14 +84,11 @@
       "exceptions": []
     },
     {
-      "id": "icon-default",
-      "category": "ICONS",
-      "rule": "Material Symbols: weight 300, outlined, rounded",
-      "enforcement": "warning",
-      "exceptions": [
-        { "component": "Checkbox", "override": "filled variant", "reason": "Visual clarity" },
-        { "component": "DatePicker arrows", "override": "weight 400", "reason": "Tap target visibility" }
-      ]
+      "id": "touch-target",
+      "category": "SPACING & SIZING",
+      "rule": "Minimum touch target size: 44×44px for interactive elements",
+      "enforcement": "error",
+      "exceptions": []
     },
     {
       "id": "border-radius",
@@ -32,18 +98,14 @@
       "exceptions": []
     },
     {
-      "id": "primary-contrast",
-      "category": "COLOR & CONTRAST",
-      "rule": "Primary color contrast ratio ≥ 4.5:1 against white",
-      "enforcement": "error",
-      "exceptions": []
-    },
-    {
-      "id": "interactive-opacity",
-      "category": "COLOR & CONTRAST",
-      "rule": "Never use opacity < 0.6 for interactive elements",
+      "id": "icon-default",
+      "category": "ICONS",
+      "rule": "Material Symbols: weight 300, outlined, rounded",
       "enforcement": "warning",
-      "exceptions": []
+      "exceptions": [
+        { "component": "Checkbox", "override": "filled variant", "reason": "Visual clarity" },
+        { "component": "DatePicker arrows", "override": "weight 400", "reason": "Tap target visibility" }
+      ]
     },
     {
       "id": "icon-weight-consistency",
@@ -63,6 +125,78 @@
         { "component": "Checkbox check icon", "override": "filled", "reason": "Standard pattern" },
         { "component": "Check-circle icon", "override": "filled", "reason": "Standard pattern" }
       ]
+    },
+    {
+      "id": "primary-contrast",
+      "category": "COLOR & CONTRAST",
+      "rule": "Primary color contrast ratio ≥ 4.5:1 against white",
+      "enforcement": "error",
+      "exceptions": []
+    },
+    {
+      "id": "interactive-opacity",
+      "category": "COLOR & CONTRAST",
+      "rule": "Never use opacity < 0.6 for interactive elements",
+      "enforcement": "warning",
+      "exceptions": []
+    },
+    {
+      "id": "focus-ring",
+      "category": "COLOR & CONTRAST",
+      "rule": "Focus ring: 2px solid, brand color, 2px offset, ≥ 3:1 contrast",
+      "enforcement": "error",
+      "exceptions": []
+    },
+    {
+      "id": "hover-transition",
+      "category": "INTERACTIONS",
+      "rule": "Hover transitions: 150–300ms, ease-out easing",
+      "enforcement": "warning",
+      "exceptions": []
+    },
+    {
+      "id": "card-padding",
+      "category": "COMPONENTS",
+      "rule": "Card padding: compact=12px, medium=16px, large=24px — always from token",
+      "enforcement": "warning",
+      "exceptions": []
+    },
+    {
+      "id": "max-primary-button",
+      "category": "COMPONENTS",
+      "rule": "Maximum one primary (contained) button per view/section",
+      "enforcement": "warning",
+      "exceptions": []
+    },
+    {
+      "id": "destructive-confirmation",
+      "category": "COMPONENTS",
+      "rule": "Destructive actions require confirmation dialog before execution",
+      "enforcement": "error",
+      "exceptions": []
+    },
+    {
+      "id": "shadow-subtle",
+      "category": "COLOR & CONTRAST",
+      "rule": "Shadows must be subtle: high blur, low opacity (max 0.12), rgba(0,0,0) only — never solid black or harsh shadows",
+      "enforcement": "error",
+      "exceptions": []
+    },
+    {
+      "id": "card-flat-default",
+      "category": "COMPONENTS",
+      "rule": "Static cards are flat (boxShadow: none, border only). Clickable cards get a subtle resting shadow (0 1px 4px rgba(0,0,0,0.06)) to signal interactivity, lifting on hover.",
+      "enforcement": "warning",
+      "exceptions": [
+        { "component": "Showcase card demos", "override": "explicit shadow variants", "reason": "Intentional demo of elevated/sunken styles" }
+      ]
+    },
+    {
+      "id": "card-hover-clickable-only",
+      "category": "INTERACTIONS",
+      "rule": "Hover effects (shadow lift, border highlight, transform) only on clickable/interactive cards — never on static/informational cards",
+      "enforcement": "warning",
+      "exceptions": []
     }
   ]
 }

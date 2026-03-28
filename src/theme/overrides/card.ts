@@ -32,22 +32,35 @@ export function cardOverrides(
   sp: StyleProfile = DEFAULT_STYLE_PROFILE,
 ): Components<Theme> {
   const c = brand.colors;
-  void fx; // preserve parameter for API parity
+  const isDark = fx.mode === 'dark';
   const profile = sp;
 
-  // Build card root styles from profile
+  // Subtle card shadows — high blur, low opacity (never harsh/black)
+  const cardShadow = isDark
+    ? '0 2px 8px 0 rgba(0,0,0,0.20)'
+    : '0 1px 4px 0 rgba(0,0,0,0.06)';
+  const cardHoverShadow = isDark
+    ? '0 4px 16px 0 rgba(0,0,0,0.28)'
+    : '0 4px 16px 0 rgba(0,0,0,0.08)';
+
+  // Build card root styles from profile — flat by default (no resting shadow)
   const cardRoot: Record<string, unknown> = {
     borderRadius: profile.radius.lg,
     fontFamily: brand.typography.bodyFont,
     backgroundImage: 'none',
+    boxShadow: 'none',
+    transition: 'box-shadow 0.2s ease-out, border-color 0.2s ease-out',
   };
 
   // Surface treatment from profile
   if (profile.surface.cardBg) {
     cardRoot.backgroundColor = profile.surface.cardBg;
   }
+  // Border: use profile border if set, otherwise default to subtle border
   if (profile.surface.cardBorder) {
     cardRoot.border = profile.surface.cardBorder;
+  } else {
+    cardRoot.border = `1px solid ${c.borderDefault}`;
   }
   // Extra CSS (backdrop-filter for glass, etc.)
   if (profile.cardExtra) {
@@ -56,8 +69,26 @@ export function cardOverrides(
 
   return {
     MuiCard: {
+      defaultProps: {
+        elevation: 0,
+      },
       styleOverrides: {
         root: cardRoot,
+      },
+    },
+    MuiCardActionArea: {
+      styleOverrides: {
+        root: {
+          // Clickable cards get a subtle resting shadow to signal interactivity
+          '& .MuiCard-root, &': {
+            boxShadow: cardShadow,
+          },
+          '&:hover': {
+            '& .MuiCard-root, &': {
+              boxShadow: cardHoverShadow,
+            },
+          },
+        },
       },
     },
     MuiCardHeader: {
@@ -67,7 +98,7 @@ export function cardOverrides(
         },
         title: {
           fontFamily: brand.typography.bodyFont,
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.md,
         },
         subheader: {
@@ -109,7 +140,7 @@ export function cardOverrides(
         root: {
           fontFamily: brand.typography.bodyFont,
           fontSize: PRIMITIVES.fontSize.sm,
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           borderRadius: PRIMITIVES.radius.sm,
           padding: '6px 12px',
         },

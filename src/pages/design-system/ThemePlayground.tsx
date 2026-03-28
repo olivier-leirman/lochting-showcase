@@ -135,7 +135,7 @@ function Section({ title, icon, defaultOpen = true, children }: SectionProps) {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Icon name={icon} size={18} />
-          <Typography variant="body2" fontWeight={600}>
+          <Typography variant="body2" fontWeight={500}>
             {title}
           </Typography>
         </Box>
@@ -328,7 +328,7 @@ export function ThemePlayground() {
       {/* Header */}
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box>
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={500}>
             Theme Playground
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 0.5 }}>
@@ -548,7 +548,7 @@ export function ThemePlayground() {
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant="body2"
-                fontWeight={600}
+                fontWeight={500}
                 sx={{ mb: 1.5, color: previewTheme.palette.text.secondary }}
               >
                 Buttons
@@ -570,7 +570,7 @@ export function ThemePlayground() {
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant="body2"
-                fontWeight={600}
+                fontWeight={500}
                 sx={{ mb: 1.5, color: previewTheme.palette.text.secondary }}
               >
                 Text Fields
@@ -590,7 +590,7 @@ export function ThemePlayground() {
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant="body2"
-                fontWeight={600}
+                fontWeight={500}
                 sx={{ mb: 1.5, color: previewTheme.palette.text.secondary }}
               >
                 Card
@@ -618,7 +618,7 @@ export function ThemePlayground() {
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant="body2"
-                fontWeight={600}
+                fontWeight={500}
                 sx={{ mb: 1.5, color: previewTheme.palette.text.secondary }}
               >
                 Chips
@@ -638,7 +638,7 @@ export function ThemePlayground() {
             <Box>
               <Typography
                 variant="body2"
-                fontWeight={600}
+                fontWeight={500}
                 sx={{ mb: 1.5, color: previewTheme.palette.text.secondary }}
               >
                 Typography

@@ -26,7 +26,7 @@ export function StyleVariantsPage() {
       <Box sx={{ mb: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
           <Icon name="style" size={28} color="inherit" />
-          <Typography variant="h4" fontWeight={700}>
+          <Typography variant="h4" fontWeight={500}>
             Style Variants
           </Typography>
         </Box>
@@ -38,7 +38,7 @@ export function StyleVariantsPage() {
 
       {/* Section 1: Global Style Override */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h5" fontWeight={600} sx={{ mb: 0.5 }}>
+        <Typography variant="h5" fontWeight={500} sx={{ mb: 0.5 }}>
           Global Style Override
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -54,7 +54,7 @@ export function StyleVariantsPage() {
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
           <Icon name="grid_view" size={22} color="inherit" />
-          <Typography variant="h5" fontWeight={600}>
+          <Typography variant="h5" fontWeight={500}>
             Brand &times; Style Matrix
           </Typography>
         </Box>
@@ -88,7 +88,7 @@ export function StyleVariantsPage() {
               },
               '& thead th': {
                 bgcolor: 'background.default',
-                fontWeight: 600,
+                fontWeight: 500,
                 fontSize: 13,
                 whiteSpace: 'nowrap',
               },
@@ -98,13 +98,13 @@ export function StyleVariantsPage() {
             <thead>
               <tr>
                 <Box component="th" sx={{ width: 140, textAlign: 'left !important' }}>
-                  <Typography variant="caption" fontWeight={600}>
+                  <Typography variant="caption" fontWeight={500}>
                     Style / Brand
                   </Typography>
                 </Box>
                 {allBrands.map((brand) => (
                   <th key={brand.id}>
-                    <Typography variant="caption" fontWeight={600}>
+                    <Typography variant="caption" fontWeight={500}>
                       {brand.platformName}
                     </Typography>
                     <Typography

@@ -1,9 +1,10 @@
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function tabsOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function tabsOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
 
@@ -34,7 +35,7 @@ export function tabsOverrides(brand: BrandTokens, fx: Effects): Components<Theme
           color: c.contentSecondary,
           minHeight: 40,
           padding: '8px 16px',
-          borderRadius: `${PRIMITIVES.radius.sm}px ${PRIMITIVES.radius.sm}px 0 0`,
+          borderRadius: `${sp.radius.sm}px ${sp.radius.sm}px 0 0`,
           transition: 'color 0.15s, background-color 0.15s',
           '&:hover': {
             color: c.contentSecondary,
@@ -42,7 +43,7 @@ export function tabsOverrides(brand: BrandTokens, fx: Effects): Components<Theme
           },
           '&.Mui-selected': {
             color: c.brand450,
-            fontWeight: PRIMITIVES.fontWeight.semibold,
+            fontWeight: PRIMITIVES.fontWeight.medium,
           },
           '&.Mui-disabled': {
             color: c.contentTertiary,

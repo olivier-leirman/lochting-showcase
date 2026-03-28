@@ -54,13 +54,13 @@ function HeroSection({ brand }: { brand: BrandTokens }) {
           fontSize: '0.75rem',
           px: 1,
         }}
-        icon={<Icon name="auto_awesome" size={14} color={c.brand400} />}
+        icon={<Icon name="auto_awesome" size={14} color={c.brand500} />}
       />
       <Typography
         variant="h1"
         sx={{
           fontSize: { xs: '2rem', md: '2.75rem' },
-          fontWeight: 700,
+          fontWeight: 500,
           lineHeight: 1.15,
           mb: 2,
           color: c.contentPrimary,
@@ -89,20 +89,80 @@ function HeroSection({ brand }: { brand: BrandTokens }) {
         <Button
           variant="contained"
           size="large"
-          onClick={() => navigate('/getting-started')}
+          onClick={() => navigate('/components')}
           endIcon={<Icon name="arrow_forward" size={18} />}
         >
-          Get Started
+          Browse Components
         </Button>
         <Button
           variant="outlined"
           size="large"
-          onClick={() => navigate('/tokens/colors')}
+          onClick={() => navigate('/theme')}
           startIcon={<Icon name="palette" size={18} />}
         >
-          Explore Tokens
+          Explore Theme
         </Button>
       </Box>
+    </Box>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SECTION: Quick Links
+   ════════════════════════════════════════════════════════════════════ */
+
+const QUICK_LINKS = [
+  { icon: 'widgets', label: 'Components', desc: 'Browse all 40+ production-ready components', path: '/components' },
+  { icon: 'palette', label: 'Theme', desc: 'Colors, typography, spacing, effects, and icons', path: '/theme' },
+  { icon: 'design_services', label: 'Design System', desc: 'Rules, patterns, consistency checks', path: '/design-system' },
+  { icon: 'science', label: 'Playground', desc: 'Experiment with components and themes', path: '/playground' },
+  { icon: 'article', label: 'Prototypes', desc: 'Real-world page prototypes and showcases', path: '/prototypes' },
+];
+
+function QuickLinks({ brand }: { brand: BrandTokens }) {
+  const c = brand.colors;
+  const { effects } = useBrand();
+  const navigate = useNavigate();
+
+  return (
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' }, gap: 2 }}>
+      {QUICK_LINKS.map(link => (
+        <Box
+          key={link.path}
+          onClick={() => navigate(link.path)}
+          sx={{
+            bgcolor: c.bgElevated,
+            borderRadius: '16px',
+            p: 3,
+            border: '1px solid',
+            borderColor: c.borderWeak,
+            boxShadow: '0 1px 4px 0 rgba(0,0,0,0.06)',
+            cursor: 'pointer',
+            transition: 'border-color 0.2s ease-out, box-shadow 0.2s ease-out',
+            '&:hover': {
+              borderColor: c.brand300,
+              boxShadow: '0 4px 16px 0 rgba(0,0,0,0.08)',
+            },
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.5,
+          }}
+        >
+          <Box sx={{
+            width: 40, height: 40, borderRadius: 2,
+            bgcolor: c.brand100,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Icon name={link.icon} size={20} color={c.brand500} />
+          </Box>
+          <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.85rem' }}>
+            {link.label}
+          </Typography>
+          <Typography variant="caption" sx={{ color: c.contentSecondary, lineHeight: 1.5 }}>
+            {link.desc}
+          </Typography>
+        </Box>
+      ))}
     </Box>
   );
 }
@@ -133,7 +193,7 @@ function StatsBar({ brand }: { brand: BrandTokens }) {
     >
       {stats.map(s => (
         <Box key={s.label} sx={{ textAlign: 'center' }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: c.brand400, lineHeight: 1.2 }}>
+          <Typography variant="h4" sx={{ fontWeight: 500, color: c.brand400, lineHeight: 1.2 }}>
             {s.value}
           </Typography>
           <Typography variant="caption" sx={{ color: c.contentTertiary }}>
@@ -178,24 +238,21 @@ function FeatureCards({ brand }: { brand: BrandTokens }) {
           key={f.title}
           sx={{
             bgcolor: c.bgElevated,
-            borderRadius: 3,
-            p: 3.5,
+            borderRadius: '16px',
+            p: 4,
             border: '1px solid',
             borderColor: c.borderWeak,
-            boxShadow: effects.shadows.secondaryButton,
-            transition: 'border-color 0.2s, box-shadow 0.2s',
-            '&:hover': { borderColor: c.brand300, boxShadow: effects.shadows.secondaryButtonHover },
           }}
         >
           <Box
             sx={{
               width: 44, height: 44, borderRadius: 2,
-              background: effects.gradients.primary,
+              bgcolor: c.brand100,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               mb: 2.5,
             }}
           >
-            <Icon name={f.icon} size={22} color={c.contentStayLight} />
+            <Icon name={f.icon} size={22} color={c.brand500} />
           </Box>
           <Typography variant="h6" sx={{ fontWeight: sw(brand), mb: 1, color: c.contentPrimary, fontSize: '1rem' }}>
             {f.title}
@@ -219,10 +276,10 @@ function MiniStatCard({ icon, value, label, change, brand }: {
   const c = brand.colors;
   const isPositive = change?.startsWith('+');
   return (
-    <Box sx={{ bgcolor: c.bgElevated, borderRadius: 2, p: 2, border: '1px solid', borderColor: c.borderDefault, flex: 1, minWidth: 100 }}>
+    <Box sx={{ bgcolor: c.bgElevated, borderRadius: '16px', p: 3, border: '1px solid', borderColor: c.borderDefault, flex: 1, minWidth: 100 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
         <Box sx={{ width: 32, height: 32, borderRadius: 1.5, bgcolor: c.brand100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Icon name={icon} size={16} color={c.brand400} />
+          <Icon name={icon} size={16} color={c.brand500} />
         </Box>
         {change && (
           <Chip label={change} size="small" sx={{
@@ -232,7 +289,7 @@ function MiniStatCard({ icon, value, label, change, brand }: {
           }} />
         )}
       </Box>
-      <Typography variant="h6" sx={{ fontWeight: 700, color: c.contentPrimary, lineHeight: 1.2, fontSize: '1.1rem' }}>{value}</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 500, color: c.contentPrimary, lineHeight: 1.2, fontSize: '1.1rem' }}>{value}</Typography>
       <Typography variant="caption" sx={{ color: c.contentTertiary, fontSize: '0.65rem' }}>{label}</Typography>
     </Box>
   );
@@ -253,7 +310,7 @@ function DashboardPreview({ brand }: { brand: BrandTokens }) {
   return (
     <Box sx={{ py: 2 }}>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 500, color: c.contentPrimary, mb: 1 }}>
           Components in action
         </Typography>
         <Typography variant="body2" sx={{ color: c.contentSecondary, maxWidth: 480, mx: 'auto' }}>
@@ -264,12 +321,11 @@ function DashboardPreview({ brand }: { brand: BrandTokens }) {
       <Box
         sx={{
           bgcolor: c.bgBase,
-          borderRadius: 3,
+          borderRadius: '16px',
           border: '1px solid',
           borderColor: c.borderDefault,
-          boxShadow: effects.shadows.sidebar,
           overflow: 'hidden',
-          p: 3,
+          p: 4,
           display: 'flex',
           flexDirection: 'column',
           gap: 2.5,
@@ -284,7 +340,7 @@ function DashboardPreview({ brand }: { brand: BrandTokens }) {
         </Box>
 
         {/* Chart bars */}
-        <Box sx={{ bgcolor: c.bgElevated, borderRadius: 2, border: '1px solid', borderColor: c.borderDefault, p: 2.5 }}>
+        <Box sx={{ bgcolor: c.bgElevated, borderRadius: '12px', border: '1px solid', borderColor: c.borderDefault, p: 3 }}>
           <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, mb: 0.5, fontSize: '0.8rem' }}>
             Revenue Overview
           </Typography>
@@ -300,7 +356,7 @@ function DashboardPreview({ brand }: { brand: BrandTokens }) {
         </Box>
 
         {/* Activity table */}
-        <Box sx={{ bgcolor: c.bgElevated, borderRadius: 2, border: '1px solid', borderColor: c.borderDefault }}>
+        <Box sx={{ bgcolor: c.bgElevated, borderRadius: '12px', border: '1px solid', borderColor: c.borderDefault }}>
           <Box sx={{ px: 2.5, py: 1.5 }}>
             <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.8rem' }}>
               Recent Activity
@@ -354,7 +410,7 @@ function TestimonialSection({ brand }: { brand: BrandTokens }) {
   return (
     <Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 500, color: c.contentPrimary, mb: 1 }}>
           Loved by teams
         </Typography>
         <Typography variant="body2" sx={{ color: c.contentSecondary }}>
@@ -367,11 +423,10 @@ function TestimonialSection({ brand }: { brand: BrandTokens }) {
             key={t.name}
             sx={{
               bgcolor: c.bgElevated,
-              borderRadius: 3,
-              p: 3,
+              borderRadius: '16px',
+              p: 4,
               border: '1px solid',
               borderColor: c.borderWeak,
-              boxShadow: effects.shadows.secondaryButton,
               display: 'flex',
               flexDirection: 'column',
               gap: 2.5,
@@ -414,7 +469,7 @@ function ComponentGrid({ brand }: { brand: BrandTokens }) {
   return (
     <Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 500, color: c.contentPrimary, mb: 1 }}>
           40+ production-ready components
         </Typography>
         <Typography variant="body2" sx={{ color: c.contentSecondary, maxWidth: 480, mx: 'auto' }}>
@@ -441,13 +496,14 @@ function ComponentGrid({ brand }: { brand: BrandTokens }) {
                     onClick={() => navigate(`/components/${comp.id}`)}
                     sx={{
                       bgcolor: c.bgElevated,
-                      borderRadius: 2,
-                      p: 2,
+                      borderRadius: '16px',
+                      p: 3,
                       border: '1px solid',
                       borderColor: c.borderWeak,
+                      boxShadow: '0 1px 4px 0 rgba(0,0,0,0.06)',
                       cursor: 'pointer',
-                      transition: 'border-color 0.15s, box-shadow 0.15s',
-                      '&:hover': { borderColor: c.brand300, boxShadow: effects.shadows.secondaryButtonHover },
+                      transition: 'border-color 0.2s ease-out, box-shadow 0.2s ease-out',
+                      '&:hover': { borderColor: c.brand300, boxShadow: '0 4px 16px 0 rgba(0,0,0,0.08)' },
                       display: 'flex',
                       alignItems: 'center',
                       gap: 1.5,
@@ -459,7 +515,7 @@ function ComponentGrid({ brand }: { brand: BrandTokens }) {
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0,
                     }}>
-                      <Icon name={COMPONENT_ICONS[comp.id] ?? 'widgets'} size={16} color={c.brand400} />
+                      <Icon name={COMPONENT_ICONS[comp.id] ?? 'widgets'} size={16} color={c.brand500} />
                     </Box>
                     <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.8rem' }}>
                       {comp.name}
@@ -503,28 +559,28 @@ function TokenCoverage({ brand }: { brand: BrandTokens }) {
   return (
     <Box sx={{
       bgcolor: c.bgElevated,
-      borderRadius: 3,
+      borderRadius: '16px',
       p: 4,
       border: '1px solid',
       borderColor: c.borderDefault,
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Box>
-          <Typography variant="h6" sx={{ fontWeight: 700, color: c.contentPrimary, fontSize: '1rem' }}>
+          <Typography variant="h6" sx={{ fontWeight: 500, color: c.contentPrimary, fontSize: '1rem' }}>
             Token Coverage
           </Typography>
           <Typography variant="caption" sx={{ color: c.contentTertiary }}>
             Design system implementation progress
           </Typography>
         </Box>
-        <Chip label="94% overall" size="small" sx={{ bgcolor: c.success.bgWeakest, color: c.success.contentStrong, fontWeight: 600, fontSize: '0.7rem' }} />
+        <Chip label="94% overall" size="small" sx={{ bgcolor: c.success.bgWeakest, color: c.success.contentStrong, fontWeight: 500, fontSize: '0.7rem' }} />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {items.map(item => (
           <Box key={item.label}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
               <Typography variant="body2" sx={{ fontSize: '0.75rem', color: c.contentSecondary }}>{item.label}</Typography>
-              <Typography variant="body2" sx={{ fontSize: '0.75rem', fontWeight: 600, color: c.contentPrimary }}>{item.value}%</Typography>
+              <Typography variant="body2" sx={{ fontSize: '0.75rem', fontWeight: 500, color: c.contentPrimary }}>{item.value}%</Typography>
             </Box>
             <LinearProgress
               variant="determinate"
@@ -553,13 +609,13 @@ function CTASection({ brand }: { brand: BrandTokens }) {
         textAlign: 'center',
         py: 6,
         px: 4,
-        borderRadius: 3,
+        borderRadius: '16px',
         background: effects.gradients.primary,
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentStayLight, mb: 1 }}>
+      <Typography variant="h4" sx={{ fontWeight: 500, color: c.contentStayLight, mb: 1 }}>
         Ready to build?
       </Typography>
       <Typography variant="body2" sx={{ color: c.contentStayLight, opacity: 0.85, mb: 4, maxWidth: 420, mx: 'auto' }}>
@@ -583,7 +639,7 @@ function CTASection({ brand }: { brand: BrandTokens }) {
         <Button
           variant="outlined"
           size="large"
-          onClick={() => navigate('/tokens/colors')}
+          onClick={() => navigate('/theme/colors')}
           sx={{
             borderColor: 'rgba(255,255,255,0.4)',
             color: c.contentStayLight,
@@ -634,7 +690,7 @@ function SystemHealth({ brand }: { brand: BrandTokens }) {
   return (
     <Box>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
+        <Typography variant="h4" sx={{ fontWeight: 500, color: c.contentPrimary, mb: 1 }}>
           System Health
         </Typography>
         <Typography variant="body2" sx={{ color: c.contentSecondary, maxWidth: 480, mx: 'auto' }}>
@@ -647,11 +703,10 @@ function SystemHealth({ brand }: { brand: BrandTokens }) {
             key={`${item.brandName}-${item.styleLabel}`}
             sx={{
               bgcolor: c.bgElevated,
-              borderRadius: 3,
+              borderRadius: '16px',
               p: 3,
               border: '1px solid',
               borderColor: c.borderWeak,
-              boxShadow: effects.shadows.secondaryButton,
               minWidth: 180,
               flex: '1 1 180px',
               maxWidth: 220,
@@ -666,7 +721,7 @@ function SystemHealth({ brand }: { brand: BrandTokens }) {
             <Typography variant="body2" sx={{ fontWeight: sw(brand), color: c.contentPrimary, fontSize: '0.85rem' }}>
               {item.styleLabel}
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 700, color: scoreColor(item.score), lineHeight: 1.2 }}>
+            <Typography variant="h4" sx={{ fontWeight: 500, color: scoreColor(item.score), lineHeight: 1.2 }}>
               {item.score}
             </Typography>
             <LinearProgress
@@ -684,7 +739,7 @@ function SystemHealth({ brand }: { brand: BrandTokens }) {
                   height: 20,
                   bgcolor: item.errors > 0 ? c.error.bgWeakest : c.success.bgWeakest,
                   color: item.errors > 0 ? c.error.contentStrong : c.success.contentStrong,
-                  fontWeight: 600,
+                  fontWeight: 500,
                 }}
               />
               <Chip
@@ -695,7 +750,7 @@ function SystemHealth({ brand }: { brand: BrandTokens }) {
                   height: 20,
                   bgcolor: item.warnings > 0 ? c.warning.bgWeakest : c.success.bgWeakest,
                   color: item.warnings > 0 ? c.warning.contentStrong : c.success.contentStrong,
-                  fontWeight: 600,
+                  fontWeight: 500,
                 }}
               />
             </Box>
@@ -716,6 +771,7 @@ export function HomePage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <HeroSection brand={brand} />
+      <QuickLinks brand={brand} />
       <StatsBar brand={brand} />
       <SystemHealth brand={brand} />
       <FeatureCards brand={brand} />

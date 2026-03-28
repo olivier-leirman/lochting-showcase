@@ -20,7 +20,7 @@ export function MedipimSaasShowcase() {
     <Typography
       sx={{
         fontSize: '0.65rem',
-        fontWeight: 600,
+        fontWeight: 500,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
         color: c.contentTertiary,
@@ -57,14 +57,14 @@ export function MedipimSaasShowcase() {
           <Box
             sx={{
               width: 36, height: 36, borderRadius: 2,
-              background: effects.gradients.primary,
+              bgcolor: c.brand100,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
-            <Icon name="local_pharmacy" size={20} sx={{ color: c.contentStayLight }} />
+            <Icon name="local_pharmacy" size={20} sx={{ color: c.brand500 }} />
           </Box>
           <Box>
-            <Typography sx={{ fontWeight: 700, fontSize: '1.35rem', lineHeight: 1.2, fontFamily: brand.typography.displayFont }}>
+            <Typography sx={{ fontWeight: 500, fontSize: '1.35rem', lineHeight: 1.2, fontFamily: brand.typography.displayFont }}>
               Medipim
             </Typography>
             <Typography sx={{ fontSize: '0.75rem', color: c.contentTertiary }}>
@@ -98,7 +98,7 @@ export function MedipimSaasShowcase() {
                   <Button
                     variant="contained"
                     endIcon={<Icon name="arrow_forward" size={16} />}
-                    sx={{ textTransform: 'none', fontWeight: 600, px: 2.5 }}
+                    sx={{ textTransform: 'none', fontWeight: 500, px: 2.5 }}
                   >
                     Save Product Info
                   </Button>
@@ -120,7 +120,7 @@ export function MedipimSaasShowcase() {
                     startIcon={<Icon name="auto_awesome" size={16} />}
                     sx={{
                       textTransform: 'none',
-                      fontWeight: 600,
+                      fontWeight: 500,
                       bgcolor: c.contentPrimary,
                       color: c.contentStayLight,
                       '&:hover': { bgcolor: c.contentPrimary, filter: 'brightness(1.2)' },
@@ -218,26 +218,26 @@ export function MedipimSaasShowcase() {
                       </Box>
                     </Box>
                     <Chip
-                      icon={<Icon name="auto_awesome" size={12} sx={{ color: c.brand400 }} />}
+                      icon={<Icon name="auto_awesome" size={12} sx={{ color: c.brand500 }} />}
                       label="AI Generated"
                       size="small"
                       sx={{
                         fontSize: '0.65rem',
-                        fontWeight: 600,
+                        fontWeight: 500,
                         bgcolor: c.brand100,
                         color: c.brand450,
                         height: 24,
                       }}
                     />
                   </Box>
-                  <Typography sx={{ fontWeight: 700, fontSize: '1rem', mb: 0.75 }}>
+                  <Typography sx={{ fontWeight: 500, fontSize: '1rem', mb: 0.75 }}>
                     Usage Summary
                   </Typography>
                   <Typography sx={{ fontSize: '0.8rem', color: c.contentSecondary, lineHeight: 1.6, mb: 2.5 }}>
                     Recommended dosage for adults is 1-2 tablets every 4 to 6 hours. Do not exceed 8 tablets in 24 hours.
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1.5 }}>
-                    <Button variant="contained" size="small" sx={{ textTransform: 'none', fontWeight: 600 }}>
+                    <Button variant="contained" size="small" sx={{ textTransform: 'none', fontWeight: 500 }}>
                       Approve
                     </Button>
                     <Button variant="text" size="small" sx={{ textTransform: 'none', fontWeight: 500, color: c.contentSecondary }}>
@@ -255,7 +255,7 @@ export function MedipimSaasShowcase() {
                       <Icon name="medication" size={18} sx={{ color: c.contentTertiary }} />
                     </Box>
                     <Box>
-                      <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>Dafalgan Forte</Typography>
+                      <Typography sx={{ fontWeight: 500, fontSize: '0.95rem' }}>Dafalgan Forte</Typography>
                       <Typography sx={{ fontSize: '0.7rem', color: c.contentTertiary }}>CNK: 1234-567 &bull; 1000mg</Typography>
                     </Box>
                   </Box>
@@ -273,16 +273,16 @@ export function MedipimSaasShowcase() {
                             size="small"
                             sx={{
                               fontSize: '0.65rem',
-                              fontWeight: 600,
+                              fontWeight: 500,
                               height: 22,
                               bgcolor: c.success.bgWeakest,
                               color: c.success.contentStrong,
                             }}
                           />
                         ) : row.isLink ? (
-                          <Typography sx={{ fontSize: '0.8rem', fontWeight: 600, color: c.brand400 }}>{row.value}</Typography>
+                          <Typography sx={{ fontSize: '0.8rem', fontWeight: 500, color: c.brand400 }}>{row.value}</Typography>
                         ) : (
-                          <Typography sx={{ fontSize: '0.8rem', fontWeight: row.isBold ? 700 : 400 }}>{row.value}</Typography>
+                          <Typography sx={{ fontSize: '0.8rem', fontWeight: row.isBold ? 500 : 400 }}>{row.value}</Typography>
                         )}
                       </Box>
                     ))}
@@ -298,8 +298,8 @@ export function MedipimSaasShowcase() {
             {card(
               <Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>Recent Updates</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: c.brand400, cursor: 'pointer' }}>
+                  <Typography sx={{ fontWeight: 500, fontSize: '0.95rem' }}>Recent Updates</Typography>
+                  <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: c.brand400, cursor: 'pointer' }}>
                     View All
                   </Typography>
                 </Box>
@@ -307,16 +307,16 @@ export function MedipimSaasShowcase() {
                   <Table size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}` }}>
+                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}` }}>
                           Product Name
                         </TableCell>
-                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}` }}>
+                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}` }}>
                           Code (CNK)
                         </TableCell>
-                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}` }}>
+                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}` }}>
                           Last Edited
                         </TableCell>
-                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}`, width: 40 }}>
+                        <TableCell sx={{ fontSize: '0.65rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: c.contentTertiary, borderBottom: `1px solid ${c.borderDefault}`, width: 40 }}>
                           Action
                         </TableCell>
                       </TableRow>
@@ -334,7 +334,7 @@ export function MedipimSaasShowcase() {
                                 <Icon name={row.icon} size={14} sx={{ color: c.contentTertiary }} />
                               </Box>
                               <Box>
-                                <Typography sx={{ fontSize: '0.8rem', fontWeight: 600 }}>{row.name}</Typography>
+                                <Typography sx={{ fontSize: '0.8rem', fontWeight: 500 }}>{row.name}</Typography>
                                 <Typography sx={{ fontSize: '0.65rem', color: c.contentTertiary }}>{row.sub}</Typography>
                               </Box>
                             </Box>
@@ -343,7 +343,7 @@ export function MedipimSaasShowcase() {
                             <Typography sx={{ fontSize: '0.8rem', color: c.contentSecondary, fontFamily: 'monospace' }}>{row.code}</Typography>
                           </TableCell>
                           <TableCell sx={{ borderBottom: `1px solid ${c.borderWeak}`, py: 1.5 }}>
-                            <Typography sx={{ fontSize: '0.75rem', color: row.timeColor, fontWeight: row.timeColor === c.brand400 ? 600 : 400 }}>
+                            <Typography sx={{ fontSize: '0.75rem', color: row.timeColor, fontWeight: row.timeColor === c.brand400 ? 500 : 400 }}>
                               {row.time}
                             </Typography>
                           </TableCell>

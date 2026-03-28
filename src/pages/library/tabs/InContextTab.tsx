@@ -80,7 +80,7 @@ function MedipimProductTable() {
                       {p.name.charAt(0)}
                     </Avatar>
                     <Box>
-                      <Typography variant="body2" fontWeight={600}>{p.name}</Typography>
+                      <Typography variant="body2" fontWeight={500}>{p.name}</Typography>
                       <Typography variant="caption" color="text.secondary">{p.supplier}</Typography>
                     </Box>
                   </Box>
@@ -89,7 +89,7 @@ function MedipimProductTable() {
                 <TableCell><Chip label={p.category} size="small" variant="outlined" /></TableCell>
                 <TableCell align="right"><Typography variant="body2">&euro;{p.price.toFixed(2)}</Typography></TableCell>
                 <TableCell align="right">
-                  <Typography variant="body2" color={p.stock < 20 ? 'error.main' : 'text.primary'} fontWeight={p.stock < 20 ? 600 : 400}>
+                  <Typography variant="body2" color={p.stock < 20 ? 'error.main' : 'text.primary'} fontWeight={p.stock < 20 ? 500 : 400}>
                     {p.stock}
                   </Typography>
                 </TableCell>
@@ -157,13 +157,13 @@ function MedipimCategoryCards() {
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 2 }}>
         {categories.map((c) => (
           <Card key={c.id} variant="outlined">
-            <CardContent sx={{ pb: 1 }}>
+            <CardContent sx={{ pb: 1.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                 <Avatar sx={{ bgcolor: (t) => alpha(t.palette.primary.main, 0.1), color: 'primary.main', width: 40, height: 40 }}>
                   <Icon name={c.icon} size={22} />
                 </Avatar>
                 <Box>
-                  <Typography variant="subtitle2" fontWeight={600}>{c.name}</Typography>
+                  <Typography variant="subtitle2" fontWeight={500}>{c.name}</Typography>
                   <Typography variant="caption" color="text.secondary">{c.productCount} products</Typography>
                 </Box>
               </Box>
@@ -206,14 +206,14 @@ function LochtingOrderDashboard() {
           </Avatar>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2" fontWeight={600}>{o.orderNumber}</Typography>
+              <Typography variant="body2" fontWeight={500}>{o.orderNumber}</Typography>
               <Chip label={o.status} size="small" color={statusColor[o.status] ?? 'default'} sx={{ fontSize: '0.6875rem', height: 22 }} />
             </Box>
             <Typography variant="caption" color="text.secondary">
               {o.pharmacyName} &middot; {o.items.length} items
             </Typography>
           </Box>
-          <Typography variant="body2" fontWeight={600}>&euro;{o.total.toFixed(2)}</Typography>
+          <Typography variant="body2" fontWeight={500}>&euro;{o.total.toFixed(2)}</Typography>
           <Tooltip title="View order">
             <IconButton size="small"><Icon name="chevron_right" size={18} /></IconButton>
           </Tooltip>
@@ -240,18 +240,18 @@ function LochtingCustomerList() {
                   {c.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                 </Avatar>
                 <Box>
-                  <Typography variant="subtitle2" fontWeight={600}>{c.name}</Typography>
+                  <Typography variant="subtitle2" fontWeight={500}>{c.name}</Typography>
                   <Typography variant="caption" color="text.secondary">{c.pharmacyName}</Typography>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', gap: 3 }}>
                 <Box>
                   <Typography variant="caption" color="text.secondary">Orders</Typography>
-                  <Typography variant="body2" fontWeight={600}>{c.totalOrders}</Typography>
+                  <Typography variant="body2" fontWeight={500}>{c.totalOrders}</Typography>
                 </Box>
                 <Box>
                   <Typography variant="caption" color="text.secondary">Total Spent</Typography>
-                  <Typography variant="body2" fontWeight={600}>&euro;{c.totalSpent.toFixed(0)}</Typography>
+                  <Typography variant="body2" fontWeight={500}>&euro;{c.totalSpent.toFixed(0)}</Typography>
                 </Box>
               </Box>
             </CardContent>
@@ -304,7 +304,7 @@ function LochtingNotificationCenter() {
             <Icon name={typeIcon[n.type] ?? n.icon} size={18} />
           </Avatar>
           <Box sx={{ flex: 1 }}>
-            <Typography variant="body2" fontWeight={n.read ? 400 : 600}>{n.title}</Typography>
+            <Typography variant="body2" fontWeight={n.read ? 400 : 500}>{n.title}</Typography>
             <Typography variant="caption" color="text.secondary">{n.message}</Typography>
           </Box>
           {!n.read && <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'primary.main', mt: 0.75, flexShrink: 0 }} />}
@@ -336,7 +336,7 @@ function StockHealthOverview() {
         ].map((s) => (
           <Card key={s.label} variant="outlined">
             <CardContent sx={{ textAlign: 'center', py: 2 }}>
-              <Typography variant="h4" fontWeight={700} color={s.color}>{s.count}</Typography>
+              <Typography variant="h4" fontWeight={500} color={s.color}>{s.count}</Typography>
               <Typography variant="caption" color="text.secondary">{s.label}</Typography>
             </CardContent>
           </Card>
@@ -345,8 +345,8 @@ function StockHealthOverview() {
       <Box>
         {low.map((p) => (
           <Box key={p.id} sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
-            <Typography variant="body2" fontWeight={600} sx={{ flex: 1 }}>{p.name}</Typography>
-            <Typography variant="body2" color="error.main" fontWeight={600}>{p.stock} left</Typography>
+            <Typography variant="body2" fontWeight={500} sx={{ flex: 1 }}>{p.name}</Typography>
+            <Typography variant="body2" color="error.main" fontWeight={500}>{p.stock} left</Typography>
             <LinearProgress
               variant="determinate"
               value={Math.min((p.stock / 100) * 100, 100)}
@@ -418,7 +418,7 @@ export function InContextTab({ doc }: { doc: ComponentDoc }) {
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Box>
-          <Typography variant="subtitle1" fontWeight={600}>
+          <Typography variant="subtitle1" fontWeight={500}>
             Real-World Context
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -460,7 +460,7 @@ export function InContextTab({ doc }: { doc: ComponentDoc }) {
                 sx={{ fontSize: '0.6875rem', height: 22 }}
               />
               <Box>
-                <Typography variant="subtitle2" fontWeight={600}>{study.title}</Typography>
+                <Typography variant="subtitle2" fontWeight={500}>{study.title}</Typography>
                 <Typography variant="caption" color="text.secondary">{study.description}</Typography>
               </Box>
             </Box>

@@ -20,7 +20,7 @@ export function ActivityTimeline({ entries, title }: ActivityTimelineProps) {
   return (
     <Box sx={{ mt: 3 }}>
       {title && (
-        <Typography variant="body1" sx={{ fontWeight: 600, mb: 2, color: c.contentPrimary }}>
+        <Typography variant="body1" sx={{ fontWeight: 500, mb: 2, color: c.contentPrimary }}>
           {title}
         </Typography>
       )}

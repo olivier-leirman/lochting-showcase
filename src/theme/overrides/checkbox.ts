@@ -1,13 +1,21 @@
 import { createElement } from 'react';
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function checkboxOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function checkboxOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
+  const isDark = fx.mode === 'dark';
   const size = PRIMITIVES.component.checkboxSize;
-  const r = PRIMITIVES.radius.xs;
+  // Checkbox radius: derived from sp.radius.sm scaled down (half of small)
+  const r = Math.max(2, Math.round(sp.radius.sm / 2));
+
+  // Primary background based on style profile
+  const primaryBg = sp.buttonPrimary === 'solid' ? c.brand400
+    : sp.buttonPrimary === 'glass' ? (isDark ? `color-mix(in srgb, ${c.brand400} 20%, transparent)` : `color-mix(in srgb, ${c.brand400} 85%, transparent)`)
+    : fx.gradients.primary;
 
   const uncheckedIcon = createElement('span', {
     style: {
@@ -27,7 +35,7 @@ export function checkboxOverrides(brand: BrandTokens, fx: Effects): Components<T
       width: size,
       height: size,
       borderRadius: r,
-      background: fx.gradients.primary,
+      background: primaryBg,
       boxShadow: fx.shadows.primaryButton,
       display: 'flex',
       alignItems: 'center',

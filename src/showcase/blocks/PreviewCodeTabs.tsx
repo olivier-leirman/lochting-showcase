@@ -16,7 +16,7 @@ export function PreviewCodeTabs({ preview, code }: PreviewCodeTabsProps) {
   const { hoverRect, hoverLabel, selectionRect } = useInspectOverlay(previewRef);
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'clip' }}>
       <Tabs
         value={tab}
         onChange={(_, v) => setTab(v)}
@@ -25,7 +25,7 @@ export function PreviewCodeTabs({ preview, code }: PreviewCodeTabsProps) {
           borderBottom: '1px solid',
           borderColor: 'divider',
           bgcolor: 'background.paper',
-          borderRadius: '8px 8px 0 0',
+          borderRadius: 0,
           '& .MuiTab-root': {
             minHeight: 40,
             textTransform: 'none',
@@ -47,7 +47,7 @@ export function PreviewCodeTabs({ preview, code }: PreviewCodeTabsProps) {
           bgcolor: 'background.default',
           minHeight: 120,
           position: 'relative',
-          borderRadius: '0 0 8px 8px',
+          borderRadius: 0,
           cursor: inspectorEnabled ? 'crosshair' : 'default',
         }}
       >
@@ -82,7 +82,7 @@ export function PreviewCodeTabs({ preview, code }: PreviewCodeTabsProps) {
                   color: 'primary.contrastText',
                   fontSize: '0.6rem',
                   fontFamily: 'monospace',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   borderRadius: '3px 3px 0 0',
                   whiteSpace: 'nowrap',
                   lineHeight: 1.5,
@@ -113,7 +113,7 @@ export function PreviewCodeTabs({ preview, code }: PreviewCodeTabsProps) {
           />
         )}
       </Box>
-      <Box sx={{ display: tab === 1 ? 'block' : 'none', borderRadius: '0 0 8px 8px', overflow: 'hidden' }}>
+      <Box sx={{ display: tab === 1 ? 'block' : 'none' }}>
         <CodeBlock code={code} />
       </Box>
     </Box>

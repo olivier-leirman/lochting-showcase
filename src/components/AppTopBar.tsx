@@ -10,6 +10,7 @@ import {
   Badge,
   Avatar,
   Box,
+  Tooltip,
   type AppBarProps,
 } from '@mui/material';
 import { Icon } from './Icon';
@@ -52,22 +53,32 @@ export function AppTopBar({
         {/* ── Back/Forward navigation ── */}
         {showNavigation && (
           <>
-            <IconButton
-              size="small"
-              onClick={onBack}
-              disabled={!onBack}
-              sx={{ width: 32, height: 32 }}
-            >
-              <Icon name="arrow_back" size={18} />
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={onForward}
-              disabled={!onForward}
-              sx={{ width: 32, height: 32 }}
-            >
-              <Icon name="arrow_forward" size={18} />
-            </IconButton>
+            <Tooltip title="Go back">
+              <span>
+                <IconButton
+                  size="small"
+                  onClick={onBack}
+                  disabled={!onBack}
+                  aria-label="Go back"
+                  sx={{ width: 32, height: 32 }}
+                >
+                  <Icon name="arrow_back" size={18} />
+                </IconButton>
+              </span>
+            </Tooltip>
+            <Tooltip title="Go forward">
+              <span>
+                <IconButton
+                  size="small"
+                  onClick={onForward}
+                  disabled={!onForward}
+                  aria-label="Go forward"
+                  sx={{ width: 32, height: 32 }}
+                >
+                  <Icon name="arrow_forward" size={18} />
+                </IconButton>
+              </span>
+            </Tooltip>
             <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
           </>
         )}
@@ -82,7 +93,7 @@ export function AppTopBar({
                   key={crumb.label}
                   sx={{
                     fontSize: '0.875rem',
-                    fontWeight: 600,
+                    fontWeight: 500,
                     color: 'text.primary',
                     display: 'flex',
                     alignItems: 'center',
@@ -166,15 +177,16 @@ export function TopBarActions({
         <>
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
           {utilityActions.map((action) => (
-            <IconButton
-              key={action.icon}
-              size="small"
-              onClick={action.onClick}
-              title={action.label}
-              sx={{ width: 32, height: 32 }}
-            >
-              <Icon name={action.icon} size={20} />
-            </IconButton>
+            <Tooltip key={action.icon} title={action.label}>
+              <IconButton
+                size="small"
+                onClick={action.onClick}
+                aria-label={action.label}
+                sx={{ width: 32, height: 32 }}
+              >
+                <Icon name={action.icon} size={20} />
+              </IconButton>
+            </Tooltip>
           ))}
         </>
       )}
@@ -183,25 +195,26 @@ export function TopBarActions({
         <>
           <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
           {notificationActions.map((action) => (
-            <IconButton
-              key={action.icon}
-              size="small"
-              onClick={action.onClick}
-              title={action.label}
-              sx={{ width: 32, height: 32 }}
-            >
-              {action.badge != null ? (
-                <Badge
-                  variant={action.badge === 0 ? 'dot' : 'standard'}
-                  badgeContent={action.badge || undefined}
-                  color="primary"
-                >
+            <Tooltip key={action.icon} title={action.label}>
+              <IconButton
+                size="small"
+                onClick={action.onClick}
+                aria-label={action.label}
+                sx={{ width: 32, height: 32 }}
+              >
+                {action.badge != null ? (
+                  <Badge
+                    variant={action.badge === 0 ? 'dot' : 'standard'}
+                    badgeContent={action.badge || undefined}
+                    color="primary"
+                  >
+                    <Icon name={action.icon} size={20} />
+                  </Badge>
+                ) : (
                   <Icon name={action.icon} size={20} />
-                </Badge>
-              ) : (
-                <Icon name={action.icon} size={20} />
-              )}
-            </IconButton>
+                )}
+              </IconButton>
+            </Tooltip>
           ))}
         </>
       )}

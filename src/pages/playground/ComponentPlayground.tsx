@@ -167,7 +167,7 @@ export function ComponentPlayground() {
       >
         {/* Back button */}
         <Tooltip title="Back to Library">
-          <IconButton size="small" onClick={() => navigate('/library')}>
+          <IconButton size="small" onClick={() => navigate('/components')}>
             <Icon name="arrow_back" size={20} />
           </IconButton>
         </Tooltip>
@@ -386,7 +386,7 @@ export function ComponentPlayground() {
         }}
       >
         <Box sx={{ p: 2.5, pb: 1.5 }}>
-          <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 2 }}>
+          <Typography variant="subtitle1" fontWeight={500} sx={{ mb: 2 }}>
             Asset Loader
           </Typography>
           <TextField
@@ -452,7 +452,7 @@ export function ComponentPlayground() {
                   >
                     <Icon name="widgets" size={18} />
                     <Box sx={{ ml: 1, textAlign: 'left' }}>
-                      <Typography variant="body2" fontWeight={600} sx={{ lineHeight: 1.3 }}>
+                      <Typography variant="body2" fontWeight={500} sx={{ lineHeight: 1.3 }}>
                         {doc.name}
                       </Typography>
                       <Typography
@@ -490,7 +490,7 @@ export function ComponentPlayground() {
         <Box sx={{ p: 2.5, pb: 1.5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
             <Icon name="auto_awesome" size={22} />
-            <Typography variant="subtitle1" fontWeight={700}>
+            <Typography variant="subtitle1" fontWeight={500}>
               Variant Generator
             </Typography>
           </Box>
@@ -523,7 +523,7 @@ export function ComponentPlayground() {
             <Divider />
             <Box sx={{ p: 2.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="caption" fontWeight={600} color="text.secondary">
+                <Typography variant="caption" fontWeight={500} color="text.secondary">
                   Ready-to-paste prompt
                 </Typography>
                 <Tooltip title="Copy to clipboard">
@@ -568,7 +568,7 @@ export function ComponentPlayground() {
 
         {/* Variants section */}
         <Box sx={{ p: 2.5, flex: 1, overflow: 'auto' }}>
-          <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
+          <Typography variant="caption" fontWeight={500} color="text.secondary" sx={{ mb: 1.5, display: 'block' }}>
             Variants
           </Typography>
 

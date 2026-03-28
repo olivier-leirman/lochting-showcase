@@ -1,288 +1,531 @@
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, Card, Chip, Divider, alpha } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  Chip,
+  Divider,
+  alpha,
+  IconButton,
+  Tooltip,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { Icon } from '../../components/Icon';
 import { useBrand } from '../../theme/brand-context';
 import { STYLES_BY_ID } from '../../styles';
+import {
+  loadBoard,
+  saveBoard,
+  addImages,
+  removeImage,
+  fileToBoardImage,
+  urlToBoardImage,
+  type InspirationBoard,
+  type BoardImage,
+} from '../../inspiration/board-store';
 
-const PLACEHOLDER_CARDS = [
-  { label: 'Surface Treatment', gradient: [0, 1] },
-  { label: 'Shadow Example', gradient: [1, 2] },
-  { label: 'Color Palette', gradient: [2, 3] },
-  { label: 'Button Style', gradient: [3, 4] },
-  { label: 'Card Layout', gradient: [0, 3] },
-  { label: 'Typography Feel', gradient: [1, 4] },
-  { label: 'Interaction Pattern', gradient: [2, 0] },
-  { label: 'Spacing Rhythm', gradient: [4, 1] },
-] as const;
+const ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 
 export function InspirationBoardPage() {
   const { style } = useParams();
   const navigate = useNavigate();
   const { brand, effects } = useBrand();
   const c = brand.colors;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const styleDef = style ? STYLES_BY_ID[style] : undefined;
+  const styleId = style ?? 'flat';
+  const styleDef = STYLES_BY_ID[styleId];
   const styleName = styleDef?.name ?? style ?? 'Unknown';
 
-  // Brand palette for gradients
-  const palette = [
-    c.brand100,
-    c.brand200,
-    c.brand300,
-    c.brand400,
-    c.brand500,
-  ];
+  // ── State ──
+  const [board, setBoard] = useState<InspirationBoard>(() => loadBoard(styleId));
+  const [dragOver, setDragOver] = useState(false);
+  const [urlDialogOpen, setUrlDialogOpen] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [editingMeta, setEditingMeta] = useState(false);
+  const [metaName, setMetaName] = useState(board.name);
+  const [metaDesc, setMetaDesc] = useState(board.description);
+
+  // Reload board when style changes
+  useEffect(() => {
+    const b = loadBoard(styleId);
+    setBoard(b);
+    setMetaName(b.name);
+    setMetaDesc(b.description);
+  }, [styleId]);
+
+  // ── Handlers ──
+  const processFiles = useCallback(
+    async (files: File[]) => {
+      const valid = files.filter(
+        (f) => ACCEPTED_TYPES.includes(f.type) && f.size <= MAX_SIZE,
+      );
+      if (valid.length === 0) return;
+      setLoading(true);
+      try {
+        const images = await Promise.all(valid.map(fileToBoardImage));
+        const updated = addImages(styleId, images);
+        setBoard(updated);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [styleId],
+  );
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      const files = Array.from(e.dataTransfer.files);
+      processFiles(files);
+    },
+    [processFiles],
+  );
+
+  const handlePaste = useCallback(
+    (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      const files: File[] = [];
+      for (const item of Array.from(items)) {
+        if (item.kind === 'file' && ACCEPTED_TYPES.includes(item.type)) {
+          const file = item.getAsFile();
+          if (file) files.push(file);
+        }
+      }
+      if (files.length > 0) {
+        e.preventDefault();
+        processFiles(files);
+      }
+    },
+    [processFiles],
+  );
+
+  useEffect(() => {
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [handlePaste]);
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    processFiles(files);
+    e.target.value = '';
+  };
+
+  const handleUrlImport = async () => {
+    if (!urlInput.trim()) return;
+    setLoading(true);
+    try {
+      const img = await urlToBoardImage(urlInput.trim());
+      const updated = addImages(styleId, [img]);
+      setBoard(updated);
+      setUrlInput('');
+      setUrlDialogOpen(false);
+    } catch {
+      // Silently fail — could add snackbar later
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveImage = (imageId: string) => {
+    const updated = removeImage(styleId, imageId);
+    setBoard(updated);
+  };
+
+  const handleSaveMeta = () => {
+    const updated = { ...board, name: metaName, description: metaDesc };
+    saveBoard(updated);
+    setBoard(updated);
+    setEditingMeta(false);
+  };
 
   return (
-    <Box sx={{ p: 4, maxWidth: 960, mx: 'auto' }}>
+    <Box>
       {/* Header */}
-      <Typography variant="h4" sx={{ fontWeight: 700, color: c.contentPrimary, mb: 1 }}>
-        Inspiration Board — {styleName}
-      </Typography>
-      <Typography variant="body1" sx={{ color: c.contentSecondary, mb: 5, maxWidth: 600 }}>
-        Collect visual references, mood images, and style cues that define the{' '}
-        <strong>{styleName}</strong> direction. These images feed the AI style extraction pipeline.
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 4 }}>
+        <Box>
+          <Typography variant="h4" fontWeight={500}>
+            Inspiration Board — {styleName}
+          </Typography>
+          <Typography color="text.secondary" sx={{ mt: 0.5, maxWidth: 600 }}>
+            Collect visual references and mood images that define the{' '}
+            <strong>{styleName}</strong> direction. These feed the AI style extraction pipeline.
+          </Typography>
+        </Box>
+        <Button
+          variant="contained"
+          startIcon={<Icon name="auto_awesome" size={18} />}
+          onClick={() => navigate(style ? `/theme/styles/creator/${style}` : '/theme/styles/creator')}
+        >
+          Generate Style
+        </Button>
+      </Box>
 
-      {/* ─── Section 1: Upload Zone ─── */}
-      <Typography variant="h6" sx={{ fontWeight: 600, color: c.contentPrimary, mb: 2 }}>
-        Upload Zone
-      </Typography>
+      {/* Board metadata */}
+      <Card variant="outlined" sx={{ mb: 4, p: 3 }}>
+        {editingMeta ? (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              label="Board Name"
+              size="small"
+              value={metaName}
+              onChange={(e) => setMetaName(e.target.value)}
+              placeholder={`${styleName} Inspiration`}
+            />
+            <TextField
+              label="Description"
+              size="small"
+              multiline
+              rows={2}
+              value={metaDesc}
+              onChange={(e) => setMetaDesc(e.target.value)}
+              placeholder="Visual direction notes, mood keywords, references..."
+            />
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button size="small" variant="contained" onClick={handleSaveMeta}>
+                Save
+              </Button>
+              <Button size="small" onClick={() => setEditingMeta(false)}>
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box>
+              <Typography variant="body1" fontWeight={500}>
+                {board.name || `${styleName} Inspiration`}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {board.description || 'Add a description for this board...'}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                label={`${board.images.length} image${board.images.length !== 1 ? 's' : ''}`}
+                size="small"
+                icon={<Icon name="photo_library" size={16} />}
+              />
+              <IconButton size="small" onClick={() => setEditingMeta(true)}>
+                <Icon name="edit" size={18} />
+              </IconButton>
+            </Box>
+          </Box>
+        )}
+      </Card>
+
+      {/* Upload zone */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept={ACCEPTED_TYPES.join(',')}
+        multiple
+        hidden
+        onChange={handleFileInput}
+      />
       <Box
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragOver(true);
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
         sx={{
           border: '2px dashed',
-          borderColor: c.borderDefault,
+          borderColor: dragOver ? c.brand400 : c.borderDefault,
           borderRadius: 3,
-          p: 5,
+          p: 4,
           textAlign: 'center',
-          bgcolor: alpha(c.brand100, 0.3),
+          bgcolor: dragOver ? alpha(c.brand100, 0.5) : alpha(c.brand100, 0.2),
           transition: 'border-color 0.2s, background 0.2s',
           cursor: 'pointer',
           '&:hover': {
             borderColor: c.brand300,
-            bgcolor: alpha(c.brand100, 0.5),
+            bgcolor: alpha(c.brand100, 0.4),
           },
           mb: 2,
         }}
       >
         <Box
           sx={{
-            width: 56,
-            height: 56,
+            width: 48,
+            height: 48,
             borderRadius: 2,
             bgcolor: c.brand100,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             mx: 'auto',
-            mb: 2,
+            mb: 1.5,
           }}
         >
-          <Icon name="cloud_upload" size={28} color={c.brand400} />
+          <Icon name={loading ? 'hourglass_empty' : 'cloud_upload'} size={24} color={c.brand500} />
         </Box>
-        <Typography variant="body1" sx={{ fontWeight: 600, color: c.contentPrimary, mb: 0.5 }}>
-          Drag &amp; drop images, paste from clipboard, or click to browse
+        <Typography variant="body2" fontWeight={500} sx={{ mb: 0.5 }}>
+          {loading ? 'Processing...' : 'Drag & drop images, paste from clipboard, or click to browse'}
         </Typography>
-        <Typography variant="body2" sx={{ color: c.contentTertiary, mb: 3 }}>
-          Supports PNG, JPG, WebP up to 10 MB
+        <Typography variant="caption" color="text.secondary">
+          PNG, JPG, WebP up to 10 MB
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-          <Button
-            variant="contained"
-            startIcon={<Icon name="upload" size={18} />}
-          >
-            Upload
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<Icon name="link" size={18} />}
-          >
-            Paste URL
-          </Button>
-        </Box>
       </Box>
 
-      <Divider sx={{ my: 5 }} />
+      <Box sx={{ display: 'flex', gap: 1, mb: 4 }}>
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<Icon name="link" size={16} />}
+          onClick={(e) => {
+            e.stopPropagation();
+            setUrlDialogOpen(true);
+          }}
+        >
+          Import from URL
+        </Button>
+      </Box>
 
-      {/* ─── Section 2: Image Gallery ─── */}
-      <Typography variant="h6" sx={{ fontWeight: 600, color: c.contentPrimary, mb: 0.5 }}>
+      {/* URL import dialog */}
+      <Dialog open={urlDialogOpen} onClose={() => setUrlDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Import Image from URL</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            fullWidth
+            size="small"
+            placeholder="https://example.com/image.png"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleUrlImport()}
+            sx={{ mt: 1 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setUrlDialogOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleUrlImport} disabled={!urlInput.trim() || loading}>
+            {loading ? 'Importing...' : 'Import'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Divider sx={{ mb: 4 }} />
+
+      {/* Image gallery */}
+      <Typography variant="h6" fontWeight={500} sx={{ mb: 0.5 }}>
         Image Gallery
       </Typography>
-      <Typography variant="body2" sx={{ color: c.contentSecondary, mb: 3 }}>
-        {PLACEHOLDER_CARDS.length} references collected for this style direction.
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        {board.images.length === 0
+          ? 'No images yet. Upload some visual references to get started.'
+          : `${board.images.length} reference${board.images.length !== 1 ? 's' : ''} collected for this style direction.`}
       </Typography>
 
-      <Box
-        sx={{
-          columnCount: { xs: 1, sm: 2, md: 3 },
-          columnGap: 3,
-          mb: 5,
-        }}
-      >
-        {PLACEHOLDER_CARDS.map((card, idx) => {
-          const c1 = palette[card.gradient[0]];
-          const c2 = palette[card.gradient[1]];
-          // Vary heights for masonry effect
-          const heights = [180, 240, 200, 260, 220, 190, 250, 210];
-          const h = heights[idx % heights.length];
-
-          return (
-            <Card
-              key={card.label}
-              sx={{
-                breakInside: 'avoid',
-                mb: 3,
-                borderRadius: 2,
-                overflow: 'hidden',
-                border: '1px solid',
-                borderColor: c.borderWeak,
-                boxShadow: effects.shadows.secondaryButton,
-                transition: 'box-shadow 0.2s, border-color 0.2s',
-                '&:hover': {
-                  boxShadow: effects.shadows.secondaryButtonHover,
-                  borderColor: c.brand300,
-                },
-              }}
-            >
-              <Box
-                sx={{
-                  height: h,
-                  background: `linear-gradient(135deg, ${c1} 0%, ${c2} 100%)`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Icon name="image" size={32} color={alpha('#ffffff', 0.5)} />
-              </Box>
-              <Box sx={{ p: 2 }}>
-                <Typography
-                  variant="body2"
-                  sx={{ fontWeight: 600, color: c.contentPrimary, fontSize: '0.8rem' }}
-                >
-                  {card.label}
-                </Typography>
-                <Chip
-                  label={styleName}
-                  size="small"
-                  sx={{
-                    mt: 1,
-                    fontSize: '0.65rem',
-                    height: 20,
-                    bgcolor: c.brand100,
-                    color: c.brand450,
-                  }}
-                />
-              </Box>
-            </Card>
-          );
-        })}
-      </Box>
-
-      <Divider sx={{ my: 5 }} />
-
-      {/* ─── Section 3: Style Direction ─── */}
-      <Typography variant="h6" sx={{ fontWeight: 600, color: c.contentPrimary, mb: 0.5 }}>
-        Style Direction
-      </Typography>
-      <Typography variant="body2" sx={{ color: c.contentSecondary, mb: 3 }}>
-        Based on the images above, an AI will generate a style direction document with visual
-        characteristics, interaction principles, and MUI translation values.
-      </Typography>
-
-      <Box
-        sx={{
-          bgcolor: c.bgElevated,
-          border: '1px solid',
-          borderColor: c.borderDefault,
-          borderRadius: 3,
-          p: 4,
-          mb: 3,
-        }}
-      >
-        {/* Placeholder markdown-like preview */}
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 700, color: c.contentPrimary, mb: 2, fontSize: '1rem' }}
-        >
-          Style Direction: {styleName}
-        </Typography>
-
-        <Typography
-          variant="body2"
-          sx={{ color: c.contentSecondary, lineHeight: 1.8, mb: 2 }}
-        >
-          <strong>Visual Character:</strong> {styleDef?.description ?? 'No description available yet. Upload images and generate with AI to create the style direction.'}
-        </Typography>
-
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
-          {[
-            { label: 'Surface', value: 'Translucent layers with frosted glass effect' },
-            { label: 'Elevation', value: 'Layered shadows with soft ambient light' },
-            { label: 'Borders', value: 'Subtle 1px borders with low opacity' },
-            { label: 'Radius', value: 'Medium rounding (8–16px)' },
-            { label: 'Motion', value: 'Gentle easing, 200–300ms transitions' },
-          ].map((item) => (
-            <Box key={item.label} sx={{ display: 'flex', gap: 1 }}>
-              <Chip
-                label={item.label}
-                size="small"
-                sx={{
-                  fontSize: '0.65rem',
-                  height: 22,
-                  bgcolor: c.brand100,
-                  color: c.brand400,
-                  fontWeight: 600,
-                  minWidth: 72,
-                }}
-              />
-              <Typography variant="body2" sx={{ color: c.contentSecondary, fontSize: '0.8rem' }}>
-                {item.value}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-
+      {board.images.length > 0 ? (
         <Box
           sx={{
-            bgcolor: alpha(c.brand100, 0.5),
-            borderRadius: 2,
-            p: 2.5,
-            fontFamily: 'monospace',
-            fontSize: '0.75rem',
-            color: c.contentSecondary,
-            lineHeight: 1.8,
-            whiteSpace: 'pre-wrap',
+            columnCount: { xs: 1, sm: 2, md: 3 },
+            columnGap: 2,
+            mb: 5,
           }}
         >
-{`// MUI Translation (generated)
-{
-  shape: { borderRadius: 12 },
-  shadows: { card: '0 2px 8px rgba(0,0,0,0.06)' },
-  components: {
-    MuiCard: {
-      styleOverrides: {
-        root: { backdropFilter: 'blur(12px)' }
-      }
-    }
-  }
-}`}
+          {board.images.map((img) => (
+            <ImageCard
+              key={img.id}
+              image={img}
+              onRemove={handleRemoveImage}
+              borderColor={c.borderWeak}
+              hoverBorder={c.brand300}
+              shadow={effects.shadows.secondaryButton}
+              hoverShadow={effects.shadows.secondaryButtonHover}
+            />
+          ))}
         </Box>
-      </Box>
+      ) : (
+        <Card
+          variant="outlined"
+          sx={{ textAlign: 'center', py: 6, mb: 5 }}
+        >
+          <Icon name="add_photo_alternate" size={48} color={c.contentTertiary} />
+          <Typography variant="body1" fontWeight={500} sx={{ mt: 2, color: c.contentSecondary }}>
+            Start building your inspiration board
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            Drag images here, paste from clipboard, or use the upload zone above.
+          </Typography>
+        </Card>
+      )}
+
+      <Divider sx={{ mb: 4 }} />
+
+      {/* Style Direction */}
+      <Typography variant="h6" fontWeight={500} sx={{ mb: 0.5 }}>
+        Style Direction
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        {styleDef
+          ? 'Preview of the style definition linked to this board.'
+          : 'No style direction yet. Upload images and generate with AI to create one.'}
+      </Typography>
+
+      {styleDef ? (
+        <Card variant="outlined" sx={{ p: 3, mb: 3 }}>
+          <Typography variant="body1" fontWeight={500} sx={{ mb: 1.5 }}>
+            {styleDef.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {styleDef.description}
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+            {[
+              { label: 'Surface', value: styleDef.surface.blur > 0 ? 'Glass / Blur' : 'Solid' },
+              { label: 'Radius', value: `${styleDef.borderRadius.sm}/${styleDef.borderRadius.md}/${styleDef.borderRadius.lg}px` },
+              { label: 'Shadows', value: styleDef.shadows.intensity },
+              { label: 'Button', value: styleDef.buttonPrimary },
+              { label: 'Card', value: styleDef.cardTreatment },
+              { label: 'Input', value: styleDef.inputTreatment },
+            ].map((item) => (
+              <Chip
+                key={item.label}
+                label={`${item.label}: ${item.value}`}
+                size="small"
+                variant="outlined"
+                sx={{ fontSize: '0.7rem' }}
+              />
+            ))}
+          </Box>
+
+          <Box
+            sx={{
+              bgcolor: alpha(c.brand100, 0.4),
+              borderRadius: 2,
+              p: 2,
+              fontFamily: 'monospace',
+              fontSize: '0.75rem',
+              color: c.contentSecondary,
+              lineHeight: 1.8,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+{`// Style Properties
+{
+  borderRadius: { sm: ${styleDef.borderRadius.sm}, md: ${styleDef.borderRadius.md}, lg: ${styleDef.borderRadius.lg} },
+  buttonPrimary: "${styleDef.buttonPrimary}",
+  cardTreatment: "${styleDef.cardTreatment}",
+  inputTreatment: "${styleDef.inputTreatment}",
+  shadows: { intensity: "${styleDef.shadows.intensity}", brandTinted: ${styleDef.shadows.brandTinted} }
+}`}
+          </Box>
+        </Card>
+      ) : (
+        <Card variant="outlined" sx={{ textAlign: 'center', py: 5, mb: 3 }}>
+          <Icon name="description" size={40} color={c.contentTertiary} />
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
+            Generate a style direction from your inspiration images using AI.
+          </Typography>
+        </Card>
+      )}
 
       <Button
         variant="contained"
-        size="large"
         startIcon={<Icon name="auto_awesome" size={18} />}
-        sx={{ mb: 2 }}
-        onClick={() => navigate(style ? `/design-system/style-creator/${style}` : '/design-system/style-creator')}
+        onClick={() => navigate(style ? `/theme/styles/creator/${style}` : '/theme/styles/creator')}
       >
         Generate with AI
       </Button>
-      <Typography variant="caption" sx={{ display: 'block', color: c.contentTertiary }}>
+      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
         Analyzes uploaded images using AI vision to extract visual patterns, then generates a
-        complete style direction document with concrete MUI theme values.
+        complete style direction with concrete theme values.
       </Typography>
     </Box>
+  );
+}
+
+/* ── Image Card ── */
+
+function ImageCard({
+  image,
+  onRemove,
+  borderColor,
+  hoverBorder,
+  shadow,
+  hoverShadow,
+}: {
+  image: BoardImage;
+  onRemove: (id: string) => void;
+  borderColor: string;
+  hoverBorder: string;
+  shadow: string;
+  hoverShadow: string;
+}) {
+  return (
+    <Card
+      sx={{
+        breakInside: 'avoid',
+        mb: 2,
+        borderRadius: 2,
+        overflow: 'hidden',
+        border: '1px solid',
+        borderColor,
+        boxShadow: shadow,
+        position: 'relative',
+        transition: 'box-shadow 0.2s, border-color 0.2s',
+        '&:hover': {
+          boxShadow: hoverShadow,
+          borderColor: hoverBorder,
+          '& .img-overlay': { opacity: 1 },
+        },
+      }}
+    >
+      <Box sx={{ position: 'relative' }}>
+        <Box
+          component="img"
+          src={image.dataUrl}
+          alt={image.name}
+          sx={{
+            width: '100%',
+            display: 'block',
+          }}
+        />
+        <Box
+          className="img-overlay"
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            bgcolor: 'rgba(0,0,0,0.4)',
+            opacity: 0,
+            transition: 'opacity 0.2s',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'flex-end',
+            p: 1,
+          }}
+        >
+          <Tooltip title="Remove image">
+            <IconButton
+              size="small"
+              onClick={() => onRemove(image.id)}
+              sx={{ color: '#fff', bgcolor: 'rgba(0,0,0,0.4)', '&:hover': { bgcolor: 'rgba(0,0,0,0.6)' } }}
+            >
+              <Icon name="close" size={16} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
+      <Box sx={{ px: 1.5, py: 1 }}>
+        <Typography variant="caption" color="text.secondary" noWrap>
+          {image.name}
+        </Typography>
+      </Box>
+    </Card>
   );
 }

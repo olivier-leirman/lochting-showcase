@@ -9,10 +9,305 @@
     "hover": "background-opacity-shift",
     "active": "scale-down",
     "focus": "ring-2px-brand",
-    "disabled": "opacity-0.4"
+    "disabled": "opacity-0.4",
+    "loading": "spinner-overlay"
   },
   "loading": {
     "content": "skeleton",
     "actions": "spinner"
-  }
+  },
+  "iconContainers": {
+    "principle": "Decorative icon containers must never share visual treatment with interactive elements. If it looks like a button, it must behave like a button.",
+    "decorative": {
+      "description": "Non-interactive icons used for visual categorization, feature highlights, or list item decoration",
+      "variants": {
+        "subtle": {
+          "background": "bgSunken",
+          "iconColor": "contentTertiary",
+          "useFor": "Table rows, list items, metadata — minimal visual weight"
+        },
+        "branded": {
+          "background": "brand100",
+          "iconColor": "brand500",
+          "useFor": "Feature cards, stat cards, quick links, section headers — default choice for decorative icons. Icon uses brand500 (not brand400) for stronger visibility and to differentiate from interactive button color."
+        },
+        "emphasis": {
+          "background": "brand200",
+          "iconColor": "brand500",
+          "useFor": "Hero features, primary feature highlights — stronger than branded but still clearly decorative. Icon uses brand500 for high contrast against brand200 background."
+        }
+      },
+      "never": "Never use gradients.primary, solid brand400 fill, or shadows on decorative icon containers — these are reserved for interactive elements (buttons)",
+      "sizing": {
+        "xs": "24x24px, borderRadius xs (4px), icon 12px — inline metadata",
+        "sm": "28-32px, borderRadius xs-sm (4-6px), icon 14-16px — table rows, compact lists",
+        "md": "36-40px, borderRadius sm (8px), icon 18-20px — card headers, quick links",
+        "lg": "44-48px, borderRadius sm-md (8-12px), icon 22-24px — feature cards, hero sections"
+      },
+      "shape": "Always rounded square (borderRadius sm/md). Never perfectly circular — circles suggest avatars or interactive FABs."
+    },
+    "interactive": {
+      "description": "Clickable icon buttons — must use MUI IconButton with proper affordance signals",
+      "required": "hover state, focus ring, cursor pointer, aria-label, tooltip",
+      "useFor": "Actions: edit, delete, share, more menu, close, settings"
+    },
+    "colorReservation": {
+      "gradients.primary": "RESERVED for primary buttons and primary icon buttons only",
+      "brand400 solid fill": "RESERVED for interactive elements only",
+      "brand100 tint": "Safe for decorative use — does not suggest interactivity",
+      "brand200 tint": "Safe for emphasis decorative use — still clearly non-interactive",
+      "bgSunken": "Safe for subtle decorative use — blends with surface"
+    }
+  },
+  "toggleSelection": {
+    "toggleButton": {
+      "component": "ToggleButtonGroup + ToggleButton",
+      "useFor": "Mode switches where options are equal peers and you show current state",
+      "examples": ["View switcher (list/grid)", "Text alignment (left/center/right)", "Implementation toggle (MUI/Base UI/Both)"],
+      "visual": "Segmented control in sunken container (bgSunken), compact, icon-only or short labels",
+      "selectionMode": "exclusive only",
+      "colorScheme": {
+        "selected": "secondary gradient + shadow + border (elevated from sunken bg)",
+        "unselected": "transparent, contentTertiary text (recedes into sunken bg)"
+      }
+    },
+    "toggleChip": {
+      "component": "ToggleChipGroup + ToggleChip",
+      "useFor": "Filter selection where you narrow content by attributes/categories",
+      "examples": ["Category filters (Webshop/Prescriptions/Reservations)", "Time period filters (Today/Week/Month)", "Status filters (Active/Archived)"],
+      "visual": "Loose chips in a flex-wrap row, support icons + count badges",
+      "selectionMode": "exclusive or multiple",
+      "colorScheme": {
+        "selected": "brand primary fill (brand400 bg, white text) — visually strongest",
+        "unselected": "secondary gradient + border (subtle, recedes) — visually weaker"
+      }
+    },
+    "neverUse": "Loose MUI Chips with ad-hoc onClick logic for toggle selection — always use ToggleChipGroup instead"
+  },
+  "rules": [
+    {
+      "id": "icon-no-gradient-decorative",
+      "category": "icons",
+      "severity": "critical",
+      "description": "Decorative icon containers must never use gradients.primary or solid brand400 fill — these are reserved for interactive buttons. Use brand100/brand200 tints instead.",
+      "check": "Non-interactive icon containers do not use gradients.primary or brand400 as background"
+    },
+    {
+      "id": "icon-no-circle-container",
+      "category": "icons",
+      "severity": "warning",
+      "description": "Decorative icon containers should use rounded squares (borderRadius sm/md), not perfect circles — circles suggest avatars or FABs.",
+      "check": "Decorative icon containers use borderRadius ≤ 12px, not 50% or borderRadius.round"
+    },
+    {
+      "id": "icon-container-size-token",
+      "category": "icons",
+      "severity": "warning",
+      "description": "Icon container sizes must follow the scale: xs=24, sm=28-32, md=36-40, lg=44-48px. Icon size is approximately half the container.",
+      "check": "Icon container dimensions match defined size tokens"
+    },
+    {
+      "id": "icon-interactive-requires-affordance",
+      "category": "icons",
+      "severity": "critical",
+      "description": "Clickable icons must use MUI IconButton (not a Box with onClick) and include hover state, focus ring, cursor pointer, aria-label, and tooltip.",
+      "check": "Clickable icons use IconButton component with aria-label and Tooltip"
+    },
+    {
+      "id": "btn-one-primary",
+      "category": "buttons",
+      "severity": "critical",
+      "description": "Maximum one primary (contained) button per view — demote extras to secondary",
+      "check": "Count contained+primary buttons per visible section ≤ 1"
+    },
+    {
+      "id": "btn-destructive-confirm",
+      "category": "buttons",
+      "severity": "critical",
+      "description": "Destructive actions require a confirmation dialog with a specific label (never Yes/No)",
+      "check": "Destructive button onClick must trigger confirmation dialog before execution"
+    },
+    {
+      "id": "btn-icon-only-tooltip",
+      "category": "buttons",
+      "severity": "critical",
+      "description": "Icon-only buttons must have a tooltip and aria-label — only for universally recognized actions",
+      "check": "Icon-only buttons have aria-label and Tooltip wrapper"
+    },
+    {
+      "id": "btn-ghost-not-primary",
+      "category": "buttons",
+      "severity": "warning",
+      "description": "Never use ghost/text buttons for primary CTA — 20% lower click rate",
+      "check": "Primary CTA is never variant='text'"
+    },
+    {
+      "id": "btn-group-max",
+      "category": "buttons",
+      "severity": "warning",
+      "description": "Button groups: max 2-3 buttons, never 2+ high-emphasis in the same group",
+      "check": "ButtonGroup children ≤ 3 and max 1 contained variant"
+    },
+    {
+      "id": "btn-loading-preserve-size",
+      "category": "buttons",
+      "severity": "warning",
+      "description": "Loading state must preserve button dimensions — use spinner inside, disable interaction",
+      "check": "Button with loading state maintains original width/height"
+    },
+    {
+      "id": "btn-spacing-between",
+      "category": "buttons",
+      "severity": "suggestion",
+      "description": "Minimum 12px spacing between adjacent buttons",
+      "check": "Gap between sibling buttons ≥ 12px"
+    },
+    {
+      "id": "sel-toggle-use-component",
+      "category": "selection",
+      "severity": "critical",
+      "description": "Toggle selection must use ToggleChipGroup or ToggleButtonGroup — never ad-hoc Chip onClick patterns. Eat your own dog food.",
+      "check": "No standalone Chip components with onClick used for selection state management"
+    },
+    {
+      "id": "sel-toggle-button-for-modes",
+      "category": "selection",
+      "severity": "warning",
+      "description": "ToggleButton is for mode switches (view type, alignment, implementation layer). For filtering content by category/attribute, use ToggleChip instead.",
+      "check": "ToggleButtonGroup used for mode/state switches, ToggleChipGroup for filters"
+    },
+    {
+      "id": "sel-toggle-chip-selected-emphasis",
+      "category": "selection",
+      "severity": "critical",
+      "description": "ToggleChip selected state must be visually stronger than unselected — selected uses brand primary fill, unselected is subtle/secondary",
+      "check": "ToggleChip selected color is more prominent than unselected color"
+    },
+    {
+      "id": "sel-tabs-single-row",
+      "category": "selection",
+      "severity": "critical",
+      "description": "Tabs must be a single row — multiple rows indicate too much complexity, use navigation instead",
+      "check": "Tab container does not wrap to multiple lines"
+    },
+    {
+      "id": "sel-chip-dismiss",
+      "category": "selection",
+      "severity": "warning",
+      "description": "Filter chips must have a clear dismiss mechanism — X icon or 'Clear all' action",
+      "check": "Active filter chips show onDelete handler or Clear All exists"
+    },
+    {
+      "id": "sel-toggle-immediate",
+      "category": "selection",
+      "severity": "warning",
+      "description": "Toggle buttons must apply immediately — no separate Save action needed",
+      "check": "ToggleButton onChange triggers immediate state change"
+    },
+    {
+      "id": "nav-breadcrumb-current",
+      "category": "navigation",
+      "severity": "warning",
+      "description": "Breadcrumbs: current page is visible but not clickable — last item is plain text",
+      "check": "Last breadcrumb item is not a link"
+    },
+    {
+      "id": "nav-stepper-back",
+      "category": "navigation",
+      "severity": "critical",
+      "description": "Multi-step flows must allow going back without data loss",
+      "check": "Stepper supports backward navigation preserving form state"
+    },
+    {
+      "id": "state-focus-visible",
+      "category": "states",
+      "severity": "critical",
+      "description": "All interactive elements must have a visible focus indicator — 2px ring, brand color, 2px offset",
+      "check": "Interactive elements have focus-visible outline style"
+    },
+    {
+      "id": "state-disabled-no-tooltip",
+      "category": "states",
+      "severity": "warning",
+      "description": "Disabled elements should still show a tooltip explaining why they are disabled",
+      "check": "Disabled buttons wrapped in Tooltip with explanatory text"
+    },
+    {
+      "id": "state-hover-transition",
+      "category": "states",
+      "severity": "suggestion",
+      "description": "Hover transitions: 150-300ms with ease-out easing — no instant state changes",
+      "check": "Hover CSS transitions between 150ms and 300ms, ease-out"
+    },
+    {
+      "id": "card-click-target",
+      "category": "cards",
+      "severity": "critical",
+      "description": "Clickable cards must have a minimum touch target of 44×44px and clear hover feedback",
+      "check": "CardActionArea minHeight ≥ 44px with hover style"
+    },
+    {
+      "id": "card-action-area",
+      "category": "cards",
+      "severity": "warning",
+      "description": "Cards with a single primary action should make the entire card clickable, not just a button inside",
+      "check": "Single-action cards use CardActionArea wrapping full content"
+    },
+    {
+      "id": "card-padding-token",
+      "category": "cards",
+      "severity": "warning",
+      "description": "Card padding must use design tokens: compact=12px, medium=16px, large=24px",
+      "check": "CardContent padding matches token values (12, 16, or 24)"
+    },
+    {
+      "id": "chip-max-content",
+      "category": "chips",
+      "severity": "suggestion",
+      "description": "Chip labels should be concise — max 2-3 words. Truncate with ellipsis if longer",
+      "check": "Chip label text ≤ 25 characters"
+    },
+    {
+      "id": "chip-removable-feedback",
+      "category": "chips",
+      "severity": "warning",
+      "description": "Removable chips must show the delete icon on hover/focus and animate out on removal",
+      "check": "Chip with onDelete shows delete icon and removal transition"
+    },
+    {
+      "id": "focus-skip-link",
+      "category": "focus",
+      "severity": "suggestion",
+      "description": "Pages with complex layouts should provide a skip-to-content link for keyboard users",
+      "check": "Skip link present as first focusable element on page"
+    },
+    {
+      "id": "focus-trap-modal",
+      "category": "focus",
+      "severity": "critical",
+      "description": "Modals and dialogs must trap focus — Tab cycling stays within the dialog until dismissed",
+      "check": "Dialog component traps focus and returns focus on close"
+    },
+    {
+      "id": "loading-skeleton-layout",
+      "category": "loading",
+      "severity": "warning",
+      "description": "Skeleton placeholders must match the layout of the actual content to prevent layout shift",
+      "check": "Skeleton dimensions approximate actual content dimensions"
+    },
+    {
+      "id": "loading-no-flash",
+      "category": "loading",
+      "severity": "warning",
+      "description": "Don't show loading indicators for actions under 300ms — prevent visual flash",
+      "check": "Loading spinner has ≥300ms delay before appearing"
+    },
+    {
+      "id": "loading-disable-resubmit",
+      "category": "loading",
+      "severity": "critical",
+      "description": "Disable submit buttons during pending requests to prevent double submissions",
+      "check": "Submit button disabled while request is in flight"
+    }
+  ]
 }

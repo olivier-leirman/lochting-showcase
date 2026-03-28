@@ -69,7 +69,7 @@ export function StylesTab({ doc }: { doc: ComponentDoc }) {
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
                   {style.name}
                 </Typography>
                 <Chip

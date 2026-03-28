@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
@@ -26,7 +27,7 @@ function msIcon(name: string, size = 20, color?: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<string, any> {
+export function datePickerOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Record<string, any> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
 
@@ -54,7 +55,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
     MuiPickersOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: PRIMITIVES.radius.md,
+          borderRadius: sp.radius.md,
           backgroundColor: c.bgSunken,
           boxShadow: fx.shadows.textfield,
           fontFamily: brand.typography.bodyFont,
@@ -129,7 +130,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
       styleOverrides: {
         root: {
           fontFamily: brand.typography.bodyFont,
-          borderRadius: PRIMITIVES.radius.md,
+          borderRadius: sp.radius.md,
         },
       },
     },
@@ -141,7 +142,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
           fontFamily: brand.typography.bodyFont,
           fontSize: PRIMITIVES.fontSize.sm,
           fontWeight: PRIMITIVES.fontWeight.medium,
-          borderRadius: PRIMITIVES.radius.sm,
+          borderRadius: sp.radius.sm,
           '&:hover': {
             backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : c.bgSunken,
           },
@@ -190,7 +191,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
           fontFamily: brand.typography.bodyFont,
         },
         label: {
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.md,
           fontFamily: brand.typography.bodyFont,
         },
@@ -248,7 +249,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
     MuiPickersPopper: {
       styleOverrides: {
         paper: {
-          borderRadius: PRIMITIVES.radius.lg,
+          borderRadius: sp.radius.lg,
           border: `1px solid ${c.borderWeak}`,
           boxShadow: [
             `0 8px 32px 0 ${isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.12)'}`,
@@ -310,7 +311,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
         item: {
           fontFamily: brand.typography.bodyFont,
           fontSize: PRIMITIVES.fontSize.sm,
-          borderRadius: PRIMITIVES.radius.sm,
+          borderRadius: sp.radius.sm,
           '&.Mui-selected': {
             backgroundColor: selectedBg,
             color: selectedColor,
@@ -343,7 +344,7 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
         item: {
           fontFamily: brand.typography.bodyFont,
           fontSize: PRIMITIVES.fontSize.sm,
-          borderRadius: PRIMITIVES.radius.sm,
+          borderRadius: sp.radius.sm,
           '&.Mui-selected': {
             backgroundColor: selectedBg,
             color: selectedColor,
@@ -382,10 +383,10 @@ export function datePickerOverrides(brand: BrandTokens, fx: Effects): Record<str
           borderTop: `1px solid ${c.borderWeak}`,
           '& .MuiButton-root': {
             fontFamily: brand.typography.bodyFont,
-            fontWeight: PRIMITIVES.fontWeight.semibold,
+            fontWeight: PRIMITIVES.fontWeight.medium,
             fontSize: PRIMITIVES.fontSize.sm,
             textTransform: 'none' as const,
-            borderRadius: PRIMITIVES.radius.md,
+            borderRadius: sp.radius.md,
             minWidth: 80,
             padding: '8px 20px',
           },

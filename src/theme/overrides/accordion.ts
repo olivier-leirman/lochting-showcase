@@ -1,9 +1,10 @@
 import type { Components, Theme } from '@mui/material/styles';
-import type { BrandTokens } from '../types';
+import type { BrandTokens, StyleProfile } from '../types';
+import { DEFAULT_STYLE_PROFILE } from '../types';
 import type { Effects } from '../tokens/effects';
 import { PRIMITIVES } from '../tokens/primitives';
 
-export function accordionOverrides(brand: BrandTokens, fx: Effects): Components<Theme> {
+export function accordionOverrides(brand: BrandTokens, fx: Effects, sp: StyleProfile = DEFAULT_STYLE_PROFILE): Components<Theme> {
   const c = brand.colors;
   const isDark = fx.mode === 'dark';
 
@@ -15,8 +16,13 @@ export function accordionOverrides(brand: BrandTokens, fx: Effects): Components<
       },
       styleOverrides: {
         root: {
-          border: `1px solid ${c.borderWeak}`,
-          borderRadius: `${PRIMITIVES.radius.md}px !important`,
+          border: sp.surface.cardBorder || `1px solid ${c.borderWeak}`,
+          borderRadius: `${sp.radius.md}px !important`,
+          ...(sp.surface.cardBg ? { backgroundColor: sp.surface.cardBg } : {}),
+          ...(sp.surface.blur ? {
+            backdropFilter: `blur(${sp.surface.blur}px)`,
+            WebkitBackdropFilter: `blur(${sp.surface.blur}px)`,
+          } : {}),
           marginBottom: 8,
           overflow: 'hidden',
           '&::before': {
@@ -32,7 +38,7 @@ export function accordionOverrides(brand: BrandTokens, fx: Effects): Components<
       styleOverrides: {
         root: {
           fontFamily: brand.typography.bodyFont,
-          fontWeight: PRIMITIVES.fontWeight.semibold,
+          fontWeight: PRIMITIVES.fontWeight.medium,
           fontSize: PRIMITIVES.fontSize.sm,
           minHeight: 48,
           padding: '0 16px',

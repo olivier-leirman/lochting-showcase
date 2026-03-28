@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Button, ButtonGroup, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography, Popper, Grow, Paper, ClickAwayListener, MenuList, Autocomplete, InputAdornment, Tab, Tabs, Stepper, Step, StepLabel, StepContent, LinearProgress, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Accordion, AccordionSummary, AccordionDetails, Card, CardContent, CardActions, CardHeader, Alert, Drawer, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText, AppBar, Toolbar, Breadcrumbs, Link, Divider, Avatar } from '@mui/material';
+import { Button, ButtonGroup, Checkbox, Switch, Slider, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, Chip, Badge, ToggleButton, ToggleButtonGroup, IconButton, FormControl, InputLabel, Box, Typography, Popper, Grow, Paper, ClickAwayListener, MenuList, Autocomplete, InputAdornment, Tab, Tabs, Stepper, Step, StepLabel, StepContent, LinearProgress, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Pagination, Accordion, AccordionSummary, AccordionDetails, Card, CardContent, CardActions, CardHeader, Alert, Drawer, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText, AppBar, Toolbar, Breadcrumbs, Link, Divider, Avatar, Tooltip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -421,7 +421,7 @@ function RulerRangeSlider() {
           },
           '& .MuiSlider-valueLabel': {
             bgcolor: c.bgBaseInverse, color: c.contentInversePrimary,
-            borderRadius: 1, fontSize: '0.7rem', fontWeight: 600,
+            borderRadius: 1, fontSize: '0.7rem', fontWeight: 500,
             px: 1, py: 0.25,
             '&::before': { display: 'none' },
           },
@@ -2218,7 +2218,7 @@ function ClassicPagination() {
     borderColor: c.borderDefault,
     bgcolor: c.bgElevated,
     fontSize: '0.8rem',
-    fontWeight: 600,
+    fontWeight: 500,
     px: 1.5,
     display: 'flex',
     alignItems: 'center',
@@ -2302,7 +2302,7 @@ function MinimalPagination() {
       >
         <Icon name="arrow_back" size={18} />
       </Box>
-      <Typography variant="body2" sx={{ fontWeight: 600, px: 1.5, color: c.contentPrimary, minWidth: 60, textAlign: 'center' }}>
+      <Typography variant="body2" sx={{ fontWeight: 500, px: 1.5, color: c.contentPrimary, minWidth: 60, textAlign: 'center' }}>
         {page} of {totalPages}
       </Typography>
       <Box
@@ -2333,7 +2333,7 @@ function PageSizePagination() {
     alignItems: 'center',
     cursor: 'pointer',
     fontSize: '0.8rem',
-    fontWeight: active ? 600 : 500,
+    fontWeight: active ? 500 : 400,
     bgcolor: active ? c.bgElevated : 'transparent',
     color: active ? c.contentPrimary : c.contentSecondary,
     boxShadow: active ? effects.shadows.secondaryButton : 'none',
@@ -2393,7 +2393,7 @@ function PageSizePagination() {
       >
         <Icon name="chevron_left" size={18} />
       </Box>
-      <Typography variant="body2" sx={{ fontWeight: 600, px: 0.5, color: c.contentPrimary, minWidth: 50, textAlign: 'center' }}>
+      <Typography variant="body2" sx={{ fontWeight: 500, px: 0.5, color: c.contentPrimary, minWidth: 50, textAlign: 'center' }}>
         {page} of {totalPages}
       </Typography>
       <Box
@@ -2452,7 +2452,7 @@ function CompactPagination() {
       border: '1px solid',
       borderColor: c.borderWeak,
     }}>
-      <Typography variant="body2" sx={{ fontWeight: 600, px: 1.5, color: c.contentPrimary, whiteSpace: 'nowrap' }}>
+      <Typography variant="body2" sx={{ fontWeight: 500, px: 1.5, color: c.contentPrimary, whiteSpace: 'nowrap' }}>
         Showing {showingEnd}/{totalItems}
       </Typography>
       <Box
@@ -2571,7 +2571,7 @@ registerComponent({
         <Box sx={{ width: '100%' }}>
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<Icon name="expand_more" />}>
-              <Typography variant="body2" fontWeight={600}>What is the Design System?</Typography>
+              <Typography variant="body2" fontWeight={500}>What is the Design System?</Typography>
             </AccordionSummary>
             <AccordionDetails>
               A collection of reusable components, design tokens, and guidelines that ensure visual consistency across all Lochting and Medipim products.
@@ -2579,7 +2579,7 @@ registerComponent({
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<Icon name="expand_more" />}>
-              <Typography variant="body2" fontWeight={600}>How do I install it?</Typography>
+              <Typography variant="body2" fontWeight={500}>How do I install it?</Typography>
             </AccordionSummary>
             <AccordionDetails>
               Import the theme provider and wrap your application. All standard MUI components will automatically inherit the design system styling.
@@ -2587,7 +2587,7 @@ registerComponent({
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<Icon name="expand_more" />}>
-              <Typography variant="body2" fontWeight={600}>Can I customize the brand colors?</Typography>
+              <Typography variant="body2" fontWeight={500}>Can I customize the brand colors?</Typography>
             </AccordionSummary>
             <AccordionDetails>
               Yes! The design system supports multiple brands. Switch between Lochting and Medipim using the brand switcher, or create your own brand tokens.
@@ -2608,13 +2608,13 @@ registerComponent({
         <Box sx={{ width: '100%' }}>
           <Accordion>
             <AccordionSummary expandIcon={<Icon name="expand_more" />}>
-              <Typography variant="body2" fontWeight={600}>Enabled Section</Typography>
+              <Typography variant="body2" fontWeight={500}>Enabled Section</Typography>
             </AccordionSummary>
             <AccordionDetails>This section is interactive.</AccordionDetails>
           </Accordion>
           <Accordion disabled>
             <AccordionSummary expandIcon={<Icon name="expand_more" />}>
-              <Typography variant="body2" fontWeight={600}>Disabled Section</Typography>
+              <Typography variant="body2" fontWeight={500}>Disabled Section</Typography>
             </AccordionSummary>
             <AccordionDetails>This content is hidden.</AccordionDetails>
           </Accordion>
@@ -2647,7 +2647,7 @@ function ElevatedCardDemo() {
       <CardHeader
         title="Elevated Card"
         subheader="Floating surface with shadow"
-        titleTypographyProps={{ variant: 'body1', fontWeight: 600 }}
+        titleTypographyProps={{ variant: 'body1', fontWeight: 500 }}
         subheaderTypographyProps={{ variant: 'caption' }}
       />
       <CardContent sx={{ pt: 0 }}>
@@ -2676,7 +2676,7 @@ function SunkenCardDemo() {
       <CardHeader
         title="Sunken Card"
         subheader="Flat inset surface"
-        titleTypographyProps={{ variant: 'body1', fontWeight: 600 }}
+        titleTypographyProps={{ variant: 'body1', fontWeight: 500 }}
         subheaderTypographyProps={{ variant: 'caption' }}
       />
       <CardContent sx={{ pt: 0 }}>
@@ -2702,7 +2702,7 @@ function BorderCardDemo() {
       <CardHeader
         title="Base / Border Card"
         subheader="Flat surface with border"
-        titleTypographyProps={{ variant: 'body1', fontWeight: 600 }}
+        titleTypographyProps={{ variant: 'body1', fontWeight: 500 }}
         subheaderTypographyProps={{ variant: 'caption' }}
       />
       <CardContent sx={{ pt: 0 }}>
@@ -3188,9 +3188,9 @@ registerComponent({
 function SidebarBasicDemo() {
   const [active, setActive] = useState('Dashboard');
   return (
-    <Box sx={{ height: 480, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+    <Box sx={{ height: 480, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'clip' }}>
       <AppSidebar
-        logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+        logo={<Typography variant="h6" sx={{ fontWeight: 500 }}>Lochting</Typography>}
         showSearch
         sections={[
           {
@@ -3226,9 +3226,9 @@ function SidebarWithExtraNavDemo() {
   const [active, setActive] = useState('Countries & languages');
   const [expanded, setExpanded] = useState<string | null>('Localisation');
   return (
-    <Box sx={{ height: 520, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden', display: 'flex' }}>
+    <Box sx={{ height: 520, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'clip', display: 'flex' }}>
       <AppSidebar
-        logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+        logo={<Typography variant="h6" sx={{ fontWeight: 500 }}>Lochting</Typography>}
         showSearch
         expandedItem={expanded}
         onExpandedChange={setExpanded}
@@ -3300,7 +3300,7 @@ function SidebarMinimalDemo() {
   };
 
   return (
-    <Box sx={{ height: 320, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+    <Box sx={{ height: 320, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'clip' }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -3358,7 +3358,7 @@ function SidebarWithBadgesDemo() {
   };
 
   return (
-    <Box sx={{ height: 360, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+    <Box sx={{ height: 360, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'clip' }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -3367,7 +3367,7 @@ function SidebarWithBadgesDemo() {
         }}
       >
         <Box sx={{ p: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>Mail</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 500 }}>Mail</Typography>
         </Box>
         <List disablePadding sx={{ px: 1 }}>
           <ListSubheader disableSticky>Folders</ListSubheader>
@@ -3389,7 +3389,7 @@ function SidebarWithBadgesDemo() {
               </ListItemIcon>
               <ListItemText primary={item.label} />
               {item.badge != null && (
-                <Chip label={item.badge} size="small" color="primary" variant="outlined" sx={{ height: 22, minWidth: 22, fontSize: '0.7rem', fontWeight: 600 }} />
+                <Chip label={item.badge} size="small" color="primary" variant="outlined" sx={{ height: 22, minWidth: 22, fontSize: '0.7rem', fontWeight: 500 }} />
               )}
             </ListItemButton>
           ))}
@@ -3399,48 +3399,142 @@ function SidebarWithBadgesDemo() {
   );
 }
 
-function NavItemStatesDemo() {
+function ContextSidebarDemo() {
+  const [activeMode, setActiveMode] = useState<string>('design-system');
+  const [active, setActive] = useState('Design Rules');
   const { brand, effects } = useBrand();
   const c = brand.colors;
   const isDark = effects.mode === 'dark';
   const activeBg = isDark ? c.brand500 : c.brand100;
   const activeColor = isDark ? c.brand200 : c.brand450;
-  const hoverBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
-
-  const baseItemSx = {
-    borderRadius: '12px',
-    my: 0.25,
-  };
-
+  const hoverBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+  const stripBg = isDark ? c.bgDeep : c.bgSunken;
   const activeItemSx = {
-    background: activeBg,
-    backgroundColor: activeBg,
-    color: activeColor,
-    border: '1px solid transparent',
-    boxShadow: 'none',
     borderRadius: '12px',
-    '&:hover': {
-      background: activeBg,
-      backgroundColor: activeBg,
+    '&.Mui-selected': {
+      background: activeBg, backgroundColor: activeBg, color: activeColor,
+      border: '1px solid transparent', boxShadow: 'none', borderRadius: '12px',
+      '&:hover': { background: activeBg, backgroundColor: activeBg, filter: isDark ? 'brightness(1.12)' : 'brightness(0.97)' },
+      '& .MuiListItemIcon-root': { color: activeColor },
     },
-    '& .MuiListItemIcon-root': { color: activeColor },
   };
 
-  const hoverItemSx = {
-    background: hoverBg,
-    backgroundColor: hoverBg,
-    borderRadius: '12px',
+  const modes = [
+    { id: 'components', label: 'Components', icon: 'widgets' },
+    { id: 'theme', label: 'Theme', icon: 'palette' },
+    { id: 'design-system', label: 'Design System', icon: 'design_services' },
+    { id: 'playground', label: 'Playground', icon: 'science' },
+    { id: 'prototypes', label: 'Prototypes', icon: 'article' },
+  ];
+
+  const contextItems: Record<string, { label: string; sections: { title?: string; items: { label: string; icon: string }[] }[] }> = {
+    components: { label: 'COMPONENTS', sections: [{ title: 'ACTIONS', items: [{ label: 'Button', icon: 'smart_button' }, { label: 'Toggle Button', icon: 'toggle_on' }] }, { title: 'INPUTS', items: [{ label: 'TextField', icon: 'input' }, { label: 'Select', icon: 'arrow_drop_down_circle' }] }] },
+    theme: { label: 'THEME', sections: [{ items: [{ label: 'Overview', icon: 'dashboard' }, { label: 'Colors & Palettes', icon: 'palette' }, { label: 'Typography', icon: 'text_fields' }] }] },
+    'design-system': { label: 'DESIGN SYSTEM', sections: [{ items: [{ label: 'Overview', icon: 'dashboard' }, { label: 'Design Rules', icon: 'rule' }, { label: 'Patterns', icon: 'pattern' }, { label: 'Consistency', icon: 'verified' }] }, { title: 'STYLE CONTROL', items: [{ label: 'Style Overrides', icon: 'tune' }, { label: 'Exception Registry', icon: 'playlist_remove' }] }] },
+    playground: { label: 'PLAYGROUND', sections: [{ items: [{ label: 'Overview', icon: 'dashboard' }, { label: 'Component Lab', icon: 'science' }] }] },
+    prototypes: { label: 'PROTOTYPES', sections: [{ items: [{ label: 'Overview', icon: 'dashboard' }, { label: 'Medipim SaaS', icon: 'web' }] }] },
   };
+
+  const ctx = contextItems[activeMode];
+
+  return (
+    <Box sx={{ height: 460, border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'clip', display: 'flex' }}>
+      {/* ── Mode Strip (icon rail) ── */}
+      <Box sx={{
+        width: 56, flexShrink: 0, height: '100%', display: 'flex', flexDirection: 'column',
+        alignItems: 'stretch', bgcolor: stripBg, borderRight: '1px solid', borderColor: 'divider',
+      }}>
+        {/* Logo */}
+        <Box sx={{ width: '100%', height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid', borderColor: 'divider' }}>
+          <svg width="16" height="24" viewBox="0 0 22 32" fill="none">
+            <path d="M21.828 4.656c-.084-1.753-.817-3.334-2.49-3.988l-.015-.01-.04-.015a.605.605 0 0 0-.118-.05l-.038-.01c-1.77-.72-3.652-.808-5.446-.07-1.957.804-3.524 2.315-4.8 3.973-3.069 3.998-4.859 9.11-5.64 14.059-.404 2.567-.555 5.196-.105 7.77-1.074 1.364-2.063 2.718-3.087 4.044-.513.666.404 1.61.925.937 1.035-1.344 2.037-2.711 3.025-4.088.087-.01.171-.036.248-.077 2.611-1.388 5.081-3.03 7.376-4.9 1.105-.895 2.17-1.842 3.195-2.839.945-.928 1.954-1.89 2.72-2.975 1.245-1.811 2.257-3.774 3.01-5.841.692-1.86 1.267-3.914 1.17-5.92ZM17.736 1.5c-1.956 1.959-2.941 3.903-3.958 5.833-.297-1.834-.551-3.668-.816-5.494A8.814 8.814 0 0 1 17.736 1.5ZM12.739 2.526c.313 2.189.609 4.38 1.001 6.555.008.04.02.08.038.118-.737 1.358-1.49 2.706-2.258 4.045-.594-2.437-1.522-4.797-2.026-7.26a.494.494 0 0 0-.047-.152 14.868 14.868 0 0 1 3.292-3.306ZM6.059 12.765a31.64 31.64 0 0 1 2.402-5.396c.641 2.538 1.608 4.997 2.074 7.563-1.817 3.077-3.732 6.093-5.746 9.048-.178.26-.364.512-.543.764-.411-4.004.516-8.243 1.813-11.976v-.003ZM11.281 20.9a44.685 44.685 0 0 1-5.478 3.886c1.256-1.827 2.474-3.679 3.652-5.556 1.46-.116 2.9-.398 4.351-.611A41.35 41.35 0 0 1 11.28 20.9Zm5.315-5.295a9.32 9.32 0 0 1-1.264 1.5c-1.674.153-3.327.51-4.996.711.014-1.661 1.002-3.343 1.964-5.043 1.736-.136 3.465-.352 5.2-.503a24.174 24.174 0 0 1-1.904 3.335Zm2.748-5.292a10.7 10.7 0 0 1-.242.591h-.042c-1.659.129-3.312.332-4.968.483.547-.987 1.086-1.98 1.614-2.977 1.132-2.133 2.225-4.287 3.278-6.462.176.503 1.522 1.785 1.534 2.999.017 1.836-.528 3.668-1.174 5.369v-.003Z" fill={c.contentPrimary} />
+          </svg>
+        </Box>
+        {modes.map(mode => {
+          const isActive = activeMode === mode.id;
+          return (
+            <Tooltip key={mode.id} title={mode.label} placement="right" arrow>
+              <Box
+                onClick={() => { setActiveMode(mode.id); setActive(contextItems[mode.id].sections[0].items[0].label); }}
+                sx={{
+                  width: '100%', height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  position: 'relative',
+                  color: isActive ? activeColor : 'text.secondary',
+                  bgcolor: isActive ? activeBg : 'transparent',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.15s ease-out, color 0.15s ease-out',
+                  '&:hover': { bgcolor: isActive ? activeBg : hoverBg },
+                }}
+              >
+                {isActive && (
+                  <Box sx={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, bgcolor: activeColor }} />
+                )}
+                <Icon name={mode.icon} size={32} />
+              </Box>
+            </Tooltip>
+          );
+        })}
+        <Box sx={{ flex: 1 }} />
+        <Divider />
+        <Tooltip title="Settings" placement="right" arrow>
+          <Box
+            sx={{
+              width: '100%', height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'text.secondary', cursor: 'pointer',
+              '&:hover': { bgcolor: hoverBg },
+            }}
+          >
+            <Icon name="settings" size={32} />
+          </Box>
+        </Tooltip>
+      </Box>
+
+      {/* ── Context Panel ── */}
+      <Box sx={{ width: 220, height: '100%', bgcolor: 'background.paper', borderRight: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+        <Box sx={{ px: 2, pt: 2, pb: 1 }}>
+          <Typography variant="overline" sx={{ fontSize: '0.6875rem', fontWeight: 500, letterSpacing: '0.08em', color: 'text.secondary' }}>
+            {ctx.label}
+          </Typography>
+        </Box>
+        {ctx.sections.map((section, si) => (
+          <List
+            key={si}
+            disablePadding
+            sx={{ px: 1 }}
+            subheader={section.title ? <ListSubheader disableSticky sx={{ fontSize: '0.6875rem', lineHeight: '28px', mt: 1, fontWeight: 500, letterSpacing: '0.08em' }}>{section.title}</ListSubheader> : undefined}
+          >
+            {section.items.map(item => (
+              <ListItemButton
+                key={item.label}
+                selected={active === item.label}
+                onClick={() => setActive(item.label)}
+                sx={{ my: 0.25, ...activeItemSx }}
+              >
+                <ListItemIcon sx={{ minWidth: 28 }}><Icon name={item.icon} size={18} /></ListItemIcon>
+                <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: '0.8125rem' }} />
+              </ListItemButton>
+            ))}
+          </List>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+function NavItemStatesDemo() {
+  const { effects } = useBrand();
+  const isDark = effects.mode === 'dark';
+  const hoverBg = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
 
   return (
     <Box sx={{ display: 'flex', gap: 6, alignItems: 'flex-start', flexWrap: 'wrap' }}>
       {/* Inactive */}
       <Box>
-        <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
+        <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
           Default
         </Typography>
         <List disablePadding sx={{ width: 220, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: 1 }}>
-          <ListItemButton sx={baseItemSx}>
+          <ListItemButton>
             <ListItemIcon><Icon name="dashboard" size={20} /></ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItemButton>
@@ -3449,24 +3543,24 @@ function NavItemStatesDemo() {
 
       {/* Hover */}
       <Box>
-        <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
+        <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
           Hover
         </Typography>
         <List disablePadding sx={{ width: 220, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: 1 }}>
-          <ListItemButton sx={{ ...baseItemSx, ...hoverItemSx }}>
+          <ListItemButton sx={{ bgcolor: hoverBg }}>
             <ListItemIcon><Icon name="analytics" size={20} /></ListItemIcon>
             <ListItemText primary="Analytics" />
           </ListItemButton>
         </List>
       </Box>
 
-      {/* Active / Selected */}
+      {/* Active / Selected — uses MUI theme override from navigation.ts */}
       <Box>
-        <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
+        <Typography variant="caption" sx={{ fontWeight: 500, color: 'text.secondary', mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '0.65rem' }}>
           Active
         </Typography>
         <List disablePadding sx={{ width: 220, bgcolor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider', p: 1 }}>
-          <ListItemButton selected sx={{ ...baseItemSx, '&.Mui-selected': activeItemSx }}>
+          <ListItemButton selected>
             <ListItemIcon><Icon name="home" size={20} /></ListItemIcon>
             <ListItemText primary="Home" />
           </ListItemButton>
@@ -3518,7 +3612,7 @@ const activeColor = isDark ? brand.colors.brand200 : brand.colors.brand450;
     {
       name: 'AppSidebar Component',
       code: `<AppSidebar
-  logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+  logo={<Typography variant="h6" sx={{ fontWeight: 500 }}>Lochting</Typography>}
   showSearch
   sections={[
     {
@@ -3564,7 +3658,7 @@ const activeColor = isDark ? brand.colors.brand200 : brand.colors.brand450;
     {
       name: 'With SubNav (ExtraNav)',
       code: `<AppSidebar
-  logo={<Typography variant="h6" sx={{ fontWeight: 700 }}>Lochting</Typography>}
+  logo={<Typography variant="h6" sx={{ fontWeight: 500 }}>Lochting</Typography>}
   showSearch
   expandedItem="Localisation"
   onExpandedChange={(label) => console.log('Expanded:', label)}
@@ -3603,9 +3697,47 @@ const activeColor = isDark ? brand.colors.brand200 : brand.colors.brand450;
   <ListItemIcon><Icon name="inbox" size={20} /></ListItemIcon>
   <ListItemText primary="Inbox" />
   <Chip label={12} size="small" color="primary" variant="outlined"
-    sx={{ height: 22, minWidth: 22, fontSize: '0.7rem', fontWeight: 600 }} />
+    sx={{ height: 22, minWidth: 22, fontSize: '0.7rem', fontWeight: 500 }} />
 </ListItemButton>`,
       render: () => <SidebarWithBadgesDemo />,
+    },
+    {
+      name: 'Context Sidebar (ModeStrip + Panel)',
+      code: `{/* Two-column sidebar: icon rail (bgSunken) + context panel (bgElevated) */}
+<Box sx={{ display: 'flex', height: '100%' }}>
+  {/* Mode Strip — 48px icon rail */}
+  <Box sx={{ width: 48, bgcolor: bgSunken, borderRight: '1px solid', borderColor: 'divider',
+    display: 'flex', flexDirection: 'column', alignItems: 'center', py: 1, gap: 0.5 }}>
+    <Tooltip title="Components" placement="right" arrow>
+      <IconButton sx={{ width: 40, height: 40, borderRadius: '12px', bgcolor: activeBg, color: activeColor }}>
+        <Icon name="widgets" size={22} fill />
+      </IconButton>
+    </Tooltip>
+    <Tooltip title="Theme" placement="right" arrow>
+      <IconButton sx={{ width: 40, height: 40, borderRadius: '12px', color: 'text.secondary' }}>
+        <Icon name="palette" size={22} />
+      </IconButton>
+    </Tooltip>
+  </Box>
+
+  {/* Context Panel — mode-specific navigation */}
+  <Box sx={{ width: 240, bgcolor: 'background.paper', borderRight: '1px solid', borderColor: 'divider' }}>
+    <Box sx={{ px: 2, pt: 2, pb: 1 }}>
+      <Typography variant="overline">COMPONENTS</Typography>
+    </Box>
+    <List disablePadding sx={{ px: 1 }}>
+      <ListItemButton selected sx={{
+        borderRadius: '12px',
+        '&.Mui-selected': { bgcolor: brand100, color: brand450,
+          border: '1px solid transparent', borderRadius: '12px', boxShadow: 'none' },
+      }}>
+        <ListItemIcon sx={{ minWidth: 28 }}><Icon name="smart_button" size={18} /></ListItemIcon>
+        <ListItemText primary="Button" primaryTypographyProps={{ fontSize: '0.8125rem' }} />
+      </ListItemButton>
+    </List>
+  </Box>
+</Box>`,
+      render: () => <ContextSidebarDemo />,
     },
   ],
   props: [
@@ -3669,7 +3801,7 @@ function TopBarMinimalDemo() {
             <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', color: 'text.secondary', border: 'none', background: 'none' }}>
               Home
             </Link>
-            <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+            <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.primary' }}>
               Dashboard
             </Typography>
           </Breadcrumbs>
@@ -3743,7 +3875,7 @@ import { AppTopBar, TopBarActions } from './components/AppTopBar';`,
       <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
         Home
       </Link>
-      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.primary' }}>
         Dashboard
       </Typography>
     </Breadcrumbs>
@@ -3787,7 +3919,7 @@ function BreadcrumbsBasicDemo() {
       <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer' }}>
         Products
       </Link>
-      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.primary' }}>
         Widget Pro
       </Typography>
     </Breadcrumbs>
@@ -3809,7 +3941,7 @@ function BreadcrumbsWithDropdownDemo() {
         Webshops
         <Icon name="keyboard_arrow_down" size={16} />
       </Link>
-      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary', display: 'flex', alignItems: 'center', gap: 0.25 }}>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.primary', display: 'flex', alignItems: 'center', gap: 0.25 }}>
         Shop Settings
         <Icon name="keyboard_arrow_down" size={16} />
       </Typography>
@@ -3826,7 +3958,7 @@ function BreadcrumbsCustomSeparatorDemo() {
       <Link component="button" underline="hover" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none', cursor: 'pointer' }}>
         Reports
       </Link>
-      <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+      <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.primary' }}>
         Monthly
       </Typography>
     </Breadcrumbs>
@@ -3851,7 +3983,7 @@ registerComponent({
     sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', border: 'none', background: 'none' }}>
     Products
   </Link>
-  <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'text.primary' }}>
+  <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'text.primary' }}>
     Widget Pro
   </Typography>
 </Breadcrumbs>`,
@@ -3865,7 +3997,7 @@ registerComponent({
     Channels
     <Icon name="keyboard_arrow_down" size={16} />
   </Link>
-  <Typography sx={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}>
+  <Typography sx={{ fontWeight: 500, display: 'flex', alignItems: 'center', gap: 0.25 }}>
     Shop Settings
     <Icon name="keyboard_arrow_down" size={16} />
   </Typography>
@@ -3881,7 +4013,7 @@ registerComponent({
   <Link component="button" underline="hover" sx={{ color: 'text.secondary' }}>
     Reports
   </Link>
-  <Typography sx={{ fontWeight: 600, color: 'text.primary' }}>Monthly</Typography>
+  <Typography sx={{ fontWeight: 500, color: 'text.primary' }}>Monthly</Typography>
 </Breadcrumbs>`,
       render: () => <BreadcrumbsCustomSeparatorDemo />,
     },
@@ -3905,7 +4037,7 @@ function FullLayoutDemo() {
       <AppSidebar
         width={220}
         extraNavWidth={220}
-        logo={<Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>App</Typography>}
+        logo={<Typography variant="h6" sx={{ fontWeight: 500, fontSize: '1.1rem' }}>App</Typography>}
         showSearch={false}
         expandedItem={expanded}
         onExpandedChange={setExpanded}
