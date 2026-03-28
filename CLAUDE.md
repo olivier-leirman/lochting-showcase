@@ -143,10 +143,25 @@ Wanneer een Style Direction beschikbaar is in `src/inspiration/{active-style}/st
 - **Focus:** ring-2px-brand
 - **Loading:** skeleton voor content, spinner voor acties
 
+## Action Queue (BELANGRIJK)
+De PRD bevat een **Claude Code Action Queue** (§11 → "Claude Code Action Queue") met 15 genummerde stappen. Dit is de volgende-stappen roadmap.
+
+**Werkwijze:**
+1. Lees de PRD sectie "Claude Code Action Queue" voor de volledige stap
+2. Voer de stap uit volgens de instructies en Definition of Done
+3. Markeer de stap als ✅ in de PRD
+4. Rapporteer wat gedaan is
+5. Wacht op "ga door" of "start met volgende stap" van Olivier
+6. Ga NIET verder zonder bevestiging
+
+**Huidige status:** Start bij de eerste `⏳ TODO` stap.
+
 ## Vault Referenties
 Uitgebreide documentatie beschikbaar in de Obsidian Vault:
-- PRD: `01-Projects/PRD - BW Design System v2.md`
+- PRD + Action Queue: `01-Projects/PRD - BW Design System v2.md`
 - Implementation Plan: `01-Projects/Implementation Plan - BW Design System v2.md`
+- Next Steps (detail): `01-Projects/Next Steps - BW Design System v2.md`
+- Component Patterns: `03-Knowledge-Base/UX-Patterns/Component Patterns - Best Practices.md`
 - Tool research: `02-Areas/AI-Tools-Workflows/Subframe - Visual React Builder.md`
 - Tool research: `02-Areas/AI-Tools-Workflows/MagicPath - AI Design Canvas.md`
 - Tool research: `02-Areas/AI-Tools-Workflows/Blitzit Approach - Claude Code Design System.md`

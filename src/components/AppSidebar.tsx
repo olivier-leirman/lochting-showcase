@@ -75,6 +75,8 @@ export interface AppSidebarProps {
   sections: SidebarSection[];
   /** Width of the main sidebar column (default: 256) */
   width?: number;
+  /** Width of the collapsed sidebar (default: 64) */
+  collapsedWidth?: number;
   /** Width of the extra nav panel (default: 256) */
   extraNavWidth?: number;
   /** Whether to show the search field */
@@ -83,8 +85,10 @@ export interface AppSidebarProps {
   searchPlaceholder?: string;
   /** Callback when search value changes */
   onSearch?: (query: string) => void;
-  /** Callback when collapse button is clicked */
-  onCollapse?: () => void;
+  /** Whether the sidebar is collapsed (controlled) */
+  collapsed?: boolean;
+  /** Callback when collapse state changes (controlled) */
+  onCollapsedChange?: (collapsed: boolean) => void;
   /** Footer content (rendered at bottom of sidebar) */
   footer?: ReactNode;
   /** Currently expanded parent item label (controlled mode) */
@@ -95,21 +99,39 @@ export interface AppSidebarProps {
   drawerProps?: Partial<DrawerProps>;
 }
 
+const COLLAPSED_WIDTH = 64;
+
 export function AppSidebar({
   logo,
   sections,
   width = 256,
+  collapsedWidth = COLLAPSED_WIDTH,
   extraNavWidth = 256,
   showSearch = true,
   searchPlaceholder = 'Search...',
   onSearch,
-  onCollapse,
+  collapsed: controlledCollapsed,
+  onCollapsedChange,
   footer,
   expandedItem: controlledExpandedItem,
   onExpandedChange,
   drawerProps,
 }: AppSidebarProps) {
   const activeItemSx = useActiveItemSx();
+
+  // Internal collapsed state for uncontrolled mode
+  const [internalCollapsed, setInternalCollapsed] = useState(false);
+  const collapsed = controlledCollapsed !== undefined ? controlledCollapsed : internalCollapsed;
+  const setCollapsed = useCallback(
+    (value: boolean) => {
+      if (onCollapsedChange) {
+        onCollapsedChange(value);
+      } else {
+        setInternalCollapsed(value);
+      }
+    },
+    [onCollapsedChange],
+  );
 
   // Internal state for uncontrolled mode
   const [internalExpanded, setInternalExpanded] = useState<string | null>(null);
@@ -132,15 +154,37 @@ export function AppSidebar({
     ? sections.flatMap((s) => s.items).find((item) => item.label === expandedItem && item.children?.length)
     : null;
 
-  const hasExtraNav = !!expandedData;
-  const totalWidth = hasExtraNav ? width + extraNavWidth : width;
+  const hasExtraNav = !!expandedData && !collapsed;
+  const currentWidth = collapsed ? collapsedWidth : width;
+  const totalWidth = hasExtraNav ? currentWidth + extraNavWidth : currentWidth;
 
   const handleItemClick = (item: SidebarItem) => {
     if (item.children?.length) {
-      // Toggle the extra nav
-      setExpandedItem(expandedItem === item.label ? null : item.label);
+      if (collapsed) {
+        // Expand sidebar first, then open ExtraNav
+        setCollapsed(false);
+        setExpandedItem(item.label);
+      } else {
+        // Toggle the extra nav
+        setExpandedItem(expandedItem === item.label ? null : item.label);
+      }
     }
     item.onClick?.();
+  };
+
+  /** Called when a child item in ExtraNav is clicked */
+  const handleExtraNavItemClick = (item: SidebarItem) => {
+    item.onClick?.();
+    // Close ExtraNav after navigating
+    setExpandedItem(null);
+  };
+
+  const handleToggleCollapse = () => {
+    if (!collapsed) {
+      // Collapsing — also close ExtraNav
+      setExpandedItem(null);
+    }
+    setCollapsed(!collapsed);
   };
 
   return (
@@ -158,14 +202,15 @@ export function AppSidebar({
         variant="permanent"
         {...drawerProps}
         sx={{
-          width,
+          width: currentWidth,
           flexShrink: 0,
+          transition: 'width 0.25s ease',
           '& .MuiDrawer-paper': {
-            width,
+            width: currentWidth,
             position: 'relative',
             height: '100%',
-            // When ExtraNav is open, main column has its own right border
-            borderRight: hasExtraNav ? undefined : undefined,
+            transition: 'width 0.25s ease',
+            overflowX: 'hidden',
           },
           ...drawerProps?.sx,
         }}
@@ -175,24 +220,32 @@ export function AppSidebar({
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            px: 2,
+            justifyContent: collapsed ? 'center' : 'space-between',
+            px: collapsed ? 1 : 2,
             py: 1.5,
             minHeight: 48,
           }}
         >
-          {logo ?? <Box sx={{ flex: 1 }} />}
-          {onCollapse && (
-            <Tooltip title="Collapse sidebar">
-              <IconButton size="small" onClick={onCollapse} sx={{ ml: 'auto' }}>
-                <Icon name="left_panel_close" size={20} />
+          {collapsed ? (
+            <Tooltip title="Expand sidebar" placement="right">
+              <IconButton size="small" onClick={handleToggleCollapse}>
+                <Icon name="left_panel_open" size={20} />
               </IconButton>
             </Tooltip>
+          ) : (
+            <>
+              {logo ?? <Box sx={{ flex: 1 }} />}
+              <Tooltip title="Collapse sidebar">
+                <IconButton size="small" onClick={handleToggleCollapse} sx={{ ml: 'auto' }}>
+                  <Icon name="left_panel_close" size={20} />
+                </IconButton>
+              </Tooltip>
+            </>
           )}
         </Box>
 
         {/* ── Search ── */}
-        {showSearch && (
+        {showSearch && !collapsed && (
           <Box sx={{ px: 2, pb: 1 }}>
             <SearchField
               placeholder={searchPlaceholder}
@@ -205,62 +258,80 @@ export function AppSidebar({
         )}
 
         {/* ── Navigation sections ── */}
-        <Box sx={{ flex: 1, overflow: 'auto', px: 1 }}>
+        <Box sx={{ flex: 1, overflow: 'auto', px: collapsed ? 0.5 : 1 }}>
           {sections.map((section) => (
             <List
               key={section.title}
               disablePadding
               subheader={
-                <ListSubheader disableSticky>
-                  {section.title}
-                </ListSubheader>
+                section.title ? (
+                  collapsed ? (
+                    <Box sx={{ borderTop: '1px solid', borderColor: 'divider', my: 1, mx: 1 }} />
+                  ) : (
+                    <ListSubheader disableSticky>
+                      {section.title}
+                    </ListSubheader>
+                  )
+                ) : undefined
               }
             >
               {section.items.map((item) => (
-                <ListItemButton
+                <Tooltip
                   key={item.label}
-                  selected={item.active || expandedItem === item.label}
-                  onClick={() => handleItemClick(item)}
-                  sx={{ my: 0.25, ...activeItemSx }}
+                  title={collapsed ? item.label : ''}
+                  placement="right"
+                  arrow
                 >
-                  {item.icon && (
-                    <ListItemIcon>
-                      <Icon name={item.icon} size={20} />
-                    </ListItemIcon>
-                  )}
-                  <ListItemText primary={item.label} />
-                  {item.badge != null && (
-                    <Chip
-                      label={item.badge}
-                      size="small"
-                      sx={{
-                        height: 22,
-                        minWidth: 22,
-                        fontSize: '0.7rem',
-                        fontWeight: 600,
-                      }}
-                      color="primary"
-                      variant="outlined"
-                    />
-                  )}
-                  {(item.expandable || item.children?.length) && (
-                    <Icon
-                      name={expandedItem === item.label ? 'keyboard_arrow_right' : 'keyboard_arrow_right'}
-                      size={18}
-                      sx={{
-                        transition: 'opacity 0.15s ease',
-                        opacity: expandedItem === item.label ? 1 : 0.5,
-                      }}
-                    />
-                  )}
-                </ListItemButton>
+                  <ListItemButton
+                    selected={item.active || expandedItem === item.label}
+                    onClick={() => handleItemClick(item)}
+                    sx={{
+                      my: 0.25,
+                      justifyContent: collapsed ? 'center' : undefined,
+                      px: collapsed ? 1.5 : undefined,
+                      minHeight: collapsed ? 44 : undefined,
+                      ...activeItemSx,
+                    }}
+                  >
+                    {item.icon && (
+                      <ListItemIcon sx={{ minWidth: collapsed ? 0 : undefined }}>
+                        <Icon name={item.icon} size={20} />
+                      </ListItemIcon>
+                    )}
+                    {!collapsed && <ListItemText primary={item.label} />}
+                    {!collapsed && item.badge != null && (
+                      <Chip
+                        label={item.badge}
+                        size="small"
+                        sx={{
+                          height: 22,
+                          minWidth: 22,
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                        }}
+                        color="primary"
+                        variant="outlined"
+                      />
+                    )}
+                    {!collapsed && (item.expandable || item.children?.length) && (
+                      <Icon
+                        name="keyboard_arrow_right"
+                        size={18}
+                        sx={{
+                          transition: 'opacity 0.15s ease',
+                          opacity: expandedItem === item.label ? 1 : 0.5,
+                        }}
+                      />
+                    )}
+                  </ListItemButton>
+                </Tooltip>
               ))}
             </List>
           ))}
         </Box>
 
         {/* ── Footer ── */}
-        {footer && (
+        {footer && !collapsed && (
           <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
             {footer}
           </Box>
@@ -279,6 +350,7 @@ export function AppSidebar({
           parentLabel={expandedData?.label ?? ''}
           items={expandedData?.children ?? []}
           onCollapse={() => setExpandedItem(null)}
+          onItemClick={handleExtraNavItemClick}
         />
       </Collapse>
     </Box>
@@ -296,9 +368,11 @@ interface ExtraNavPanelProps {
   items: SidebarItem[];
   /** Collapse handler */
   onCollapse: () => void;
+  /** Item click handler (navigates + closes panel) */
+  onItemClick: (item: SidebarItem) => void;
 }
 
-function ExtraNavPanel({ width, parentLabel, items, onCollapse }: ExtraNavPanelProps) {
+function ExtraNavPanel({ width, parentLabel, items, onCollapse, onItemClick }: ExtraNavPanelProps) {
   const activeItemSx = useActiveItemSx();
 
   return (
@@ -346,7 +420,7 @@ function ExtraNavPanel({ width, parentLabel, items, onCollapse }: ExtraNavPanelP
             <ListItemButton
               key={item.label}
               selected={item.active}
-              onClick={item.onClick}
+              onClick={() => onItemClick(item)}
               sx={{ my: 0.25, ...activeItemSx }}
             >
               {item.icon && (

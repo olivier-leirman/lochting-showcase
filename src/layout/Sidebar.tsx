@@ -1,52 +1,11 @@
-import { useState, useMemo } from 'react';
-import { Drawer, List, ListSubheader, ListItemButton, ListItemIcon, ListItemText, Box, Typography, Collapse } from '@mui/material';
+import { useState, useMemo, useCallback } from 'react';
+import { Typography } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { COMPONENT_REGISTRY } from '../showcase/registry';
-import { Icon } from '../components/Icon';
-import { SearchField } from '../components/SearchField';
-import { useBrand } from '../theme/brand-context';
+import { AppSidebar, type SidebarSection, type SidebarItem } from '../components/AppSidebar';
 
-// ── Navigation structure ──
+// ── Desired display order per component category ──
 
-interface NavItem {
-  label: string;
-  icon?: string;
-  path: string;
-}
-
-interface NavGroup {
-  label: string;
-  icon: string;
-  children: NavItem[];
-}
-
-type NavEntry = NavItem | NavGroup;
-
-function isGroup(entry: NavEntry): entry is NavGroup {
-  return 'children' in entry;
-}
-
-const LIBRARY_SECTIONS: NavEntry[] = [
-  { label: 'Overview', icon: 'grid_view', path: '/library' },
-  { label: 'Experimental', icon: 'science', path: '/library/experimental' },
-];
-
-const DESIGN_SYSTEM_SECTIONS: NavEntry[] = [
-  { label: 'Colors & Palettes', icon: 'palette', path: '/design-system/colors' },
-  { label: 'Typography', icon: 'text_fields', path: '/design-system/typography' },
-  { label: 'Spacing & Sizing', icon: 'space_bar', path: '/design-system/spacing' },
-  { label: 'Effects', icon: 'auto_awesome', path: '/design-system/effects' },
-  { label: 'Icons', icon: 'category', path: '/design-system/icons' },
-  { label: 'Patterns', icon: 'pattern', path: '/design-system/patterns' },
-  { label: 'Design Rules', icon: 'rule', path: '/design-system/rules' },
-  { label: 'Style Variants', icon: 'style', path: '/design-system/styles' },
-  { label: 'Brand Identity', icon: 'fingerprint', path: '/design-system/identity/medipim/flat' },
-  { label: 'Theme Playground', icon: 'tune', path: '/design-system/playground' },
-  { label: 'Consistency', icon: 'verified', path: '/design-system/consistency' },
-  { label: 'Style Creator', icon: 'brush', path: '/design-system/style-creator' },
-];
-
-/** Desired display order per category */
 const SORT_ORDER: Record<string, string[]> = {
   actions: ['button', 'button-group', 'toggle-button', 'toggle-chip'],
   inputs: ['textfield', 'search-field', 'select', 'autocomplete', 'multi-select', 'checkbox', 'radio', 'switch', 'slider', 'date-picker', 'time-picker', 'datetime-picker', 'date-range-picker'],
@@ -68,236 +27,236 @@ function sortByOrder(items: typeof COMPONENT_REGISTRY, category: string) {
   });
 }
 
-/** Build component category groups for the Library section */
-function useComponentGroups(): NavGroup[] {
-  return useMemo(() => {
-    const categories = [
-      { key: 'actions', label: 'Actions', icon: 'touch_app' },
-      { key: 'inputs', label: 'Inputs', icon: 'input' },
-      { key: 'data-display', label: 'Data Display', icon: 'table_chart' },
-      { key: 'feedback', label: 'Feedback', icon: 'feedback' },
-      { key: 'surfaces', label: 'Surfaces', icon: 'layers' },
-      { key: 'navigation', label: 'Navigation', icon: 'menu' },
+// ── Category configuration ──
+
+const CATEGORIES = [
+  { key: 'actions', label: 'Actions', icon: 'touch_app' },
+  { key: 'inputs', label: 'Inputs', icon: 'input' },
+  { key: 'data-display', label: 'Data Display', icon: 'table_chart' },
+  { key: 'feedback', label: 'Feedback', icon: 'feedback' },
+  { key: 'surfaces', label: 'Surfaces', icon: 'layers' },
+  { key: 'navigation', label: 'Navigation', icon: 'menu' },
+];
+
+// ── Flat search index ──
+
+interface SearchableItem {
+  label: string;
+  path: string;
+  icon?: string;
+}
+
+const STATIC_ITEMS: SearchableItem[] = [
+  { label: 'Home', path: '/', icon: 'home' },
+  { label: 'Getting Started', path: '/getting-started', icon: 'play_arrow' },
+  { label: 'All Components', path: '/library', icon: 'grid_view' },
+  { label: 'Experimental', path: '/library/experimental', icon: 'new_releases' },
+  { label: 'Colors & Palettes', path: '/design-system/colors', icon: 'palette' },
+  { label: 'Typography', path: '/design-system/typography', icon: 'text_fields' },
+  { label: 'Spacing & Sizing', path: '/design-system/spacing', icon: 'space_bar' },
+  { label: 'Effects', path: '/design-system/effects', icon: 'auto_awesome' },
+  { label: 'Icons', path: '/design-system/icons', icon: 'category' },
+  { label: 'Design Rules', path: '/design-system/rules', icon: 'rule' },
+  { label: 'Patterns', path: '/design-system/patterns', icon: 'pattern' },
+  { label: 'Style Variants', path: '/design-system/styles', icon: 'style' },
+  { label: 'Style Creator', path: '/design-system/style-creator', icon: 'brush' },
+  { label: 'Brand Identity', path: '/design-system/identity/medipim/flat', icon: 'fingerprint' },
+  { label: 'Theme Playground', path: '/design-system/playground', icon: 'tune' },
+  { label: 'Consistency', path: '/design-system/consistency', icon: 'verified' },
+  { label: 'Component Playground', path: '/playground', icon: 'science' },
+  { label: 'Style Showcase', path: '/style-showcase', icon: 'brush' },
+  { label: 'Medipim SaaS', path: '/prototypes/medipim-saas', icon: 'desktop_windows' },
+];
+
+// ── localStorage persistence ──
+
+const EXPANDED_KEY = 'bw-sidebar-expanded';
+const COLLAPSED_KEY = 'bw-sidebar-collapsed';
+
+function loadExpanded(): string | null {
+  try {
+    return localStorage.getItem(EXPANDED_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function saveExpanded(label: string | null) {
+  try {
+    if (label) {
+      localStorage.setItem(EXPANDED_KEY, label);
+    } else {
+      localStorage.removeItem(EXPANDED_KEY);
+    }
+  } catch {
+    // Silently fail
+  }
+}
+
+function loadCollapsed(): boolean {
+  try {
+    return localStorage.getItem(COLLAPSED_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function saveCollapsed(collapsed: boolean) {
+  try {
+    localStorage.setItem(COLLAPSED_KEY, String(collapsed));
+  } catch {
+    // Silently fail
+  }
+}
+
+// ── Sidebar component ──
+
+export function Sidebar() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [query, setQuery] = useState('');
+
+  // Expanded group state — persisted in localStorage
+  const [expandedItem, setExpandedItem] = useState<string | null>(loadExpanded);
+  // Collapsed state — persisted in localStorage
+  const [collapsed, setCollapsed] = useState(loadCollapsed);
+
+  const handleExpandedChange = useCallback((label: string | null) => {
+    setExpandedItem(label);
+    saveExpanded(label);
+  }, []);
+
+  const handleCollapsedChange = useCallback((value: boolean) => {
+    setCollapsed(value);
+    saveCollapsed(value);
+  }, []);
+
+  const isActive = (path: string) => location.pathname === path;
+
+  /** Navigate and clear search */
+  const go = useCallback((path: string) => {
+    navigate(path);
+    setQuery('');
+  }, [navigate]);
+
+  /** Build the full searchable index (static + components) */
+  const searchIndex = useMemo(() => [
+    ...STATIC_ITEMS,
+    ...COMPONENT_REGISTRY.map(comp => ({
+      label: comp.name,
+      path: `/components/${comp.id}`,
+    })),
+  ], []);
+
+  /** Build the normal navigation sections */
+  const normalSections: SidebarSection[] = useMemo(() => {
+    // ── Top items ──
+    const topItems: SidebarItem[] = [
+      { label: 'Home', icon: 'home', active: isActive('/'), onClick: () => go('/') },
+      { label: 'Getting Started', icon: 'play_arrow', active: isActive('/getting-started'), onClick: () => go('/getting-started') },
     ];
 
-    return categories
-      .map(cat => {
+    // ── Components section ──
+    const componentItems: SidebarItem[] = [
+      { label: 'All Components', icon: 'grid_view', active: isActive('/library'), onClick: () => go('/library') },
+      { label: 'Experimental', icon: 'new_releases', active: isActive('/library/experimental'), onClick: () => go('/library/experimental') },
+      ...CATEGORIES.map(cat => {
         const items = sortByOrder(
           COMPONENT_REGISTRY.filter(c => c.category === cat.key),
           cat.key,
         );
+        if (items.length === 0) return null;
         return {
           label: cat.label,
           icon: cat.icon,
           children: items.map(comp => ({
             label: comp.name,
-            path: `/components/${comp.id}`,
+            active: isActive(`/components/${comp.id}`),
+            onClick: () => go(`/components/${comp.id}`),
           })),
         };
-      })
-      .filter(g => g.children.length > 0);
-  }, []);
-}
-
-const SIDEBAR_WIDTH = 260;
-
-export function Sidebar() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { brand, effects } = useBrand();
-  const c = brand.colors;
-  const isDark = effects.mode === 'dark';
-  const [query, setQuery] = useState('');
-  const q = query.toLowerCase().trim();
-
-  const componentGroups = useComponentGroups();
-
-  // Track which collapsible groups are open
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
-  const toggleGroup = (label: string) => {
-    setOpenGroups(prev => ({ ...prev, [label]: !prev[label] }));
-  };
-
-  /** Build all navigable items for search filtering */
-  const allItems = useMemo(() => {
-    const staticItems = [
-      { label: 'Home', path: '/', icon: 'home' },
-      { label: 'Getting Started', path: '/getting-started', icon: 'play_arrow' },
-      ...DESIGN_SYSTEM_SECTIONS.filter((e): e is NavItem => !isGroup(e)).map(i => ({ label: i.label, path: i.path, icon: i.icon })),
+      }).filter(Boolean) as SidebarItem[],
     ];
-    const registryItems = COMPONENT_REGISTRY.map(comp => ({
-      label: comp.name,
-      path: `/components/${comp.id}`,
-      icon: undefined as string | undefined,
-    }));
-    return [...staticItems, ...registryItems];
-  }, []);
 
-  const searchResults = useMemo(() => {
-    if (!q) return [];
-    return allItems.filter(item => item.label.toLowerCase().includes(q));
-  }, [q, allItems]);
+    // ── Theme section ──
+    const themeItems: SidebarItem[] = [
+      { label: 'Colors & Palettes', icon: 'palette', active: isActive('/design-system/colors'), onClick: () => go('/design-system/colors') },
+      { label: 'Typography', icon: 'text_fields', active: isActive('/design-system/typography'), onClick: () => go('/design-system/typography') },
+      { label: 'Spacing & Sizing', icon: 'space_bar', active: isActive('/design-system/spacing'), onClick: () => go('/design-system/spacing') },
+      { label: 'Effects', icon: 'auto_awesome', active: isActive('/design-system/effects'), onClick: () => go('/design-system/effects') },
+      { label: 'Icons', icon: 'category', active: isActive('/design-system/icons'), onClick: () => go('/design-system/icons') },
+    ];
 
-  const isActive = (path: string) => location.pathname === path;
+    // ── Design System section ──
+    const dsItems: SidebarItem[] = [
+      { label: 'Design Rules', icon: 'rule', active: isActive('/design-system/rules'), onClick: () => go('/design-system/rules') },
+      { label: 'Patterns', icon: 'pattern', active: isActive('/design-system/patterns'), onClick: () => go('/design-system/patterns') },
+      { label: 'Style Variants', icon: 'style', active: isActive('/design-system/styles'), onClick: () => go('/design-system/styles') },
+      { label: 'Style Creator', icon: 'brush', active: isActive('/design-system/style-creator'), onClick: () => go('/design-system/style-creator') },
+      { label: 'Brand Identity', icon: 'fingerprint', active: location.pathname.startsWith('/design-system/identity'), onClick: () => go('/design-system/identity/medipim/flat') },
+      { label: 'Theme Playground', icon: 'tune', active: isActive('/design-system/playground'), onClick: () => go('/design-system/playground') },
+      { label: 'Consistency', icon: 'verified', active: isActive('/design-system/consistency'), onClick: () => go('/design-system/consistency') },
+    ];
 
-  /** Check if any child in a group is active */
-  const isGroupActive = (group: NavGroup) => group.children.some(child => isActive(child.path));
+    // ── Playground section ──
+    const playgroundItems: SidebarItem[] = [
+      { label: 'Component Playground', icon: 'science', active: isActive('/playground'), onClick: () => go('/playground') },
+      { label: 'Style Showcase', icon: 'brush', active: isActive('/style-showcase'), onClick: () => go('/style-showcase') },
+    ];
 
-  /** Active nav item style */
-  const activeBg = isDark ? c.brand500 : c.brand100;
-  const activeItemSx = {
-    '&.Mui-selected': {
-      background: activeBg,
-      backgroundColor: activeBg,
-      color: isDark ? c.brand200 : c.brand450,
-      border: '1px solid transparent',
-      boxShadow: 'none',
-      borderRadius: '12px',
-      '&:hover': {
-        background: activeBg,
-        backgroundColor: activeBg,
-        filter: isDark ? 'brightness(1.12)' : 'brightness(0.97)',
-      },
-      '& .MuiListItemIcon-root': {
-        color: isDark ? c.brand200 : c.brand450,
-      },
-    },
-  };
+    // ── Prototypes section ──
+    const prototypeItems: SidebarItem[] = [
+      { label: 'Medipim SaaS', icon: 'desktop_windows', active: isActive('/prototypes/medipim-saas'), onClick: () => go('/prototypes/medipim-saas') },
+    ];
 
-  /** Render a single nav item */
-  const renderItem = (item: NavItem, indent = false) => (
-    <ListItemButton
-      key={item.path}
-      selected={isActive(item.path)}
-      onClick={() => { navigate(item.path); setQuery(''); }}
-      sx={{ my: 0.25, pl: indent ? 4 : undefined, ...activeItemSx }}
-    >
-      {item.icon && (
-        <ListItemIcon>
-          <Icon name={item.icon} size={20} />
-        </ListItemIcon>
-      )}
-      <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: indent ? '0.8125rem' : undefined }} />
-    </ListItemButton>
-  );
+    return [
+      { title: '', items: topItems },
+      { title: 'Components', items: componentItems },
+      { title: 'Theme', items: themeItems },
+      { title: 'Design System', items: dsItems },
+      { title: 'Playground', items: playgroundItems },
+      { title: 'Prototypes', items: prototypeItems },
+    ];
+  }, [location.pathname, go]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /** Render a collapsible group */
-  const renderGroup = (group: NavGroup) => {
-    const isOpen = openGroups[group.label] ?? isGroupActive(group);
-    return (
-      <Box key={group.label}>
-        <ListItemButton
-          onClick={() => toggleGroup(group.label)}
-          sx={{ my: 0.25 }}
-        >
-          <ListItemIcon>
-            <Icon name={group.icon} size={20} />
-          </ListItemIcon>
-          <ListItemText primary={group.label} />
-          <Icon name={isOpen ? 'expand_less' : 'expand_more'} size={18} />
-        </ListItemButton>
-        <Collapse in={isOpen} timeout="auto" unmountOnExit>
-          <List disablePadding>
-            {group.children.map(child => renderItem(child, true))}
-          </List>
-        </Collapse>
-      </Box>
-    );
-  };
+  /** Build search results as a flat section */
+  const searchSections: SidebarSection[] = useMemo(() => {
+    if (!query.trim()) return [];
+    const q = query.toLowerCase().trim();
+    const matches = searchIndex.filter(item => item.label.toLowerCase().includes(q));
+    return [{
+      title: 'Results',
+      items: matches.length > 0
+        ? matches.map(item => ({
+            label: item.label,
+            icon: item.icon,
+            active: isActive(item.path),
+            onClick: () => go(item.path),
+          }))
+        : [{ label: 'No results found', icon: 'search_off' }],
+    }];
+  }, [query, searchIndex, location.pathname, go]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isSearching = query.trim().length > 0;
 
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: SIDEBAR_WIDTH,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: SIDEBAR_WIDTH,
-          position: 'relative',
-          height: '100%',
-        },
-      }}
-    >
-      {/* ── Logo / header ── */}
-      <Box sx={{ px: 2, pt: 2, pb: 1 }}>
-        <Typography variant="h3" sx={{ fontSize: '1.5rem', mb: 2 }}>
+    <AppSidebar
+      logo={
+        <Typography variant="h3" sx={{ fontSize: '1.5rem' }}>
           Design System
         </Typography>
-        <SearchField
-          placeholder="Search..."
-          shortcut="⌘ S"
-          globalShortcut="meta+s"
-          size="small"
-          fullWidth
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && searchResults.length > 0) {
-              navigate(searchResults[0].path);
-              setQuery('');
-            }
-            if (e.key === 'Escape') {
-              setQuery('');
-              (e.target as HTMLInputElement).blur();
-            }
-          }}
-        />
-      </Box>
-
-      {/* ── Nav content ── */}
-      <Box sx={{ flex: 1, overflow: 'auto', px: '8px' }}>
-        {q ? (
-          /* ── Search results ── */
-          <List disablePadding subheader={<ListSubheader disableSticky>Results</ListSubheader>}>
-            {searchResults.length === 0 ? (
-              <Typography variant="body2" sx={{ px: 2, py: 1, color: 'text.secondary' }}>
-                No results found
-              </Typography>
-            ) : (
-              searchResults.map(item => renderItem(item))
-            )}
-          </List>
-        ) : (
-          /* ── Normal navigation ── */
-          <>
-            {/* Home */}
-            <List disablePadding>
-              {renderItem({ label: 'Home', icon: 'home', path: '/' })}
-              {renderItem({ label: 'Getting Started', icon: 'play_arrow', path: '/getting-started' })}
-            </List>
-
-            {/* Library */}
-            <List
-              disablePadding
-              subheader={<ListSubheader disableSticky>Library</ListSubheader>}
-            >
-              {LIBRARY_SECTIONS.map(entry =>
-                isGroup(entry) ? renderGroup(entry) : renderItem(entry),
-              )}
-              {componentGroups.map(group => renderGroup(group))}
-            </List>
-
-            {/* Design System */}
-            <List
-              disablePadding
-              subheader={<ListSubheader disableSticky>Design System</ListSubheader>}
-            >
-              {DESIGN_SYSTEM_SECTIONS.map(entry =>
-                isGroup(entry) ? renderGroup(entry) : renderItem(entry),
-              )}
-            </List>
-
-            {/* Playground */}
-            <List
-              disablePadding
-              subheader={<ListSubheader disableSticky>Playground</ListSubheader>}
-            >
-              {renderItem({ label: 'Component Playground', icon: 'science', path: '/playground' })}
-              {renderItem({ label: 'Style Showcase', icon: 'brush', path: '/style-showcase' })}
-            </List>
-          </>
-        )}
-      </Box>
-    </Drawer>
+      }
+      showSearch
+      searchPlaceholder="Search..."
+      onSearch={setQuery}
+      collapsed={collapsed}
+      onCollapsedChange={handleCollapsedChange}
+      expandedItem={isSearching ? null : expandedItem}
+      onExpandedChange={handleExpandedChange}
+      width={260}
+      extraNavWidth={240}
+      sections={isSearching ? searchSections : normalSections}
+    />
   );
 }

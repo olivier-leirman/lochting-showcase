@@ -12,7 +12,7 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: c.bgBase,
+          backgroundColor: c.bgElevated,
           borderRight: `1px solid ${c.borderWeak}`,
           boxShadow: fx.shadows.sidebar,
           backgroundImage: 'none',
@@ -72,9 +72,9 @@ export function navigationOverrides(brand: BrandTokens, fx: Effects): Components
       styleOverrides: {
         root: {
           minWidth: 'auto',
-          color: c.contentTertiary,
+          color: c.contentSecondary,
           '.Mui-selected &': {
-            color: c.contentSecondary,
+            color: c.contentPrimary,
           },
         },
       },
